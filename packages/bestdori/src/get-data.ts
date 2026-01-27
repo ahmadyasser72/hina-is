@@ -89,10 +89,21 @@ const all = await (async () => {
 
 	return {
 		get attributes() {
+			const colors = {
+				happy: "#ff6600",
+				powerful: "#ff345a",
+				pure: "#44c527",
+				cool: "#4057e3",
+			};
+
 			return new Map(
 				CardAttribute.options.map((name) => [
 					name,
-					{ name, assets: { icon: `/res/icon/${name}.svg` } },
+					{
+						name,
+						color: colors[name],
+						assets: { icon: `/res/icon/${name}.svg` },
+					},
 				]),
 			);
 		},

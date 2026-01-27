@@ -59,7 +59,11 @@ const eventBand = event.characters
 
 		<div class="flex flex-wrap justify-center gap-1">
 			<div class="badge font-medium">
-				<div class="tooltip" data-tip={event.attribute.name.toUpperCase()}>
+				<div
+					class="tooltip before:text-white"
+					data-tip={event.attribute.name.toUpperCase()}
+					style={`--tt-bg: ${event.attribute.color}`}
+				>
 					<img
 						src={`/assets/attribute/${event.attribute.name}.svg`}
 						alt=`${event.attribute.name.toUpperCase()} icon`
