@@ -1,7 +1,9 @@
 ---
 import { events } from "@hina-is/bestdori/data";
+import { unwrap } from "@hina-is/bestdori/utilities";
 
 import BaseLayout from "~/layouts/base-layout.astro";
+import { IMAGE_FORMAT } from "~/lib/constants";
 import { dayjs } from "~/lib/date";
 import { paginate } from "~/lib/paginate";
 import EventCard from "./_event-card.astro";
@@ -52,10 +54,19 @@ const upcomingEvents = paginate({
 });
 ---
 
-<BaseLayout>
+<BaseLayout
+	background={event.current
+		? {
+				src: `/assets/event/${event.current.id}_background.${IMAGE_FORMAT}`,
+				alt: `${unwrap(event.current.name)} background`,
+			}
+		: undefined}
+>
 	<div class="flex flex-col gap-8">
 		<div class="flex flex-col items-center gap-4">
-			<h2 class="text-xl font-medium">Active event</h2>
+			<h2 class:list={["text-xl font-medium", event.current && "text-white"]}>
+				Active event
+			</h2>
 
 			{
 				event.current ? (
@@ -67,7 +78,9 @@ const upcomingEvents = paginate({
 		</div>
 
 		<div class="flex flex-col items-center gap-4">
-			<h2 class="text-xl font-medium">Upcoming events</h2>
+			<h2 class:list={["text-xl font-medium", event.current && "text-white"]}>
+				Upcoming events
+			</h2>
 
 			<div
 				id="upcoming-events"
