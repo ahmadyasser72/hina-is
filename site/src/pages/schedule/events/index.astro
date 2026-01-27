@@ -3,6 +3,7 @@ import { events } from "@hina-is/bestdori/data";
 
 import BaseLayout from "~/layouts/base-layout.astro";
 import { dayjs } from "~/lib/date";
+import { paginate } from "~/lib/paginate";
 import EventCard from "./_event-card.astro";
 
 const event = (() => {
@@ -42,6 +43,13 @@ const event = (() => {
 		}),
 	};
 })();
+
+const upcomingEvents = paginate({
+	items: event.upcoming,
+	context: Astro,
+	size: 6,
+	extraProps: { "hx-select": "#upcoming-events > *", "hx-swap": "afterend" },
+});
 ---
 
 <BaseLayout>
@@ -55,8 +63,31 @@ const event = (() => {
 		<div class="flex flex-col items-center gap-4">
 			<h2 class="text-xl font-medium">Upcoming events</h2>
 
-			<div class="flex flex-wrap justify-center gap-2">
-				{event.upcoming.map((event) => <EventCard {event} />)}
+			<div
+				id="upcoming-events"
+				hx-indicator="#upcoming-events-loader"
+				class="flex flex-wrap justify-center gap-2"
+			>
+				{
+					upcomingEvents.items.map((event, idx) => (
+						<EventCard
+							{...(upcomingEvents.isLastElement(idx) && upcomingEvents.props)}
+							{event}
+						/>
+					))
+				}
+			</div>
+
+			<div
+				id="upcoming-events-loader"
+				class="htmx-indicator mt-8 flex flex-col items-center"
+			>
+				<iconify-icon
+					icon="svg-spinners:90-ring-with-bg"
+					width="none"
+					class="size-32"></iconify-icon>
+
+				<span class="text-lg font-medium">loading more events...</span>
 			</div>
 		</div>
 	</div>

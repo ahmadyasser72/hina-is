@@ -14,7 +14,7 @@ interface Props {
 	active?: boolean;
 }
 
-const { event, active } = Astro.props;
+const { event, active, ...props } = Astro.props;
 
 const eventBand = event.characters
 	.slice(1)
@@ -31,7 +31,7 @@ const eventBand = event.characters
 		};
 ---
 
-<div class="card bg-base-100 w-90 shadow-sm">
+<div class="card bg-base-100 w-90 shadow-sm" {...props}>
 	<figure>
 		<img
 			src={`/assets/event/${event.id}_banner.${IMAGE_FORMAT}`}

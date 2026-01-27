@@ -19,7 +19,8 @@
 		"dayjs": "1.11.19",
 		"htmx.org": "2.0.8",
 		"iconify-icon": "3.0.2",
-		"tailwindcss": "4.1.18"
+		"tailwindcss": "4.1.18",
+		"zod": "4.3.6"
 	},
 	"devDependencies": {
 		"@astrojs/check": "0.9.6",
