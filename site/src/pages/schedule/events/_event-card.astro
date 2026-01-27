@@ -22,9 +22,12 @@ const eventBand = event.characters
 	? { type: "one" as const, data: event.characters[0].band }
 	: {
 			type: "multiple" as const,
-			data: [...new Set(event.characters.map(({ band }) => band.id))].map(
-				(id) => ({ id, ...bands.get(id)! }),
-			),
+			data: Object.entries(
+				Object.groupBy(event.characters, ({ band }) => band.id),
+			).map(([, character]) => ({
+				count: character!.length,
+				...character![0].band,
+			})),
 		};
 ---
 
@@ -82,7 +85,7 @@ const eventBand = event.characters
 					eventBand.type === "multiple" &&
 						eventBand.data
 							.map(({ color, ...band }) => ({ ...band, color: colord(color!) }))
-							.map(({ id, name, color }, idx) => (
+							.map(({ id, name, color, count }, idx) => (
 								<div
 									class:list={[
 										"tooltip",
@@ -91,7 +94,7 @@ const eventBand = event.characters
 											? "before:text-white"
 											: "before:text-black",
 									]}
-									data-tip={unwrap(name)}
+									data-tip={`${unwrap(name)} (${count})`}
 									style={`--tt-bg: ${color.toHex()}`}
 								>
 									<img
