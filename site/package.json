@@ -9,15 +9,15 @@
 		"astro": "astro"
 	},
 	"dependencies": {
-		"@astrojs/cloudflare": "^12.6.12",
+		"@astrojs/cloudflare": "12.6.12",
 		"@hina-is/bestdori": "workspace:*",
-		"@tailwindcss/vite": "^4.1.18",
+		"@tailwindcss/vite": "4.1.18",
 		"astro": "5.16.15",
 		"daisyui": "5.5.14",
 		"dayjs": "1.11.19",
 		"htmx.org": "2.0.8",
 		"iconify-icon": "3.0.2",
-		"tailwindcss": "^4.1.18"
+		"tailwindcss": "4.1.18"
 	},
 	"devDependencies": {
 		"@types/bun": "1.3.6",
