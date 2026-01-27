@@ -1,11 +1,5 @@
 import { bestdori } from "@hina-is/bestdori";
-import {
-	attributes,
-	bands,
-	cards,
-	characters,
-	events,
-} from "@hina-is/bestdori/data";
+import { attributes, bands, characters, events } from "@hina-is/bestdori/data";
 
 import type {
 	APIRoute,
@@ -50,20 +44,6 @@ export const getStaticPaths = (() => {
 		props: { kind: "image" as const, pathname: assets.icon },
 	})) satisfies GetStaticPathsResult;
 
-	const cardAssets = [...cards.entries()].flatMap(([id, { assets }]) =>
-		(["icon", "full"] as const).flatMap((variant) =>
-			assets[variant].map(([trained, pathname]) => ({
-				params: {
-					type: "card",
-					filename:
-						[id, variant, trained ? "trained" : "base"].join("_") +
-						`.${IMAGE_FORMAT}`,
-				},
-				props: { kind: "image" as const, pathname },
-			})),
-		),
-	) satisfies GetStaticPathsResult;
-
 	const eventAssets = [...events.entries()].flatMap(([id, { assets }]) =>
 		(["banner", "background"] as const).map((variant) => ({
 			params: {
@@ -78,7 +58,6 @@ export const getStaticPaths = (() => {
 		...attributeAssets,
 		...bandAssets,
 		...characterAssets,
-		...cardAssets,
 		...eventAssets,
 	] as const;
 }) satisfies GetStaticPaths;

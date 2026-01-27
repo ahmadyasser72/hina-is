@@ -336,7 +336,7 @@ const all = await (async () => {
 	};
 })();
 
-const { gachas, songs, ...data } = all;
+const { cards, gachas, songs, ...data } = all;
 export type Data = typeof data;
 
 const keys = Object.keys(data).join(", ");
