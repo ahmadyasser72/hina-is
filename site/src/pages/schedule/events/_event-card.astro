@@ -1,5 +1,5 @@
 ---
-import type { events } from "@hina-is/bestdori/data";
+import { bands, type events } from "@hina-is/bestdori/data";
 import { unwrap } from "@hina-is/bestdori/utilities";
 
 import { IMAGE_FORMAT } from "~/lib/constants";
@@ -16,9 +16,14 @@ const { event, active } = Astro.props;
 
 const eventBand = event.characters
 	.slice(1)
-	.every((it) => it.band.id === event.characters[0].band.id)
-	? event.characters[0].band
-	: "Mixed";
+	.every(({ band }) => band.id === event.characters[0].band.id)
+	? { type: "one" as const, data: event.characters[0].band }
+	: {
+			type: "multiple" as const,
+			data: [...new Set(event.characters.map(({ band }) => band.id))].map(
+				(id) => ({ id, ...bands.get(id)! }),
+			),
+		};
 ---
 
 <div class="card bg-base-100 w-96 shadow-sm">
@@ -62,17 +67,31 @@ const eventBand = event.characters
 
 			<div class="badge font-medium">
 				{
-					eventBand === "Mixed" ? (
-						eventBand
-					) : (
+					eventBand.type === "multiple" &&
+						eventBand.data.map(({ id, name }, idx) => (
+							<div
+								class:list={["tooltip", idx % 2 && "tooltip-bottom"]}
+								data-tip={unwrap(name)}
+							>
+								<img
+									src={`/assets/band/${id}.svg`}
+									alt={`${unwrap(name)} icon`}
+									class="size-5"
+								/>
+							</div>
+						))
+				}
+
+				{
+					eventBand.type === "one" && (
 						<>
 							<img
-								src={`/assets/band/${eventBand.id}.svg`}
-								alt={`${unwrap(eventBand.name)} icon`}
+								src={`/assets/band/${eventBand.data.id}.svg`}
+								alt={`${unwrap(eventBand.data.name)} icon`}
 								class="size-5"
 							/>
 
-							{unwrap(eventBand.name)}
+							{unwrap(eventBand.data.name)}
 						</>
 					)
 				}
@@ -90,7 +109,9 @@ const eventBand = event.characters
 					.map(({ id, name, band }, idx) => (
 						<div
 							class:list={["tooltip", idx % 2 && "tooltip-bottom"]}
-							data-tip={eventBand === "Mixed" ? `${name} / ${band}` : name}
+							data-tip={
+								eventBand.type === "multiple" ? `${name} / ${band}` : name
+							}
 						>
 							<img
 								src={`/assets/character/${id}.${IMAGE_FORMAT}`}
