@@ -35,4 +35,13 @@ import "~/styles/global.css";
 <script>
 	import "htmx.org";
 	import "iconify-icon";
+
+	document.body.addEventListener("htmx:configRequest", (e) => {
+		const event = e as Event & {
+			detail: { headers: Record<string, string> };
+		};
+
+		event.detail.headers["x-timezone"] =
+			Intl.DateTimeFormat().resolvedOptions().timeZone;
+	});
 </script>
