@@ -98,15 +98,25 @@ const all = await (async () => {
 		},
 
 		get bands() {
+			const colors = {
+				1: "#ff3377",
+				2: "#d23341",
+				3: "#f4b600",
+				4: "#33ddaa",
+				5: "#3344aa",
+				18: "#22cccc",
+				21: "#2dc1f8",
+				45: "#2273a5",
+			};
+
 			return new Map(
 				[...bands.entries()].map(([id, entry]) => [
 					id,
 					{
 						...entry,
+						color: id in colors ? colors[id as keyof typeof colors] : null,
 						assets: {
-							icon: [1, 2, 3, 4, 5, 18, 21, 45].includes(id)
-								? `/res/icon/band_${id}.svg`
-								: null,
+							icon: id in colors ? `/res/icon/band_${id}.svg` : null,
 						},
 					},
 				]),

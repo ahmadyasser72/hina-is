@@ -67,21 +67,40 @@ const eventBand = event.characters
 				{event.type}
 			</div>
 
-			<div class="badge font-medium">
+			<div
+				class:list={[
+					"badge font-medium",
+					eventBand.type === "one" &&
+					colord(eventBand.data.color!).brightness() < 0.67
+						? "text-white"
+						: "text-black",
+				]}
+				style={eventBand.type === "one" &&
+					`--badge-bg: ${eventBand.data.color!}`}
+			>
 				{
 					eventBand.type === "multiple" &&
-						eventBand.data.map(({ id, name }, idx) => (
-							<div
-								class:list={["tooltip", idx % 2 && "tooltip-bottom"]}
-								data-tip={unwrap(name)}
-							>
-								<img
-									src={`/assets/band/${id}.svg`}
-									alt={`${unwrap(name)} icon`}
-									class="size-5"
-								/>
-							</div>
-						))
+						eventBand.data
+							.map(({ color, ...band }) => ({ ...band, color: colord(color!) }))
+							.map(({ id, name, color }, idx) => (
+								<div
+									class:list={[
+										"tooltip",
+										idx % 2 && "tooltip-bottom",
+										color.brightness() < 0.67
+											? "before:text-white"
+											: "before:text-black",
+									]}
+									data-tip={unwrap(name)}
+									style={`--tt-bg: ${color.toHex()}`}
+								>
+									<img
+										src={`/assets/band/${id}.svg`}
+										alt={`${unwrap(name)} icon`}
+										class="size-5"
+									/>
+								</div>
+							))
 				}
 
 				{
