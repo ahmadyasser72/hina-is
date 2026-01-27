@@ -11,7 +11,12 @@ export default defineConfig({
 	vite: {
 		plugins: [tailwindcss()],
 		ssr: {
-			external: ["sharp", "node:fs/promises", "node:path"],
+			external: [
+				"sharp",
+				"node:child_process",
+				"node:fs/promises",
+				"node:path",
+			],
 		},
 	},
 });
