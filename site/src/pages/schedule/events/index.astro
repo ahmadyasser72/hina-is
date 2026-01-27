@@ -11,15 +11,15 @@ const event = (() => {
 
 	const now = dayjs();
 	let lastEndAt: dayjs.Dayjs;
-	for (const [id, it] of [...events.entries()]) {
-		if (!it.startAt.en || !it.endAt.en) {
+	for (const [id, { startAt, endAt }] of [...events.entries()]) {
+		if (!startAt.en || !endAt.en) {
 			upcoming.push(id);
 		} else if (
-			now.isBefore(it.startAt.en) ||
-			now.isBetween(it.startAt.en, it.endAt.en)
+			now.isBefore(startAt.en) ||
+			now.isBetween(startAt.en, endAt.en)
 		) {
 			current = id;
-			lastEndAt = dayjs(it.endAt.en);
+			lastEndAt = dayjs(endAt.en);
 		}
 	}
 
