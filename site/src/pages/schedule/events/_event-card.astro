@@ -58,7 +58,7 @@ const eventBand = event.characters
 		/>
 
 		<div class="flex flex-wrap justify-center gap-1">
-			<div class="badge font-medium">
+			<div class="badge dark:badge-primary dark:badge-soft font-medium">
 				<div
 					class="tooltip before:text-white"
 					data-tip={event.attribute.name.toUpperCase()}
@@ -77,6 +77,7 @@ const eventBand = event.characters
 			<div
 				class:list={[
 					"badge font-medium",
+					eventBand.type === "multiple" && "dark:badge-primary dark:badge-soft",
 					eventBand.type === "one" &&
 					colord(eventBand.data.color!).brightness() < 0.67
 						? "text-white"
@@ -116,7 +117,11 @@ const eventBand = event.characters
 							<img
 								src={`/assets/band/${eventBand.data.id}.svg`}
 								alt={`${unwrap(eventBand.data.name)} icon`}
-								class="size-5"
+								class:list={[
+									"size-5",
+									colord(eventBand.data.color!).brightness() > 0.67 &&
+										"dark:drop-shadow-lg",
+								]}
 							/>
 
 							{unwrap(eventBand.data.name)}
