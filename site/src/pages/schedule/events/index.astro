@@ -17,13 +17,15 @@ const event = (() => {
 	for (const [id, { startAt, endAt }] of [...events.entries()]) {
 		if (!startAt.en || !endAt.en) {
 			upcoming.push(id);
+			continue;
 		} else if (
 			now.isBefore(startAt.en) ||
 			now.isBetween(startAt.en, endAt.en)
 		) {
 			current = id;
-			lastEndAt = dayjs(endAt.en);
 		}
+
+		lastEndAt = dayjs(endAt.en);
 	}
 
 	return {
