@@ -20,7 +20,6 @@ const { background } = Astro.props;
 		{...!Astro.locals.clientTimezone && {
 			"hx-get": "",
 			"hx-trigger": "load",
-			"hx-swap": "none",
 		}}
 	>
 		<div class="relative container mx-auto flex h-screen flex-col">

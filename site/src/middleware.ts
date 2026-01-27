@@ -10,7 +10,7 @@ export const onRequest = defineMiddleware(
 		locals.clientTimezone = request.headers.get("x-timezone") ?? cookieTimezone;
 		dayjs.tz.setDefault(locals.clientTimezone);
 		if (locals.clientTimezone && cookieTimezone !== locals.clientTimezone) {
-			cookies.set("timezone", locals.clientTimezone);
+			cookies.set("timezone", locals.clientTimezone, { path: "/" });
 		}
 
 		return next();

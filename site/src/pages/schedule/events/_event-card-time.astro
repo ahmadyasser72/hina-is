@@ -8,8 +8,8 @@ interface Props {
 }
 
 const { startAt, endAt, label } = Astro.props;
-const from = dayjs(startAt);
-const to = dayjs(endAt);
+const from = dayjs(startAt).tz();
+const to = dayjs(endAt).tz();
 ---
 
 <div class="flex items-center">
