@@ -14,6 +14,7 @@
 		"@hina-is/bestdori": "workspace:*",
 		"@tailwindcss/vite": "4.1.18",
 		"astro": "5.16.15",
+		"colord": "2.9.3",
 		"daisyui": "5.5.14",
 		"dayjs": "1.11.19",
 		"htmx.org": "2.0.8",
