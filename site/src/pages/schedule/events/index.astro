@@ -1,0 +1,63 @@
+---
+import { events } from "@hina-is/bestdori/data";
+
+import BaseLayout from "~/layouts/base-layout.astro";
+import { dayjs } from "~/lib/date";
+import EventCard from "./_event-card.astro";
+
+const event = (() => {
+	let current = -1;
+	let upcoming = [] as number[];
+
+	const now = dayjs();
+	let lastEndAt: dayjs.Dayjs;
+	for (const [id, it] of [...events.entries()]) {
+		if (!it.startAt.en || !it.endAt.en) {
+			upcoming.push(id);
+		} else if (
+			now.isBefore(it.startAt.en) ||
+			now.isBetween(it.startAt.en, it.endAt.en)
+		) {
+			current = id;
+			lastEndAt = dayjs(it.endAt.en);
+		}
+	}
+
+	return {
+		current: current === -1 ? null : { id: current, ...events.get(current)! },
+		upcoming: upcoming.map((id) => {
+			const { startAt, endAt, ...event } = events.get(id)!;
+
+			const eventDuration = dayjs(endAt.jp).diff(startAt.jp);
+			const startAtEn = lastEndAt.startOf("hours").add(43, "hours");
+			const endAtEn = startAtEn.add(eventDuration);
+			lastEndAt = endAtEn;
+
+			return {
+				id,
+				startAt: { ...startAt, en: startAtEn.toDate() },
+				endAt: { ...endAt, en: endAtEn.toDate() },
+				...event,
+			};
+		}),
+	};
+})();
+---
+
+<BaseLayout>
+	<div class="flex flex-col gap-8">
+		<div class="flex flex-col items-center gap-4">
+			<h2 class="text-xl font-medium">Active event</h2>
+
+			{event.current && <EventCard event={event.current} active />}
+		</div>
+
+		<div class="flex flex-col items-center gap-4">
+			<h2 class="text-xl font-medium">Upcoming events</h2>
+
+			<div class="flex flex-wrap justify-center gap-2">
+				{event.upcoming.map((event) => <EventCard {event} />)}
+			</div>
+		</div>
+	</div>
+</BaseLayout>

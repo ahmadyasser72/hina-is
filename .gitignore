@@ -14,11 +14,10 @@ pnpm-debug.log*
 
 
 # environment variables
-.env
-.env.production
+/.env
+/.env.production
 
-# macOS-specific files
+# misc
 .DS_Store
-
-# jetbrains setting folder
 .idea/
+.bestdori-cache

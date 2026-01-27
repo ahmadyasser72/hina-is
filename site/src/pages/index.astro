@@ -1,0 +1,21 @@
+---
+import BaseLayout from "~/layouts/base-layout.astro";
+---
+
+<BaseLayout>
+	<div class="absolute inset-0 flex items-center">
+		<div class="flex flex-1 flex-col gap-2 text-center">
+			<div class="font-semibold">hina-is</div>
+
+			<div
+				hx-boost="true"
+				hx-target="main"
+				hx-select="main"
+				hx-swap="outerHTML transition:true"
+				class="flex flex-col gap-1"
+			>
+				<a href="/schedule/events" class="link">Event schedules</a>
+			</div>
+		</div>
+	</div>
+</BaseLayout>

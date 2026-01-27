@@ -1,0 +1,42 @@
+---
+import { dayjs } from "~/lib/date";
+
+interface Props {
+	startAt: Date;
+	endAt: Date;
+	label: string;
+}
+
+const { startAt, endAt, label } = Astro.props;
+const from = dayjs(startAt);
+const to = dayjs(endAt);
+---
+
+<div class="flex items-center">
+	<div
+		class="tooltip tooltip-right"
+		data-tip={label.endsWith("?")
+			? "Predicted date, might be inacurate"
+			: undefined}
+	>
+		<span class="font-medium">{label.toUpperCase()}</span>
+	</div>
+
+	<span class="badge ml-2 inline-flex">
+		<div
+			class="tooltip underline decoration-dotted"
+			data-tip={`${from.format("YYYY-MM-DD HH:mm")} / ${from.fromNow()}`}
+		>
+			{from.format("YYYY-MM-DD")}
+		</div>
+
+		&mdash;
+
+		<div
+			class="tooltip underline decoration-dotted"
+			data-tip={`${to.format("YYYY-MM-DD HH:mm")} / ${to.fromNow()}`}
+		>
+			{to.format("YYYY-MM-DD")}
+		</div>
+	</span>
+</div>

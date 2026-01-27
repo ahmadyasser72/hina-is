@@ -1,0 +1,105 @@
+---
+import type { events } from "@hina-is/bestdori/data";
+import { unwrap } from "@hina-is/bestdori/utilities";
+
+import { IMAGE_FORMAT } from "~/lib/constants";
+import EventCardTime from "./_event-card-time.astro";
+
+type MapValue<T> = T extends Map<any, infer V> ? V : never;
+
+interface Props {
+	event: MapValue<typeof events> & { id: number };
+	active?: boolean;
+}
+
+const { event, active } = Astro.props;
+
+const eventBand = event.characters
+	.slice(1)
+	.every((it) => it.band.id === event.characters[0].band.id)
+	? event.characters[0].band
+	: "Mixed";
+---
+
+<div class="card bg-base-100 w-96 shadow-sm">
+	<figure>
+		<img
+			src={`/assets/event/${event.id}_banner.${IMAGE_FORMAT}`}
+			alt={`${unwrap(event.name)} banner`}
+			loading="lazy"
+			class="aspect-3/1 h-32"
+		/>
+	</figure>
+	<div class="card-body items-center text-center">
+		<h2 class="card-title flex-1">
+			{unwrap(event.name)}
+		</h2>
+
+		<EventCardTime
+			startAt={event.startAt.jp}
+			endAt={event.endAt.jp}
+			label="jp"
+		/>
+
+		<EventCardTime
+			startAt={event.startAt.en!}
+			endAt={event.endAt.en!}
+			label={active ? "en" : "en?"}
+		/>
+
+		<div class="flex flex-wrap justify-center gap-1">
+			<div class="badge font-medium">
+				<div class="tooltip" data-tip={event.attribute.name.toUpperCase()}>
+					<img
+						src={`/assets/attribute/${event.attribute.name}.svg`}
+						alt=`${event.attribute.name.toUpperCase()} icon`
+						class="size-5"
+					/>
+				</div>
+
+				{event.type}
+			</div>
+
+			<div class="badge font-medium">
+				{
+					eventBand === "Mixed" ? (
+						eventBand
+					) : (
+						<>
+							<img
+								src={`/assets/band/${eventBand.id}.svg`}
+								alt={`${unwrap(eventBand.name)} icon`}
+								class="size-5"
+							/>
+
+							{unwrap(eventBand.name)}
+						</>
+					)
+				}
+			</div>
+		</div>
+
+		<div class="flex flex-wrap justify-center gap-1">
+			{
+				event.characters
+					.map(({ id, nickname, name, band }) => ({
+						id,
+						name: unwrap(nickname) ?? unwrap(name),
+						band: unwrap(band.name),
+					}))
+					.map(({ id, name, band }, idx) => (
+						<div
+							class:list={["tooltip", idx % 2 && "tooltip-bottom"]}
+							data-tip={eventBand === "Mixed" ? `${name} / ${band}` : name}
+						>
+							<img
+								src={`/assets/character/${id}.${IMAGE_FORMAT}`}
+								alt={`${name} icon`}
+								class="size-8"
+							/>
+						</div>
+					))
+			}
+		</div>
+	</div>
+</div>

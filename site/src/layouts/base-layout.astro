@@ -1,0 +1,38 @@
+---
+import "~/styles/global.css";
+---
+
+<html lang="en">
+	<head>
+		<meta charset="utf-8" />
+		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+		<meta name="viewport" content="width=device-width" />
+		<meta name="generator" content={Astro.generator} />
+		<title>Astro</title>
+	</head>
+	<body>
+		<div class="container mx-auto flex h-screen flex-col lg:py-4">
+			<main
+				hx-indicator="#app-loader"
+				class="relative flex-1 overflow-auto py-8 shadow-sm"
+			>
+				<slot />
+			</main>
+		</div>
+
+		<div
+			id="app-loader"
+			class="htmx-indicator bg-base-100/50 fixed inset-0 z-20"
+		>
+			<iconify-icon
+				icon="svg-spinners:bars-scale-fade"
+				width="none"
+				class="center absolute size-24"></iconify-icon>
+		</div>
+	</body>
+</html>
+
+<script>
+	import "htmx.org";
+	import "iconify-icon";
+</script>

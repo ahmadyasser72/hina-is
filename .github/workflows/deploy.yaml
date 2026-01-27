@@ -1,0 +1,68 @@
+name: deploy-cloudflare-worker
+
+on:
+  schedule:
+    - cron: "0 * * * *"
+  workflow_dispatch:
+
+concurrency:
+  group: deploy-cloudflare-worker-${{ github.ref }}
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v6
+      - uses: ./.github/actions/setup-bun
+
+      - name: Cache bestdori responses
+        uses: actions/cache@v5
+        with:
+          path: .bestdori-cache/responses
+          key: bestdori-response-${{ github.run_id }}
+          restore-keys: bestdori-response-
+
+      - name: Cache compressed images
+        uses: actions/cache@v5
+        with:
+          path: .bestdori-cache/compressed
+          key: compressed-${{ hashFiles('site/src/lib/image-compressor.ts') }}-${{ github.run_id }}
+          restore-keys: compressed-${{ hashFiles('site/src/lib/image-compressor.ts') }}-
+
+      - name: Build site
+        run: bun run build-site
+
+      - name: Upload site build artifact
+        uses: actions/upload-artifact@v6
+        with:
+          name: site
+          include-hidden-files: true
+          path: site/dist/
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+
+    environment:
+      name: cloudflare-worker/${{ github.ref_name }}
+      url: ${{ steps.deploy-cloudflare-worker.outputs.deployment-url }}
+
+    steps:
+      - uses: actions/checkout@v6
+      - uses: ./.github/actions/setup-bun
+
+      - name: Download build artifact
+        uses: actions/download-artifact@v7
+        with:
+          name: site
+          path: site/dist/
+
+      - name: Deploy to Cloudflare Workers
+        id: deploy-cloudflare-worker
+        uses: cloudflare/wrangler-action@v3
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          command: ${{ github.ref == 'refs/heads/main' && 'deploy' || 'versions upload' }}
+          workingDirectory: site/

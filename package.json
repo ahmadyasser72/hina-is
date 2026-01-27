@@ -1,14 +1,20 @@
 {
-  "name": "hina-is",
-  "type": "module",
-  "version": "0.0.1",
-  "scripts": {
-    "dev": "astro dev",
-    "build": "astro build",
-    "preview": "astro preview",
-    "astro": "astro"
-  },
-  "dependencies": {
-    "astro": "^5.16.15"
-  }
+	"name": "@hina-is/root",
+	"private": true,
+	"type": "module",
+	"workspaces": [
+		"packages/*",
+		"site"
+	],
+	"scripts": {
+		"update-data": "bun --filter=@hina-is/bestdori run update",
+		"build-site": "bun update-data && bun --filter=@hina-is/site run build",
+		"format": "prettier . --write"
+	},
+	"devDependencies": {
+		"@ianvs/prettier-plugin-sort-imports": "4.7.0",
+		"prettier": "3.7.4",
+		"prettier-plugin-astro": "0.14.1",
+		"prettier-plugin-tailwindcss": "0.7.2"
+	}
 }
