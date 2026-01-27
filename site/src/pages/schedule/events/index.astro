@@ -57,7 +57,13 @@ const upcomingEvents = paginate({
 		<div class="flex flex-col items-center gap-4">
 			<h2 class="text-xl font-medium">Active event</h2>
 
-			{event.current && <EventCard event={event.current} active />}
+			{
+				event.current ? (
+					<EventCard event={event.current} active />
+				) : (
+					<p class="text-base-content/50">No active event at the moment.</p>
+				)
+			}
 		</div>
 
 		<div class="flex flex-col items-center gap-4">
