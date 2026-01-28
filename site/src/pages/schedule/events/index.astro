@@ -55,9 +55,8 @@ const upcomingEvents = paginate({
 	extraProps: { "hx-select": "#upcoming-events > *", "hx-swap": "afterend" },
 });
 
-const secondsUntilNextMinute = dayjs()
-	.endOf("minutes")
-	.diff(dayjs(), "seconds");
+const secondsUntilNextMinute =
+	dayjs().endOf("minutes").diff(dayjs(), "seconds") + 1;
 ---
 
 <BaseLayout
