@@ -13,14 +13,20 @@ const to = dayjs(endAt).tz();
 ---
 
 <div class="flex items-center">
-	<div
-		class="tooltip tooltip-right"
-		data-tip={label.endsWith("?")
-			? "Predicted date, might be inaccurate"
-			: undefined}
-	>
-		<span class="font-medium">{label.toUpperCase()}</span>
-	</div>
+	{
+		label.endsWith("?") ? (
+			<div
+				class="tooltip tooltip-right"
+				data-tip="Predicted date, might be inaccurate"
+			>
+				<span class="font-medium uppercase underline decoration-dotted">
+					{label}
+				</span>
+			</div>
+		) : (
+			<span class="font-medium uppercase">{label}</span>
+		)
+	}
 
 	<span class="badge dark:badge-primary dark:badge-soft ml-2 inline-flex">
 		<div
