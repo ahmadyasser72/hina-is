@@ -67,6 +67,7 @@ const eventBand = event.characters
 					<img
 						src={`/assets/attribute/${event.attribute.name}.svg`}
 						alt=`${event.attribute.name.toUpperCase()} icon`
+						loading="lazy"
 						class="size-5"
 					/>
 				</div>
@@ -105,6 +106,7 @@ const eventBand = event.characters
 									<img
 										src={`/assets/band/${id}.svg`}
 										alt={`${unwrap(name)} icon`}
+										loading="lazy"
 										class="size-5"
 									/>
 								</div>
@@ -117,6 +119,7 @@ const eventBand = event.characters
 							<img
 								src={`/assets/band/${eventBand.data.id}.svg`}
 								alt={`${unwrap(eventBand.data.name)} icon`}
+								loading="lazy"
 								class:list={[
 									"size-5",
 									colord(eventBand.data.color!).brightness() > 0.67 &&
@@ -155,6 +158,7 @@ const eventBand = event.characters
 							<img
 								src={`/assets/character/${id}.${IMAGE_FORMAT}`}
 								alt={`${name} icon`}
+								loading="lazy"
 								class="size-10"
 							/>
 						</div>
