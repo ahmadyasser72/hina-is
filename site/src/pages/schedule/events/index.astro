@@ -54,6 +54,10 @@ const upcomingEvents = paginate({
 	size: 6,
 	extraProps: { "hx-select": "#upcoming-events > *", "hx-swap": "afterend" },
 });
+
+const secondsUntilNextMinute = dayjs()
+	.endOf("minutes")
+	.diff(dayjs(), "seconds");
 ---
 
 <BaseLayout
@@ -65,7 +69,15 @@ const upcomingEvents = paginate({
 		: undefined}
 >
 	<div class="flex flex-col gap-8">
-		<div class="flex flex-col items-center gap-4">
+		<div
+			id="active-event"
+			hx-get
+			hx-indicator="unset"
+			hx-trigger={`load delay:${secondsUntilNextMinute}s`}
+			hx-select="#active-event"
+			hx-swap="outerHTML"
+			class="flex flex-col items-center gap-4"
+		>
 			<h2 class:list={["text-xl font-medium", event.current && "text-white"]}>
 				Active event
 			</h2>
