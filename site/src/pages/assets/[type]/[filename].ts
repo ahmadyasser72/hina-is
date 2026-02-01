@@ -1,5 +1,11 @@
 import { bestdori } from "@hina-is/bestdori";
-import { attributes, bands, characters, events } from "@hina-is/bestdori/data";
+import {
+	attributes,
+	bands,
+	characters,
+	events,
+	stamps,
+} from "@hina-is/bestdori/data";
 
 import type {
 	APIRoute,
@@ -20,6 +26,9 @@ export const GET: APIRoute<Props, Params> = async ({ props, params }) => {
 	const filename = [params.type, params.filename].join("__");
 	const buffer = Buffer.from(await response.arrayBuffer());
 	switch (props.kind) {
+		case "audio":
+			return new Response(buffer);
+
 		case "image":
 			return compressImage(filename, buffer);
 
@@ -54,11 +63,27 @@ export const getStaticPaths = (() => {
 		})),
 	) satisfies GetStaticPathsResult;
 
+	const stampAssets = stamps.flatMap(({ id, image, voice }) => [
+		{
+			params: { type: "stamp", filename: `${id}.${IMAGE_FORMAT}` },
+			props: { kind: "image" as const, pathname: image },
+		},
+		...(voice === null
+			? []
+			: [
+					{
+						params: { type: "stamp", filename: `${id}.mp3` },
+						props: { kind: "audio" as const, pathname: voice },
+					},
+				]),
+	]) satisfies GetStaticPathsResult;
+
 	return [
 		...attributeAssets,
 		...bandAssets,
 		...characterAssets,
 		...eventAssets,
+		...stampAssets,
 	] as const;
 }) satisfies GetStaticPaths;
 

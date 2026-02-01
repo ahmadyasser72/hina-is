@@ -10,6 +10,7 @@ import { Cards } from "./schema/cards";
 import { Characters } from "./schema/characters";
 import { CardAttribute } from "./schema/constants";
 import { Events } from "./schema/events";
+import { StampImages, StampVoices } from "./schema/extras/stamps";
 import { Gacha, Gachas } from "./schema/gachas";
 import { Songs } from "./schema/songs";
 
@@ -32,6 +33,8 @@ const SCHEMAS = {
 	events: Events,
 	gachas: Gachas,
 	songs: Songs,
+	stampImages: StampImages,
+	stampVoices: StampVoices,
 } as const;
 
 const get = async <K extends keyof typeof SCHEMAS>(
@@ -47,13 +50,28 @@ const get = async <K extends keyof typeof SCHEMAS>(
 };
 
 const all = await (async () => {
-	const [bands, cards, characters, events, gachas, songs] = await Promise.all([
+	const [
+		bands,
+		cards,
+		characters,
+		events,
+		gachas,
+		songs,
+		jpStampImages,
+		enStampImages,
+		jpStampVoices,
+		enStampVoices,
+	] = await Promise.all([
 		get("bands", "/api/bands/main.1.json"),
 		get("cards", "/api/cards/all.5.json"),
 		get("characters", "/api/characters/main.3.json"),
 		get("events", "/api/events/all.5.json"),
 		get("gachas", "/api/gacha/all.5.json"),
 		get("songs", "/api/songs/all.5.json"),
+		get("stampImages", "/api/explorer/jp/assets/stamp/01.json"),
+		get("stampImages", "/api/explorer/en/assets/stamp/01.json"),
+		get("stampVoices", "/api/explorer/jp/assets/sound/voice_stamp.json"),
+		get("stampVoices", "/api/explorer/en/assets/sound/voice_stamp.json"),
 	]);
 
 	const resourceNameList = await time(
@@ -353,6 +371,34 @@ const all = await (async () => {
 					],
 				),
 			);
+		},
+
+		get stamps() {
+			const stampsMap = [
+				{ region: "en" as const, stamps: enStampImages, voices: enStampVoices },
+				{ region: "jp" as const, stamps: jpStampImages, voices: jpStampVoices },
+			]
+				.flatMap(({ region, stamps, voices }) =>
+					stamps.map((id) => ({ id, region, voiced: voices.includes(id) })),
+				)
+				.reduce((map, stamp) => {
+					const existing = map.get(stamp.id);
+					if (!existing || (!existing.voiced && stamp.voiced))
+						map.set(stamp.id, stamp);
+
+					return map;
+				}, new Map<string, { id: string; region: "jp" | "en"; voiced: boolean }>());
+
+			return [...stampsMap.values()]
+				.sort((a, b) => Number(a.id.split("_")[1]) - Number(b.id.split("_")[1]))
+				.sort((a, b) => Number(b.voiced) - Number(a.voiced))
+				.map(({ id, region, voiced }) => ({
+					id,
+					image: `/assets/${region}/stamp/01_rip/${id}.png`,
+					voice: voiced
+						? `/assets/${region}/sound/voice_stamp_rip/${id}.mp3`
+						: null,
+				}));
 		},
 	};
 })();

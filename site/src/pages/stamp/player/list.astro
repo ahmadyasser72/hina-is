@@ -1,0 +1,49 @@
+---
+import { stamps } from "@hina-is/bestdori/data";
+
+import { IMAGE_FORMAT } from "~/lib/constants";
+
+export const partial = true;
+---
+
+<dialog class="modal modal-bottom bg-transparent">
+	<div class="modal-box">
+		<div class="flex h-36 gap-x-1 overflow-y-auto">
+			{
+				stamps.map(({ id, voice }) => (
+					<button
+						data-stamp={id}
+						class="btn btn-ghost relative aspect-40/33 h-32"
+					>
+						<img
+							src={`/assets/stamp/${id}.${IMAGE_FORMAT}`}
+							alt={`Stamp #${id}`}
+							loading="lazy"
+							decoding="async"
+							class="w-full"
+						/>
+
+						{voice !== null && (
+							<div class="voice-icon btn bg-base-100/50 btn-circle absolute right-4 bottom-4 size-6 border-0 backdrop-blur-sm">
+								<iconify-icon
+									icon="lucide:volume-2"
+									width="none"
+									class="htmx-indicator-replace size-4"
+								/>
+								<iconify-icon
+									icon="svg-spinners:90-ring-with-bg"
+									width="none"
+									class="htmx-indicator size-4"
+								/>
+							</div>
+						)}
+					</button>
+				))
+			}
+		</div>
+	</div>
+
+	<form method="dialog" class="modal-backdrop">
+		<button>close</button>
+	</form>
+</dialog>

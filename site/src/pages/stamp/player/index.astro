@@ -1,0 +1,59 @@
+---
+import BaseLayout from "~/layouts/base-layout.astro";
+---
+
+<BaseLayout>
+	<div class="flex h-full flex-col">
+		<div id="stamp-container" class="relative w-full flex-1 shadow-sm"></div>
+
+		<div class="mt-20 flex w-full flex-col items-center gap-4 px-2">
+			<h2 class="text-xl font-medium">Stamp player</h2>
+			<button
+				hx-get="/stamp/player/list"
+				hx-indicator="this"
+				class="btn sm:btn-wide btn-accent w-full"
+			>
+				View stamps
+				<iconify-icon
+					icon="line-md:emoji-smile"
+					width="none"
+					class="htmx-indicator-replace size-6"></iconify-icon>
+				<iconify-icon
+					icon="svg-spinners:90-ring-with-bg"
+					width="none"
+					class="htmx-indicator size-6"></iconify-icon>
+			</button>
+		</div>
+	</div>
+</BaseLayout>
+
+<script>
+	import htmx from "htmx.org";
+
+	const stampContainer =
+		document.querySelector<HTMLElement>("#stamp-container")!;
+
+	htmx.onLoad((node) => {
+		if (!(node instanceof HTMLElement)) return;
+
+		const selector = "button[data-stamp]";
+		const stampButtons = node.matches(selector)
+			? [node as HTMLButtonElement]
+			: node.querySelectorAll<HTMLButtonElement>(selector);
+
+		stampButtons.forEach((button) => {
+			const stampId = button.dataset.stamp!;
+			const voiceIcon = button.querySelector(".voice-icon");
+			button.addEventListener("click", async () => {
+				if (voiceIcon) voiceIcon.classList.toggle("htmx-request", true);
+
+				const { StampComponent } = await import("./_stamp-web-component");
+				const stamp = new StampComponent(stampId, !!voiceIcon);
+				await stamp.ensureLoaded();
+				stampContainer.appendChild(stamp);
+
+				if (voiceIcon) voiceIcon.classList.toggle("htmx-request", false);
+			});
+		});
+	});
+</script>

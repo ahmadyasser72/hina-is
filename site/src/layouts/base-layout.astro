@@ -61,15 +61,44 @@ const { background } = Astro.props;
 </html>
 
 <script>
-	import "htmx.org";
+	import htmx from "htmx.org";
+
 	import "iconify-icon";
 
-	document.body.addEventListener("htmx:configRequest", (e) => {
+	htmx.onLoad((node) => {
+		if (node instanceof HTMLDialogElement) {
+			node.show();
+			node.addEventListener("close", () => {
+				node.addEventListener("transitionend", () => node.remove());
+			});
+		}
+	});
+
+	htmx.on("htmx:configRequest", (e) => {
 		const event = e as Event & {
 			detail: { headers: Record<string, string> };
 		};
 
 		event.detail.headers["x-timezone"] =
 			Intl.DateTimeFormat().resolvedOptions().timeZone;
+	});
+
+	htmx.on("htmx:beforeSwap", (e) => {
+		const event = e as Event & {
+			detail: {
+				elt: HTMLElement;
+				serverResponse: string;
+				target: HTMLElement;
+				swapOverride: string;
+			};
+		};
+
+		if (
+			event.detail.serverResponse.startsWith("<dialog") &&
+			event.detail.elt instanceof HTMLButtonElement
+		) {
+			event.detail.target = document.body;
+			event.detail.swapOverride = "beforeend";
+		}
 	});
 </script>
