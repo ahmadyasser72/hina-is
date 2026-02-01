@@ -2,16 +2,25 @@
 import { stamps } from "@hina-is/bestdori/data";
 
 import { IMAGE_FORMAT } from "~/lib/constants";
+import { paginate } from "~/lib/paginate";
 
 export const partial = true;
+
+const page = paginate({
+	items: stamps,
+	context: Astro,
+	size: 20,
+	extraProps: { "hx-select": "[data-stamp]", "hx-swap": "beforeend" },
+});
 ---
 
 <dialog class="modal modal-bottom bg-transparent">
 	<div class="modal-box">
-		<div class="flex h-36 gap-x-1 overflow-y-auto">
+		<div hx-target="this" class="flex h-36 gap-x-1 overflow-y-auto">
 			{
-				stamps.map(({ id, voice }) => (
+				page.items.map(({ id, voice }, idx) => (
 					<button
+						{...(page.isLastElement(idx) && page.props)}
 						data-stamp={id}
 						class="btn btn-ghost relative aspect-40/33 h-32"
 					>

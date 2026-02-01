@@ -86,7 +86,6 @@ const { background } = Astro.props;
 	htmx.on("htmx:beforeSwap", (e) => {
 		const event = e as Event & {
 			detail: {
-				elt: HTMLElement;
 				serverResponse: string;
 				target: HTMLElement;
 				swapOverride: string;
@@ -95,7 +94,7 @@ const { background } = Astro.props;
 
 		if (
 			event.detail.serverResponse.startsWith("<dialog") &&
-			event.detail.elt instanceof HTMLButtonElement
+			event.detail.target instanceof HTMLButtonElement
 		) {
 			event.detail.target = document.body;
 			event.detail.swapOverride = "beforeend";
