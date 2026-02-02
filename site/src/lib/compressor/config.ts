@@ -9,9 +9,3 @@ export const CACHE_DIR = await (async () => {
 	if (!cacheDirExists) await mkdir(cacheDir);
 	return cacheDir;
 })();
-
-export const MAX_IMAGE_WIDTH = 600;
-export const IMAGE_FORMAT = "avif";
-
-export const AUDIO_BITRATE = "64k";
-export const AUDIO_FORMAT = "opus";

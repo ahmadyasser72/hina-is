@@ -1,4 +1,4 @@
-import { AUDIO_FORMAT, IMAGE_FORMAT } from "~/lib/compressor/config";
+import { AUDIO_FORMAT, IMAGE_FORMAT } from "~/lib/compressor/constants";
 
 const DISPLAY_DELAY_MS = 1667;
 

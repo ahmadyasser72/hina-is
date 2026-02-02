@@ -1,6 +1,7 @@
 import path from "node:path";
 
-import { AUDIO_BITRATE, AUDIO_FORMAT, CACHE_DIR } from "./config";
+import { CACHE_DIR } from "./config";
+import { AUDIO_BITRATE, AUDIO_FORMAT } from "./constants";
 
 export const compressAudio = async (
 	filename: string,

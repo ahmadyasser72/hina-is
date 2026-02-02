@@ -1,6 +1,7 @@
 import path from "node:path";
 
-import { CACHE_DIR, IMAGE_FORMAT, MAX_IMAGE_WIDTH } from "./config";
+import { CACHE_DIR } from "./config";
+import { IMAGE_FORMAT, MAX_IMAGE_WIDTH } from "./constants";
 
 export const compressImage = async (
 	filename: string,

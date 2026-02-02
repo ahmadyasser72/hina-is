@@ -16,7 +16,7 @@ import type {
 } from "astro";
 
 import { compressAudio } from "~/lib/compressor/audio";
-import { AUDIO_FORMAT, IMAGE_FORMAT } from "~/lib/compressor/config";
+import { AUDIO_FORMAT, IMAGE_FORMAT } from "~/lib/compressor/constants";
 import { compressImage } from "~/lib/compressor/image";
 
 export const prerender = true;
