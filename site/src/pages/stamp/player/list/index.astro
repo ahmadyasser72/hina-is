@@ -7,7 +7,7 @@ import { paginate } from "~/lib/paginate";
 export const partial = true;
 
 const page = paginate({
-	items: stamps,
+	items: [...stamps.entries()],
 	context: Astro,
 	size: 20,
 	extraProps: { "hx-select": "[data-stamp]", "hx-swap": "beforeend" },
@@ -18,7 +18,7 @@ const page = paginate({
 	<div class="modal-box">
 		<div hx-target="this" class="flex h-36 gap-x-1 overflow-y-auto">
 			{
-				page.items.map(({ id, voice }, idx) => (
+				page.items.map(([id, { voice }], idx) => (
 					<button
 						{...(page.isLastElement(idx) && page.props)}
 						data-stamp={id}

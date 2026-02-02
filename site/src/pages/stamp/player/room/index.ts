@@ -32,12 +32,12 @@ export const GET: APIRoute = async ({ request, locals }) => {
 export const POST: APIRoute = async ({ request, locals }) => {
 	const payload = await request.formData();
 
-	const id = payload.get("id");
-	const stamp = stamps.find((it) => it.id === id);
+	const id = payload.get("id")?.toString() ?? "";
+	const stamp = stamps.get(id);
 	if (!stamp) return new Response(null, { status: 404 });
 
 	const data = {
-		id: stamp.id,
+		id,
 		voiced: !!stamp.voice,
 		sender: locals.clientId,
 	} satisfies StampPayload;

@@ -389,16 +389,22 @@ const all = await (async () => {
 					return map;
 				}, new Map<string, { id: string; region: "jp" | "en"; voiced: boolean }>());
 
-			return [...stampsMap.values()]
-				.sort((a, b) => Number(a.id.split("_")[1]) - Number(b.id.split("_")[1]))
-				.sort((a, b) => Number(b.voiced) - Number(a.voiced))
-				.map(({ id, region, voiced }) => ({
-					id,
-					image: `/assets/${region}/stamp/01_rip/${id}.png`,
-					voice: voiced
-						? `/assets/${region}/sound/voice_stamp_rip/${id}.mp3`
-						: null,
-				}));
+			return new Map(
+				[...stampsMap.values()]
+					.sort(
+						(a, b) => Number(a.id.split("_")[1]) - Number(b.id.split("_")[1]),
+					)
+					.sort((a, b) => Number(b.voiced) - Number(a.voiced))
+					.map(({ id, region, voiced }) => [
+						id,
+						{
+							image: `/assets/${region}/stamp/01_rip/${id}.png`,
+							voice: voiced
+								? `/assets/${region}/sound/voice_stamp_rip/${id}.mp3`
+								: null,
+						},
+					]),
+			);
 		},
 	};
 })();

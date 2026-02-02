@@ -63,20 +63,24 @@ export const getStaticPaths = (() => {
 		})),
 	) satisfies GetStaticPathsResult;
 
-	const stampAssets = stamps.flatMap(({ id, image, voice }) => [
-		{
-			params: { type: "stamp", filename: `${id}.${IMAGE_FORMAT}` },
-			props: { kind: "image" as const, pathname: image },
+	const stampAssets = [...stamps.entries()].flatMap(
+		([id, { image, voice }]) => {
+			const imageAsset = {
+				params: { type: "stamp", filename: `${id}.${IMAGE_FORMAT}` },
+				props: { kind: "image" as const, pathname: image },
+			};
+
+			return voice === null
+				? imageAsset
+				: [
+						imageAsset,
+						{
+							params: { type: "stamp", filename: `${id}.mp3` },
+							props: { kind: "audio" as const, pathname: voice },
+						},
+					];
 		},
-		...(voice === null
-			? []
-			: [
-					{
-						params: { type: "stamp", filename: `${id}.mp3` },
-						props: { kind: "audio" as const, pathname: voice },
-					},
-				]),
-	]) satisfies GetStaticPathsResult;
+	) satisfies GetStaticPathsResult;
 
 	return [
 		...attributeAssets,
