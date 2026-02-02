@@ -30,6 +30,9 @@ import BaseLayout from "~/layouts/base-layout.astro";
 <script>
 	import htmx from "htmx.org";
 
+	import { StampComponent } from "./_stamp-web-component";
+	import type { StampPayload } from "./room";
+
 	const stampContainer =
 		document.querySelector<HTMLElement>("#stamp-container")!;
 
@@ -47,7 +50,6 @@ import BaseLayout from "~/layouts/base-layout.astro";
 			button.addEventListener("click", async () => {
 				if (voiceIcon) voiceIcon.classList.toggle("htmx-request", true);
 
-				const { StampComponent } = await import("./_stamp-web-component");
 				const stamp = new StampComponent(stampId, !!voiceIcon);
 				await stamp.ensureLoaded();
 				stampContainer.appendChild(stamp);
@@ -55,5 +57,14 @@ import BaseLayout from "~/layouts/base-layout.astro";
 				if (voiceIcon) voiceIcon.classList.toggle("htmx-request", false);
 			});
 		});
+	});
+
+	const room = new EventSource("/stamp/player/room");
+	room.addEventListener("send-stamp", async ({ data }) => {
+		const { id, voiced } = JSON.parse(data) as StampPayload;
+
+		const stamp = new StampComponent(id, !!voiced);
+		await stamp.ensureLoaded();
+		stampContainer.appendChild(stamp);
 	});
 </script>

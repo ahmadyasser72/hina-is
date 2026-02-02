@@ -1,12 +1,25 @@
 // @ts-check
 import cloudflare from "@astrojs/cloudflare";
 import tailwindcss from "@tailwindcss/vite";
-import { defineConfig } from "astro/config";
+import { defineConfig, envField } from "astro/config";
 
 // https://astro.build/config
 export default defineConfig({
 	adapter: cloudflare({ imageService: "passthrough" }),
 	output: "server",
+
+	env: {
+		schema: {
+			UPSTASH_REDIS_REST_URL: envField.string({
+				access: "secret",
+				context: "server",
+			}),
+			UPSTASH_REDIS_REST_TOKEN: envField.string({
+				access: "secret",
+				context: "server",
+			}),
+		},
+	},
 
 	vite: {
 		plugins: [tailwindcss()],

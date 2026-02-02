@@ -23,6 +23,8 @@ const page = paginate({
 						{...(page.isLastElement(idx) && page.props)}
 						data-stamp={id}
 						class="btn btn-ghost relative aspect-40/33 h-32"
+						hx-post="/stamp/player/room"
+						hx-vals={JSON.stringify({ id })}
 					>
 						<img
 							src={`/assets/stamp/${id}.${IMAGE_FORMAT}`}
