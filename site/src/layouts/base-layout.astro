@@ -27,6 +27,8 @@ const { background } = Astro.props;
 		{...!Astro.locals.clientTimezone && {
 			"hx-get": "",
 			"hx-trigger": "load",
+			"hx-headers":
+				"js:{ 'x-timezone': Intl.DateTimeFormat().resolvedOptions().timeZone }",
 		}}
 	>
 		<div class="relative container mx-auto flex h-screen flex-col">
@@ -72,15 +74,6 @@ const { background } = Astro.props;
 				node.addEventListener("transitionend", () => node.remove());
 			});
 		}
-	});
-
-	htmx.on("htmx:configRequest", (e) => {
-		const event = e as Event & {
-			detail: { headers: Record<string, string> };
-		};
-
-		event.detail.headers["x-timezone"] =
-			Intl.DateTimeFormat().resolvedOptions().timeZone;
 	});
 
 	htmx.on("htmx:beforeSwap", (e) => {
