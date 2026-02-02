@@ -1,4 +1,4 @@
-import { IMAGE_FORMAT } from "~/lib/constants";
+import { AUDIO_FORMAT, IMAGE_FORMAT } from "~/lib/compressor/config";
 
 const DISPLAY_DELAY_MS = 1667;
 
@@ -50,7 +50,9 @@ export class StampComponent extends HTMLElement {
 
 		this.img = document.createElement("img");
 		this.img.src = `/assets/stamp/${id}.${IMAGE_FORMAT}`;
-		this.audio = voiced ? new Audio(`/assets/stamp/${id}.mp3`) : null;
+		this.audio = voiced
+			? new Audio(`/assets/stamp/${id}.${AUDIO_FORMAT}`)
+			: null;
 	}
 
 	async ensureLoaded() {

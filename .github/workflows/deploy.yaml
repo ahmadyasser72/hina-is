@@ -14,6 +14,7 @@ jobs:
 
     steps:
       - uses: actions/checkout@v6
+      - uses: AnimMouse/setup-ffmpeg@v1
       - uses: ./.github/actions/setup-bun
 
       - name: Cache bestdori responses
@@ -27,8 +28,8 @@ jobs:
         uses: actions/cache@v5
         with:
           path: .bestdori-cache/compressed
-          key: compressed-${{ hashFiles('site/src/lib/image-compressor.ts') }}-${{ github.run_id }}
-          restore-keys: compressed-${{ hashFiles('site/src/lib/image-compressor.ts') }}-
+          key: compressed-${{ hashFiles('site/src/lib/compressor/*.ts') }}-${{ github.run_id }}
+          restore-keys: compressed-${{ hashFiles('site/src/lib/compressor/*.ts') }}-
 
       - name: Build site
         run: bun run build-site

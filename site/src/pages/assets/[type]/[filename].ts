@@ -15,8 +15,9 @@ import type {
 	InferGetStaticPropsType,
 } from "astro";
 
-import { IMAGE_FORMAT } from "~/lib/constants";
-import { compressImage } from "~/lib/image-compressor";
+import { compressAudio } from "~/lib/compressor/audio";
+import { AUDIO_FORMAT, IMAGE_FORMAT } from "~/lib/compressor/config";
+import { compressImage } from "~/lib/compressor/image";
 
 export const prerender = true;
 
@@ -27,7 +28,7 @@ export const GET: APIRoute<Props, Params> = async ({ props, params }) => {
 	const buffer = Buffer.from(await response.arrayBuffer());
 	switch (props.kind) {
 		case "audio":
-			return new Response(buffer);
+			return compressAudio(filename, buffer);
 
 		case "image":
 			return compressImage(filename, buffer);
@@ -75,7 +76,7 @@ export const getStaticPaths = (() => {
 				: [
 						imageAsset,
 						{
-							params: { type: "stamp", filename: `${id}.mp3` },
+							params: { type: "stamp", filename: `${id}.${AUDIO_FORMAT}` },
 							props: { kind: "audio" as const, pathname: voice },
 						},
 					];
