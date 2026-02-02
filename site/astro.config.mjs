@@ -27,8 +27,13 @@ export default defineConfig({
 			external: [
 				"sharp",
 				"node:child_process",
+				"node:events",
 				"node:fs/promises",
+				"node:http",
+				"node:http2",
 				"node:path",
+				"node:stream",
+				"node:timers",
 			],
 		},
 	},
