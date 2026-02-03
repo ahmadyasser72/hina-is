@@ -85,7 +85,10 @@ const page = paginate({
 				Active events
 			</h2>
 
-			<div id="active-events" class="flex flex-wrap justify-center gap-2">
+			<div
+				id="active-events"
+				class="flex flex-wrap justify-center gap-x-2 gap-y-4"
+			>
 				{
 					event.active.length > 0 ? (
 						event.active.map((event) => <EventCard {event} predicted={false} />)
@@ -129,7 +132,7 @@ const page = paginate({
 			<div
 				id="events"
 				hx-indicator="#events-loader"
-				class="flex flex-wrap justify-center gap-2"
+				class="flex flex-wrap justify-center gap-x-2 gap-y-4"
 			>
 				{
 					page.items.map((event, idx) => (

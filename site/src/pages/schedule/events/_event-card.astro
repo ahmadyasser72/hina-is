@@ -55,155 +55,172 @@ const progress = (() => {
 })();
 ---
 
-<div class="card bg-base-100 w-90 shadow-sm" {...props}>
-	<figure>
-		<img
-			src={`/assets/event/${event.id}_banner.${IMAGE_FORMAT}`}
-			alt={`${unwrap(event.name)} banner`}
-			loading="lazy"
-			class="aspect-3/1 h-32"
-		/>
-	</figure>
-	<div class="card-body items-center text-center">
-		<h2 class="card-title flex-1">
-			{unwrap(event.name)}
-		</h2>
+<div class="flex flex-col gap-1" {...props}>
+	<div class="card bg-base-100 w-90 flex-1 shadow-sm">
+		<figure>
+			<img
+				src={`/assets/event/${event.id}_banner.${IMAGE_FORMAT}`}
+				alt={`${unwrap(event.name)} banner`}
+				loading="lazy"
+				class="aspect-3/1 h-32"
+			/>
+		</figure>
+		<div class="card-body items-center text-center">
+			<h2 class="card-title flex-1">
+				{unwrap(event.name)}
+			</h2>
 
-		<EventCardTime {startAt} {endAt} region="jp" />
+			<EventCardTime {startAt} {endAt} region="jp" />
 
-		<EventCardTime {startAt} {endAt} {predicted} region="en" />
+			<EventCardTime {startAt} {endAt} {predicted} region="en" />
 
-		<div class="flex flex-wrap justify-center gap-1">
-			<div class="badge dark:badge-primary dark:badge-soft font-medium">
-				<div
-					class="tooltip before:text-white"
-					data-tip={event.attribute.name.toUpperCase()}
-					style={`--tt-bg: ${event.attribute.color}`}
-				>
-					<img
-						src={`/assets/attribute/${event.attribute.name}.svg`}
-						alt=`${event.attribute.name.toUpperCase()} icon`
-						loading="lazy"
-						class="size-5"
-					/>
+			<div class="flex flex-wrap justify-center gap-1">
+				<div class="badge dark:badge-primary dark:badge-soft font-medium">
+					<div
+						class="tooltip before:text-white"
+						data-tip={event.attribute.name.toUpperCase()}
+						style={`--tt-bg: ${event.attribute.color}`}
+					>
+						<img
+							src={`/assets/attribute/${event.attribute.name}.svg`}
+							alt=`${event.attribute.name.toUpperCase()} icon`
+							loading="lazy"
+							class="size-5"
+						/>
+					</div>
+
+					{event.type}
 				</div>
 
-				{event.type}
-			</div>
+				<div
+					class:list={[
+						"badge font-medium",
+						bands.type === "multiple" && "dark:badge-primary dark:badge-soft",
+						bands.type === "one" &&
+						colord(bands.data.color!).brightness() < 0.67
+							? "text-white"
+							: "text-black",
+					]}
+					style={bands.type === "one" && `--badge-bg: ${bands.data.color!}`}
+				>
+					{
+						bands.type === "multiple" &&
+							bands.data
+								.map(({ color, ...band }) => ({
+									...band,
+									color: colord(color!),
+								}))
+								.map(({ id, name, color, count }, idx) => (
+									<div
+										class:list={[
+											"tooltip",
+											idx % 2 && "tooltip-bottom",
+											color.brightness() < 0.67
+												? "before:text-white"
+												: "before:text-black",
+										]}
+										data-tip={`${unwrap(name)} (${count})`}
+										style={`--tt-bg: ${color.toHex()}`}
+									>
+										<img
+											src={`/assets/band/${id}.svg`}
+											alt={`${unwrap(name)} icon`}
+											loading="lazy"
+											class="size-5"
+										/>
+									</div>
+								))
+					}
 
-			<div
-				class:list={[
-					"badge font-medium",
-					bands.type === "multiple" && "dark:badge-primary dark:badge-soft",
-					bands.type === "one" && colord(bands.data.color!).brightness() < 0.67
-						? "text-white"
-						: "text-black",
-				]}
-				style={bands.type === "one" && `--badge-bg: ${bands.data.color!}`}
-			>
-				{
-					bands.type === "multiple" &&
-						bands.data
-							.map(({ color, ...band }) => ({ ...band, color: colord(color!) }))
-							.map(({ id, name, color, count }, idx) => (
-								<div
+					{
+						bands.type === "one" && (
+							<>
+								<img
+									src={`/assets/band/${bands.data.id}.svg`}
+									alt={`${unwrap(bands.data.name)} icon`}
+									loading="lazy"
 									class:list={[
-										"tooltip",
-										idx % 2 && "tooltip-bottom",
-										color.brightness() < 0.67
-											? "before:text-white"
-											: "before:text-black",
+										"size-5",
+										colord(bands.data.color!).brightness() > 0.67 &&
+											"dark:drop-shadow-lg",
 									]}
-									data-tip={`${unwrap(name)} (${count})`}
-									style={`--tt-bg: ${color.toHex()}`}
-								>
-									<img
-										src={`/assets/band/${id}.svg`}
-										alt={`${unwrap(name)} icon`}
-										loading="lazy"
-										class="size-5"
-									/>
-								</div>
-							))
-				}
+								/>
 
-				{
-					bands.type === "one" && (
-						<>
-							<img
-								src={`/assets/band/${bands.data.id}.svg`}
-								alt={`${unwrap(bands.data.name)} icon`}
-								loading="lazy"
-								class:list={[
-									"size-5",
-									colord(bands.data.color!).brightness() > 0.67 &&
-										"dark:drop-shadow-lg",
-								]}
-							/>
-
-							{unwrap(bands.data.name)}
-						</>
-					)
-				}
+								{unwrap(bands.data.name)}
+							</>
+						)
+					}
+				</div>
 			</div>
-		</div>
 
-		<div class="flex flex-wrap justify-center gap-1">
-			{
-				event.characters.length > 5 ? (
-					<>
-						{event.characters.slice(0, 4).map((character) => (
+			<div class="flex flex-wrap justify-center gap-1">
+				{
+					event.characters.length > 5 ? (
+						<>
+							{event.characters.slice(0, 4).map((character) => (
+								<EventCardCharacterIcon
+									{character}
+									displayBand={bands.type === "multiple"}
+									tooltip="bottom"
+								/>
+							))}
+
+							<details class="dropdown dropdown-top dropdown-end">
+								<summary class="btn btn-circle btn-outline size-10">
+									<iconify-icon
+										icon="lucide:chevron-up"
+										width="none"
+										class="size-4"
+									/>
+								</summary>
+								<div class="dropdown-content bg-base-100 rounded-box mb-2 flex w-60 flex-wrap justify-center gap-1 p-2 shadow-sm">
+									{event.characters.slice(4).map((character) => (
+										<EventCardCharacterIcon
+											{character}
+											displayBand={bands.type === "multiple"}
+											tooltip="top"
+										/>
+									))}
+								</div>
+							</details>
+						</>
+					) : (
+						event.characters.map((character) => (
 							<EventCardCharacterIcon
 								{character}
 								displayBand={bands.type === "multiple"}
-								tooltip="bottom"
 							/>
-						))}
+						))
+					)
+				}
+			</div>
 
-						<details class="dropdown dropdown-top dropdown-end">
-							<summary class="btn btn-circle btn-outline size-10">
-								<iconify-icon
-									icon="lucide:chevron-up"
-									width="none"
-									class="size-4"
-								/>
-							</summary>
-							<div class="dropdown-content bg-base-100 rounded-box mb-2 flex w-60 flex-wrap justify-center gap-1 p-2 shadow-sm">
-								{event.characters.slice(4).map((character) => (
-									<EventCardCharacterIcon
-										{character}
-										displayBand={bands.type === "multiple"}
-										tooltip="top"
-									/>
-								))}
-							</div>
-						</details>
-					</>
-				) : (
-					event.characters.map((character) => (
-						<EventCardCharacterIcon
-							{character}
-							displayBand={bands.type === "multiple"}
+			{
+				progress && (
+					<div class="tooltip relative w-full" data-tip={progress.tooltip}>
+						<progress
+							class="progress progress-primary w-full"
+							value={progress.value}
+							max="100"
 						/>
-					))
+
+						<span class="center bg-secondary rounded-field text-secondary-content absolute w-14 font-medium">
+							{progress.value}%
+						</span>
+					</div>
 				)
 			}
 		</div>
-
-		{
-			progress && (
-				<div class="tooltip relative w-full" data-tip={progress.tooltip}>
-					<progress
-						class="progress progress-primary w-full"
-						value={progress.value}
-						max="100"
-					/>
-
-					<span class="center bg-secondary rounded-field text-secondary-content absolute w-14 font-medium">
-						{progress.value}%
-					</span>
-				</div>
-			)
-		}
 	</div>
+
+	<a
+		href={`https://bestdori.com/info/events/${event.id}`}
+		target="_blank"
+		rel="noopener noreferrer"
+		class="btn btn-sm btn-info"
+	>
+		<iconify-icon icon="lucide:external-link" width="none" class="size-4"
+		></iconify-icon>
+		View on Bestdori!
+	</a>
 </div>
