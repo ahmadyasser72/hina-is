@@ -77,9 +77,7 @@ const secondsUntilNextMinute =
 			hx-swap="outerHTML"
 			class="flex flex-col items-center gap-4"
 		>
-			<h2 class:list={["text-xl font-medium", event.current && "text-white"]}>
-				Active event
-			</h2>
+			<h2 class="badge badge-accent badge-xl font-medium">Active event</h2>
 
 			{
 				event.current ? (
@@ -91,9 +89,7 @@ const secondsUntilNextMinute =
 		</div>
 
 		<div class="flex flex-col items-center gap-4">
-			<h2 class:list={["text-xl font-medium", event.current && "text-white"]}>
-				Upcoming events
-			</h2>
+			<h2 class="badge badge-accent badge-xl font-medium">Upcoming events</h2>
 
 			<div
 				id="upcoming-events"
@@ -112,14 +108,18 @@ const secondsUntilNextMinute =
 
 			<div
 				id="upcoming-events-loader"
-				class="htmx-indicator mt-8 flex flex-col items-center"
+				class="htmx-indicator relative mt-8 h-32 w-full"
 			>
 				<iconify-icon
 					icon="svg-spinners:90-ring-with-bg"
 					width="none"
-					class="size-32"></iconify-icon>
+					class="text-accent center bg-accent-content/80 absolute size-32 rounded-full"
+				></iconify-icon>
 
-				<span class="text-lg font-medium">loading more events...</span>
+				<span
+					class="badge center badge-lg badge-accent absolute w-max font-medium"
+					>loading more events...</span
+				>
 			</div>
 		</div>
 	</div>
