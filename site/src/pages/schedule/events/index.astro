@@ -9,8 +9,8 @@ import { paginate } from "~/lib/paginate";
 import EventCard from "./_event-card.astro";
 
 const event = (() => {
-	let current = -1;
-	let upcoming = [] as number[];
+	const active = [] as number[];
+	const upcoming = [] as number[];
 
 	const now = dayjs();
 	let lastEndAt: dayjs.Dayjs;
@@ -22,14 +22,14 @@ const event = (() => {
 			now.isBefore(startAt.en) ||
 			now.isBetween(startAt.en, endAt.en)
 		) {
-			current = id;
+			active.push(id);
 		}
 
 		lastEndAt = dayjs(endAt.en);
 	}
 
 	return {
-		current: current === -1 ? null : { id: current, ...events.get(current)! },
+		active: active.map((id) => ({ id, ...events.get(id)! })),
 		upcoming: upcoming.map((id) => {
 			const { startAt, endAt, ...event } = events.get(id)!;
 
@@ -54,38 +54,29 @@ const upcomingEvents = paginate({
 	size: 6,
 	extraProps: { "hx-select": "#upcoming-events > *", "hx-swap": "afterend" },
 });
-
-const secondsUntilNextMinute =
-	dayjs().endOf("minutes").diff(dayjs(), "seconds") + 1;
 ---
 
 <BaseLayout
-	background={event.current
+	background={event.active.length > 0
 		? {
-				src: `/assets/event/${event.current.id}_background.${IMAGE_FORMAT}`,
-				alt: `${unwrap(event.current.name)} background`,
+				src: `/assets/event/${event.active[0].id}_background.${IMAGE_FORMAT}`,
+				alt: `${unwrap(event.active[0].name)} background`,
 			}
 		: undefined}
 >
 	<div class="flex flex-col gap-8">
-		<div
-			id="active-event"
-			hx-get
-			hx-indicator="unset"
-			hx-trigger={`load delay:${secondsUntilNextMinute}s`}
-			hx-select="#active-event"
-			hx-swap="outerHTML"
-			class="flex flex-col items-center gap-4"
-		>
-			<h2 class="badge badge-accent badge-xl font-medium">Active event</h2>
+		<div class="flex flex-col items-center gap-4">
+			<h2 class="badge badge-accent badge-xl font-medium">Active events</h2>
 
-			{
-				event.current ? (
-					<EventCard event={event.current} active />
-				) : (
-					<p class="text-base-content/50">No active event at the moment.</p>
-				)
-			}
+			<div id="active-events" class="flex flex-wrap justify-center gap-2">
+				{
+					event.active.length > 0 ? (
+						event.active.map((event) => <EventCard {event} predicted={false} />)
+					) : (
+						<p class="text-base-content/50">No active event at the moment.</p>
+					)
+				}
+			</div>
 		</div>
 
 		<div class="flex flex-col items-center gap-4">
@@ -101,6 +92,7 @@ const secondsUntilNextMinute =
 						<EventCard
 							{...(upcomingEvents.isLastElement(idx) && upcomingEvents.props)}
 							{event}
+							predicted
 						/>
 					))
 				}

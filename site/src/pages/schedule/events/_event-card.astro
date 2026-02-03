@@ -1,5 +1,5 @@
 ---
-import { bands, type events } from "@hina-is/bestdori/data";
+import type { Bandori } from "@hina-is/bestdori/data";
 import { unwrap } from "@hina-is/bestdori/utilities";
 
 import { colord } from "colord";
@@ -7,14 +7,12 @@ import { colord } from "colord";
 import { IMAGE_FORMAT } from "~/lib/compressor/constants";
 import EventCardTime from "./_event-card-time.astro";
 
-type MapValue<T> = T extends Map<any, infer V> ? V : never;
-
 interface Props {
-	event: MapValue<typeof events> & { id: number };
-	active?: boolean;
+	event: Bandori.Event & { id: number };
+	predicted: boolean;
 }
 
-const { event, active, ...props } = Astro.props;
+const { event, predicted, ...props } = Astro.props;
 
 const eventBand = event.characters
 	.slice(1)
@@ -45,16 +43,13 @@ const eventBand = event.characters
 			{unwrap(event.name)}
 		</h2>
 
-		<EventCardTime
-			startAt={event.startAt.jp}
-			endAt={event.endAt.jp}
-			label="jp"
-		/>
+		<EventCardTime startAt={event.startAt} endAt={event.endAt} region="jp" />
 
 		<EventCardTime
-			startAt={event.startAt.en!}
-			endAt={event.endAt.en!}
-			label={active ? "en" : "en?"}
+			startAt={event.startAt}
+			endAt={event.endAt}
+			region="en"
+			{predicted}
 		/>
 
 		<div class="flex flex-wrap justify-center gap-1">
