@@ -5,6 +5,7 @@ import { unwrap } from "@hina-is/bestdori/utilities";
 import { colord } from "colord";
 
 import { IMAGE_FORMAT } from "~/lib/compressor/constants";
+import EventCardCharacterIcon from "./_event-card-character-icon.astro";
 import EventCardTime from "./_event-card-time.astro";
 
 interface Props {
@@ -131,35 +132,43 @@ const eventBand = event.characters
 
 		<div class="flex flex-wrap justify-center gap-1">
 			{
-				event.characters
-					.map(({ id, nickname, name, band, colorCode }) => ({
-						id,
-						name: unwrap(nickname) ?? unwrap(name),
-						band: unwrap(band.name),
-						color: colord(colorCode),
-					}))
-					.map(({ id, name, band, color }, idx) => (
-						<div
-							class:list={[
-								"tooltip",
-								idx % 2 && "tooltip-bottom",
-								color.brightness() < 0.67
-									? "before:text-white"
-									: "before:text-black",
-							]}
-							data-tip={
-								eventBand.type === "multiple" ? `${name} / ${band}` : name
-							}
-							style={`--tt-bg: ${color.toHex()}`}
-						>
-							<img
-								src={`/assets/character/${id}.${IMAGE_FORMAT}`}
-								alt={`${name} icon`}
-								loading="lazy"
-								class="size-10"
+				event.characters.length > 5 ? (
+					<>
+						{event.characters.slice(0, 4).map((character) => (
+							<EventCardCharacterIcon
+								{character}
+								displayBand={eventBand.type === "multiple"}
+								tooltip="bottom"
 							/>
-						</div>
+						))}
+
+						<details class="dropdown dropdown-top dropdown-end">
+							<summary class="btn btn-circle btn-outline size-10">
+								<iconify-icon
+									icon="lucide:chevron-up"
+									width="none"
+									class="size-4"
+								/>
+							</summary>
+							<div class="dropdown-content bg-base-100 rounded-box mb-2 flex w-60 flex-wrap justify-center gap-1 p-2 shadow-sm">
+								{event.characters.slice(4).map((character) => (
+									<EventCardCharacterIcon
+										{character}
+										displayBand={eventBand.type === "multiple"}
+										tooltip="top"
+									/>
+								))}
+							</div>
+						</details>
+					</>
+				) : (
+					event.characters.map((character) => (
+						<EventCardCharacterIcon
+							{character}
+							displayBand={eventBand.type === "multiple"}
+						/>
 					))
+				)
 			}
 		</div>
 	</div>

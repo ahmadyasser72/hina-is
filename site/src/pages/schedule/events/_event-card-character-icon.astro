@@ -1,0 +1,39 @@
+---
+import type { Bandori } from "@hina-is/bestdori/data";
+import { unwrap } from "@hina-is/bestdori/utilities";
+
+import { colord } from "colord";
+
+import { IMAGE_FORMAT } from "~/lib/compressor/constants";
+
+interface Props {
+	character: Bandori.Character & { id: number };
+	displayBand: boolean;
+	tooltip?: "auto" | "top" | "bottom";
+}
+
+const { character, displayBand, tooltip = "auto" } = Astro.props;
+
+const name = unwrap(character.nickname) ?? unwrap(character.name);
+const band = unwrap(character.band.name);
+const color = colord(character.colorCode);
+---
+
+<div
+	class:list={[
+		"tooltip",
+		tooltip === "auto" && "even:tooltip-bottom",
+		tooltip === "top" && "tooltip-top",
+		tooltip === "bottom" && "tooltip-bottom",
+		color.brightness() < 0.67 ? "before:text-white" : "before:text-black",
+	]}
+	data-tip={displayBand ? `${name} / ${band}` : name}
+	style={`--tt-bg: ${color.toHex()}`}
+>
+	<img
+		src={`/assets/character/${character.id}.${IMAGE_FORMAT}`}
+		alt={`${name} icon`}
+		loading="lazy"
+		class="size-10"
+	/>
+</div>
