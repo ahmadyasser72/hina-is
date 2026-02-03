@@ -8,11 +8,14 @@ interface Props {
 }
 
 const { startAt, endAt, label } = Astro.props;
+
 const from = dayjs(startAt).tz();
 const to = dayjs(endAt).tz();
+const durationDays = to.diff(from, "days");
+const durationHours = Math.round(to.diff(from, "hours", true));
 ---
 
-<div class="flex items-center">
+<div class="inline-flex items-center gap-x-2">
 	{
 		label.endsWith("?") ? (
 			<div
@@ -28,7 +31,7 @@ const to = dayjs(endAt).tz();
 		)
 	}
 
-	<span class="badge dark:badge-primary dark:badge-soft ml-2 inline-flex">
+	<span class="badge dark:badge-primary dark:badge-soft inline-flex">
 		<div
 			class="tooltip underline decoration-dotted"
 			data-tip={`${from.format("YYYY-MM-DD HH:mm")} / ${from.fromNow()}`}
@@ -45,4 +48,10 @@ const to = dayjs(endAt).tz();
 			{to.format("YYYY-MM-DD")}
 		</div>
 	</span>
+
+	<div class="tooltip" data-tip={`${durationHours} hours`}>
+		<span class="font-medium uppercase underline decoration-dotted">
+			{durationDays}D
+		</span>
+	</div>
 </div>
