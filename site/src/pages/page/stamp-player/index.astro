@@ -9,7 +9,7 @@ import BaseLayout from "~/layouts/base-layout.astro";
 		<div class="mt-20 flex w-full flex-col items-center gap-4 px-2">
 			<h2 class="text-xl font-medium">Stamp player</h2>
 			<button
-				hx-get="/stamp/player/list"
+				hx-get="/page/stamp-player/list"
 				hx-indicator="this"
 				class="btn sm:btn-wide btn-accent w-full"
 			>
@@ -59,7 +59,7 @@ import BaseLayout from "~/layouts/base-layout.astro";
 		});
 	});
 
-	const room = new EventSource("/stamp/player/room");
+	const room = new EventSource("/page/stamp-player/room");
 	room.addEventListener("send-stamp", async ({ data }) => {
 		const { id, voiced } = JSON.parse(data) as StampPayload;
 
