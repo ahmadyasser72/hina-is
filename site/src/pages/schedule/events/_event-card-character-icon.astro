@@ -21,15 +21,39 @@ const color = colord(character.colorCode);
 
 <div
 	class:list={[
-		"tooltip",
+		"tooltip group",
 		tooltip === "auto" && "even:tooltip-bottom",
 		tooltip === "top" && "tooltip-top",
 		tooltip === "bottom" && "tooltip-bottom",
-		color.brightness() < 0.67 ? "before:text-white" : "before:text-black",
 	]}
-	data-tip={displayBand ? `${name} / ${band}` : name}
-	style={`--tt-bg: ${color.toHex()}`}
 >
+	<div
+		class:list={[
+			"tooltip-content",
+			color.brightness() < 0.67 ? "text-white" : "text-black",
+		]}
+		style={`--tt-bg: ${color.toHex()}`}
+	>
+		{
+			displayBand ? (
+				<div class="inline-flex items-center gap-1 group-even:flex-row-reverse">
+					<div>
+						{name} <br />
+						<span class="font-medium">{band}</span>
+					</div>
+
+					<img
+						src={`/assets/band/${character.band.id}.svg`}
+						alt={`${band} icon`}
+						loading="lazy"
+						class="size-8"
+					/>
+				</div>
+			) : (
+				name
+			)
+		}
+	</div>
 	<img
 		src={`/assets/character/${character.id}.${IMAGE_FORMAT}`}
 		alt={`${name} icon`}
