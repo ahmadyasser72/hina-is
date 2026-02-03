@@ -5,6 +5,7 @@ import { unwrap } from "@hina-is/bestdori/utilities";
 import { colord } from "colord";
 
 import { IMAGE_FORMAT } from "~/lib/compressor/constants";
+import { dayjs, formatDuration } from "~/lib/date";
 import EventCardCharacterIcon from "./_event-card-character-icon.astro";
 import EventCardTime from "./_event-card-time.astro";
 
@@ -15,19 +16,43 @@ interface Props {
 
 const { event, predicted, ...props } = Astro.props;
 
-const eventBand = event.characters
+const { characters, startAt, endAt } = event;
+
+const bands = characters
 	.slice(1)
 	.every(({ band }) => band.id === event.characters[0].band.id)
 	? { type: "one" as const, data: event.characters[0].band }
 	: {
 			type: "multiple" as const,
-			data: Object.entries(
+			data: Object.values(
 				Object.groupBy(event.characters, ({ band }) => band.id),
-			).map(([, character]) => ({
-				count: character!.length,
-				...character![0].band,
+			).map((characters) => ({
+				count: characters!.length,
+				...characters![0].band,
 			})),
 		};
+
+const progress = (() => {
+	if (predicted || !startAt.en || !endAt.en) return;
+
+	const now = dayjs();
+	const start = dayjs(startAt.en);
+	const end = dayjs(endAt.en);
+
+	if (now.isAfter(end)) return;
+	else if (now.isBefore(start)) {
+		const untilStarted = formatDuration(now, start);
+		return { tooltip: `Starts in ${untilStarted}` };
+	}
+
+	const duration = end.diff(start);
+	const passed = now.diff(start);
+	const untilEnded = formatDuration(now, end);
+	return {
+		value: ((passed / duration) * 100).toFixed(1),
+		tooltip: `Ends in ${untilEnded}`,
+	};
+})();
 ---
 
 <div class="card bg-base-100 w-90 shadow-sm" {...props}>
@@ -44,14 +69,9 @@ const eventBand = event.characters
 			{unwrap(event.name)}
 		</h2>
 
-		<EventCardTime startAt={event.startAt} endAt={event.endAt} region="jp" />
+		<EventCardTime {startAt} {endAt} region="jp" />
 
-		<EventCardTime
-			startAt={event.startAt}
-			endAt={event.endAt}
-			region="en"
-			{predicted}
-		/>
+		<EventCardTime {startAt} {endAt} {predicted} region="en" />
 
 		<div class="flex flex-wrap justify-center gap-1">
 			<div class="badge dark:badge-primary dark:badge-soft font-medium">
@@ -74,18 +94,16 @@ const eventBand = event.characters
 			<div
 				class:list={[
 					"badge font-medium",
-					eventBand.type === "multiple" && "dark:badge-primary dark:badge-soft",
-					eventBand.type === "one" &&
-					colord(eventBand.data.color!).brightness() < 0.67
+					bands.type === "multiple" && "dark:badge-primary dark:badge-soft",
+					bands.type === "one" && colord(bands.data.color!).brightness() < 0.67
 						? "text-white"
 						: "text-black",
 				]}
-				style={eventBand.type === "one" &&
-					`--badge-bg: ${eventBand.data.color!}`}
+				style={bands.type === "one" && `--badge-bg: ${bands.data.color!}`}
 			>
 				{
-					eventBand.type === "multiple" &&
-						eventBand.data
+					bands.type === "multiple" &&
+						bands.data
 							.map(({ color, ...band }) => ({ ...band, color: colord(color!) }))
 							.map(({ id, name, color, count }, idx) => (
 								<div
@@ -110,20 +128,20 @@ const eventBand = event.characters
 				}
 
 				{
-					eventBand.type === "one" && (
+					bands.type === "one" && (
 						<>
 							<img
-								src={`/assets/band/${eventBand.data.id}.svg`}
-								alt={`${unwrap(eventBand.data.name)} icon`}
+								src={`/assets/band/${bands.data.id}.svg`}
+								alt={`${unwrap(bands.data.name)} icon`}
 								loading="lazy"
 								class:list={[
 									"size-5",
-									colord(eventBand.data.color!).brightness() > 0.67 &&
+									colord(bands.data.color!).brightness() > 0.67 &&
 										"dark:drop-shadow-lg",
 								]}
 							/>
 
-							{unwrap(eventBand.data.name)}
+							{unwrap(bands.data.name)}
 						</>
 					)
 				}
@@ -137,7 +155,7 @@ const eventBand = event.characters
 						{event.characters.slice(0, 4).map((character) => (
 							<EventCardCharacterIcon
 								{character}
-								displayBand={eventBand.type === "multiple"}
+								displayBand={bands.type === "multiple"}
 								tooltip="bottom"
 							/>
 						))}
@@ -154,7 +172,7 @@ const eventBand = event.characters
 								{event.characters.slice(4).map((character) => (
 									<EventCardCharacterIcon
 										{character}
-										displayBand={eventBand.type === "multiple"}
+										displayBand={bands.type === "multiple"}
 										tooltip="top"
 									/>
 								))}
@@ -165,11 +183,27 @@ const eventBand = event.characters
 					event.characters.map((character) => (
 						<EventCardCharacterIcon
 							{character}
-							displayBand={eventBand.type === "multiple"}
+							displayBand={bands.type === "multiple"}
 						/>
 					))
 				)
 			}
 		</div>
+
+		{
+			progress && (
+				<div class="tooltip relative w-full" data-tip={progress.tooltip}>
+					<progress
+						class="progress progress-primary w-full"
+						value={progress.value}
+						max="100"
+					/>
+
+					<span class="center bg-secondary rounded-field text-secondary-content absolute w-14 font-medium">
+						{progress.value}%
+					</span>
+				</div>
+			)
+		}
 	</div>
 </div>

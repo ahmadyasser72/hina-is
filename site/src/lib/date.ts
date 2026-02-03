@@ -10,3 +10,15 @@ dayjs.extend(utc);
 dayjs.extend(timezone);
 
 export { dayjs };
+
+export const formatDuration = (from: dayjs.Dayjs, to: dayjs.Dayjs) => {
+	const totalMinutes = to.diff(from, "minutes");
+	if (totalMinutes < 1) return "less than a minute";
+
+	const hours = Math.floor(totalMinutes / 60);
+	const minutes = totalMinutes % 60;
+
+	if (hours && minutes) return `${hours}h ${minutes}m`;
+	else if (hours) return `${hours}h`;
+	else return `${minutes}m`;
+};
