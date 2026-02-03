@@ -143,7 +143,9 @@ const eventBand = event.characters
 							class:list={[
 								"tooltip",
 								idx % 2 && "tooltip-bottom",
-								color.isDark() ? "before:text-white" : "before:text-black",
+								color.brightness() < 0.67
+									? "before:text-white"
+									: "before:text-black",
 							]}
 							data-tip={
 								eventBand.type === "multiple" ? `${name} / ${band}` : name
