@@ -2,14 +2,22 @@
 import { events } from "@hina-is/bestdori/data";
 import { unwrap } from "@hina-is/bestdori/utilities";
 
+import z from "zod";
+
 import BaseLayout from "~/layouts/base-layout.astro";
 import { IMAGE_FORMAT } from "~/lib/compressor/constants";
 import { dayjs } from "~/lib/date";
 import { paginate } from "~/lib/paginate";
 import EventCard from "./_event-card.astro";
 
+const showPastEvents = z
+	.stringbool()
+	.catch(false)
+	.parse(Astro.url.searchParams.get("past"));
+
 const event = (() => {
 	const active = [] as number[];
+	const past = [] as number[];
 	const upcoming = [] as number[];
 
 	const now = dayjs();
@@ -23,6 +31,8 @@ const event = (() => {
 			now.isBetween(startAt.en, endAt.en)
 		) {
 			active.push(id);
+		} else {
+			past.push(id);
 		}
 
 		lastEndAt = dayjs(endAt.en);
@@ -30,6 +40,7 @@ const event = (() => {
 
 	return {
 		active: active.map((id) => ({ id, ...events.get(id)! })),
+		past: past.reverse().map((id) => ({ id, ...events.get(id)! })),
 		upcoming: upcoming.map((id) => {
 			const { startAt, endAt, ...event } = events.get(id)!;
 
@@ -48,11 +59,15 @@ const event = (() => {
 	};
 })();
 
-const upcomingEvents = paginate({
-	items: event.upcoming,
+const page = paginate({
+	items: showPastEvents ? event.past : event.upcoming,
 	context: Astro,
 	size: 6,
-	extraProps: { "hx-select": "#upcoming-events > *", "hx-swap": "afterend" },
+	extraProps: {
+		"hx-select": "#events > *",
+		"hx-swap": "afterend",
+		"hx-vals": JSON.stringify({ past: showPastEvents }),
+	},
 });
 ---
 
@@ -66,7 +81,9 @@ const upcomingEvents = paginate({
 >
 	<div class="flex flex-col gap-8">
 		<div class="flex flex-col items-center gap-4">
-			<h2 class="badge badge-accent badge-xl font-medium">Active events</h2>
+			<h2 class="badge badge-accent badge-xl w-48 font-medium">
+				Active events
+			</h2>
 
 			<div id="active-events" class="flex flex-wrap justify-center gap-2">
 				{
@@ -80,28 +97,52 @@ const upcomingEvents = paginate({
 		</div>
 
 		<div class="flex flex-col items-center gap-4">
-			<h2 class="badge badge-accent badge-xl font-medium">Upcoming events</h2>
+			<div id="events-heading" class="inline-flex gap-2">
+				<h2 class="badge badge-accent badge-xl w-48 font-medium">
+					{showPastEvents ? "Past" : "Upcoming"} events
+				</h2>
+
+				<div
+					class="tooltip tooltip-left"
+					data-tip={`Show ${showPastEvents ? "upcoming" : "past"} events`}
+				>
+					<button
+						class="btn btn-sm btn-circle"
+						hx-get
+						hx-indicator="this"
+						hx-vals={JSON.stringify({ past: !showPastEvents })}
+						hx-select-oob="#events-heading, #events"
+						hx-swap="none transition:true"
+					>
+						<iconify-icon
+							icon={showPastEvents ? "lucide:calendar-clock" : "lucide:history"}
+							width="none"
+							class="htmx-indicator-replace size-4"></iconify-icon>
+						<iconify-icon
+							icon="svg-spinners:90-ring-with-bg"
+							width="none"
+							class="htmx-indicator size-4"></iconify-icon>
+					</button>
+				</div>
+			</div>
 
 			<div
-				id="upcoming-events"
-				hx-indicator="#upcoming-events-loader"
+				id="events"
+				hx-indicator="#events-loader"
 				class="flex flex-wrap justify-center gap-2"
 			>
 				{
-					upcomingEvents.items.map((event, idx) => (
+					page.items.map((event, idx) => (
 						<EventCard
-							{...(upcomingEvents.isLastElement(idx) && upcomingEvents.props)}
+							{...(page.isLastElement(idx) && page.props)}
 							{event}
-							predicted
+							predicted={!showPastEvents}
 						/>
 					))
 				}
 			</div>
 
-			<div
-				id="upcoming-events-loader"
-				class="htmx-indicator relative mt-8 h-32 w-full"
-			>
+			<div id="events-loader" class="htmx-indicator relative mt-8 h-32 w-full">
 				<iconify-icon
 					icon="svg-spinners:90-ring-with-bg"
 					width="none"
