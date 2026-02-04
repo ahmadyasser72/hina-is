@@ -68,12 +68,18 @@ const { background } = Astro.props;
 	import "iconify-icon";
 
 	htmx.onLoad((node) => {
+		if (!(node instanceof HTMLElement)) return;
+
 		if (node instanceof HTMLDialogElement) {
 			node.show();
 			node.addEventListener("close", () => {
 				node.addEventListener("transitionend", () => node.remove());
 			});
 		}
+
+		node
+			.querySelector<HTMLElement>("[data-scroll-here]")
+			?.scrollIntoView({ behavior: "smooth" });
 	});
 
 	htmx.on("htmx:beforeSwap", (e) => {
