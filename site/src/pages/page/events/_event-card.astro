@@ -15,22 +15,7 @@ interface Props {
 }
 
 const { event, predicted, ...props } = Astro.props;
-
-const { characters, startAt, endAt } = event;
-
-const bands = characters
-	.slice(1)
-	.every(({ band }) => band.id === event.characters[0].band.id)
-	? { type: "one" as const, data: event.characters[0].band }
-	: {
-			type: "multiple" as const,
-			data: Object.values(
-				Object.groupBy(event.characters, ({ band }) => band.id),
-			).map((characters) => ({
-				count: characters!.length,
-				...characters![0].band,
-			})),
-		};
+const { attribute, band, characters, startAt, endAt } = event;
 
 const progress = (() => {
 	if (predicted || !startAt.en || !endAt.en) return;
@@ -78,12 +63,12 @@ const progress = (() => {
 				<div class="badge dark:badge-primary dark:badge-soft font-medium">
 					<div
 						class="tooltip before:text-white"
-						data-tip={event.attribute.name.toUpperCase()}
-						style={`--tt-bg: ${event.attribute.color}`}
+						data-tip={attribute.name.toUpperCase()}
+						style={`--tt-bg: ${attribute.color}`}
 					>
 						<img
-							src={`/assets/attribute/${event.attribute.name}.svg`}
-							alt=`${event.attribute.name.toUpperCase()} icon`
+							src={`/assets/attribute/${attribute.name}.svg`}
+							alt=`${attribute.name.toUpperCase()} icon`
 							loading="lazy"
 							class="size-5"
 						/>
@@ -95,17 +80,17 @@ const progress = (() => {
 				<div
 					class:list={[
 						"badge font-medium",
-						bands.type === "multiple" && "dark:badge-primary dark:badge-soft",
-						bands.type === "one" &&
-						colord(bands.data.color!).brightness() < 0.67
-							? "text-white"
-							: "text-black",
+						Array.isArray(band)
+							? "dark:badge-primary dark:badge-soft"
+							: colord(band.color!).brightness() < 0.67
+								? "text-white"
+								: "text-black",
 					]}
-					style={bands.type === "one" && `--badge-bg: ${bands.data.color!}`}
+					style={!Array.isArray(band) && `--badge-bg: ${band.color!}`}
 				>
 					{
-						bands.type === "multiple" &&
-							bands.data
+						Array.isArray(band) ? (
+							band
 								.map(({ color, ...band }) => ({
 									...band,
 									color: colord(color!),
@@ -130,23 +115,20 @@ const progress = (() => {
 										/>
 									</div>
 								))
-					}
-
-					{
-						bands.type === "one" && (
+						) : (
 							<>
 								<img
-									src={`/assets/band/${bands.data.id}.svg`}
-									alt={`${unwrap(bands.data.name)} icon`}
+									src={`/assets/band/${band.id}.svg`}
+									alt={`${unwrap(band.name)} icon`}
 									loading="lazy"
 									class:list={[
 										"size-5",
-										colord(bands.data.color!).brightness() > 0.67 &&
+										colord(band.color!).brightness() > 0.67 &&
 											"dark:drop-shadow-lg",
 									]}
 								/>
 
-								{unwrap(bands.data.name)}
+								{unwrap(band.name)}
 							</>
 						)
 					}
@@ -155,12 +137,12 @@ const progress = (() => {
 
 			<div class="flex flex-wrap justify-center gap-1">
 				{
-					event.characters.length > 5 ? (
+					characters.length > 5 ? (
 						<>
-							{event.characters.slice(0, 4).map((character) => (
+							{characters.slice(0, 4).map((character) => (
 								<EventCardCharacterIcon
 									{character}
-									displayBand={bands.type === "multiple"}
+									displayBand={Array.isArray(band)}
 									tooltip="bottom"
 								/>
 							))}
@@ -174,10 +156,10 @@ const progress = (() => {
 									/>
 								</summary>
 								<div class="dropdown-content bg-base-100 rounded-box mb-2 flex w-60 flex-wrap justify-center gap-1 p-2 shadow-sm">
-									{event.characters.slice(4).map((character) => (
+									{characters.slice(4).map((character) => (
 										<EventCardCharacterIcon
 											{character}
-											displayBand={bands.type === "multiple"}
+											displayBand={Array.isArray(band)}
 											tooltip="top"
 										/>
 									))}
@@ -185,10 +167,10 @@ const progress = (() => {
 							</details>
 						</>
 					) : (
-						event.characters.map((character) => (
+						characters.map((character) => (
 							<EventCardCharacterIcon
 								{character}
-								displayBand={bands.type === "multiple"}
+								displayBand={Array.isArray(band)}
 							/>
 						))
 					)

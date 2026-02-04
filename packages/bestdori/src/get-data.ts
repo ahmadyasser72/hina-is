@@ -260,6 +260,26 @@ const all = await (async () => {
 							get attribute() {
 								return all.attributes.get(attribute)!;
 							},
+							get band() {
+								const first = all.characters.get(characters[0]!)!;
+								const theRest = characters
+									.slice(1)
+									.map((id) => all.characters.get(id)!);
+
+								return theRest.every(({ band }) => band.id === first.band.id)
+									? first.band
+									: Object.values(
+											Object.groupBy(
+												[first, ...theRest],
+												({ band }) => band.id,
+											),
+										).map((characters) => {
+											const id = characters?.[0]?.band.id!;
+											const band = all.bands.get(id)!;
+											const count = characters!.length;
+											return { id, count, ...band };
+										});
+							},
 							get characters() {
 								return characters.map((id) => ({
 									id,
