@@ -2,6 +2,7 @@
 import { events } from "@hina-is/bestdori/data";
 import { unwrap } from "@hina-is/bestdori/utilities";
 
+import { titleCase } from "text-case";
 import z from "zod";
 
 import BaseLayout from "~/layouts/base-layout.astro";
@@ -10,21 +11,22 @@ import { dayjs } from "~/lib/date";
 import { paginate } from "~/lib/paginate";
 import EventCard from "./_event-card.astro";
 
-const showPastEvents = z
-	.stringbool()
-	.catch(false)
-	.parse(Astro.url.searchParams.get("past"));
+const listType = z
+	.enum(["future", "past"])
+	.catch("future")
+	.parse(Astro.url.searchParams.get("list"));
+const oppositeListType = listType === "future" ? "past" : "future";
 
 const event = (() => {
 	const active = [] as number[];
 	const past = [] as number[];
-	const upcoming = [] as number[];
+	const future = [] as number[];
 
 	const now = dayjs();
 	let lastEndAt: dayjs.Dayjs;
 	for (const [id, { startAt, endAt }] of [...events.entries()]) {
 		if (!startAt.en || !endAt.en) {
-			upcoming.push(id);
+			future.push(id);
 			continue;
 		} else if (
 			now.isBefore(startAt.en) ||
@@ -40,33 +42,35 @@ const event = (() => {
 
 	return {
 		active: active.map((id) => ({ id, ...events.get(id)! })),
-		past: past.reverse().map((id) => ({ id, ...events.get(id)! })),
-		upcoming: upcoming.map((id) => {
-			const { startAt, endAt, ...event } = events.get(id)!;
+		list:
+			listType === "past"
+				? past.reverse().map((id) => ({ id, ...events.get(id)! }))
+				: future.map((id) => {
+						const { startAt, endAt, ...event } = events.get(id)!;
 
-			const eventDuration = dayjs(endAt.jp).diff(startAt.jp);
-			const startAtEn = lastEndAt.startOf("hours").add(43, "hours");
-			const endAtEn = startAtEn.add(eventDuration);
-			lastEndAt = endAtEn;
+						const eventDuration = dayjs(endAt.jp).diff(startAt.jp);
+						const startAtEn = lastEndAt.startOf("hours").add(43, "hours");
+						const endAtEn = startAtEn.add(eventDuration);
+						lastEndAt = endAtEn;
 
-			return {
-				id,
-				startAt: { ...startAt, en: startAtEn.toDate() },
-				endAt: { ...endAt, en: endAtEn.toDate() },
-				...event,
-			};
-		}),
+						return {
+							id,
+							startAt: { ...startAt, en: startAtEn.toDate() },
+							endAt: { ...endAt, en: endAtEn.toDate() },
+							...event,
+						};
+					}),
 	};
 })();
 
 const page = paginate({
-	items: showPastEvents ? event.past : event.upcoming,
+	items: event.list,
 	context: Astro,
 	size: 6,
 	extraProps: {
 		"hx-select": "#events > *",
 		"hx-swap": "afterend",
-		"hx-vals": JSON.stringify({ past: showPastEvents }),
+		"hx-vals": JSON.stringify({ list: listType }),
 	},
 });
 ---
@@ -102,23 +106,25 @@ const page = paginate({
 		<div class="flex flex-col items-center gap-4">
 			<div id="events-heading" class="inline-flex gap-2">
 				<h2 class="badge badge-accent badge-xl w-48 font-medium">
-					{showPastEvents ? "Past" : "Upcoming"} events
+					{titleCase(listType)} events
 				</h2>
 
 				<div
 					class="tooltip tooltip-left"
-					data-tip={`Show ${showPastEvents ? "upcoming" : "past"} events`}
+					data-tip={`Show ${oppositeListType} events`}
 				>
 					<button
 						class="btn btn-sm btn-circle"
 						hx-get
 						hx-indicator="this"
-						hx-vals={JSON.stringify({ past: !showPastEvents })}
+						hx-vals={JSON.stringify({ list: oppositeListType })}
 						hx-select-oob="#events-heading, #events"
 						hx-swap="none transition:true"
 					>
 						<iconify-icon
-							icon={showPastEvents ? "lucide:calendar-clock" : "lucide:history"}
+							icon={oppositeListType === "future"
+								? "lucide:calendar-clock"
+								: "lucide:history"}
 							width="none"
 							class="htmx-indicator-replace size-4"></iconify-icon>
 						<iconify-icon
@@ -139,7 +145,7 @@ const page = paginate({
 						<EventCard
 							{...(page.isLastElement(idx) && page.props)}
 							{event}
-							predicted={!showPastEvents}
+							predicted={listType === "future"}
 						/>
 					))
 				}
