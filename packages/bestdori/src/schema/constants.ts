@@ -27,7 +27,7 @@ export const GachaType = z.enum([
 	"kirafes",
 ]);
 
-const EventTypeMap = {
+export const EventTypeMap = {
 	story: "Normal",
 	versus: "VS Live",
 	mission_live: "Mission Live",

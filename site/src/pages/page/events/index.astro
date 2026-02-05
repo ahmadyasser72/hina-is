@@ -1,85 +1,37 @@
 ---
-import { events } from "@hina-is/bestdori/data";
 import { unwrap } from "@hina-is/bestdori/utilities";
 
 import { titleCase } from "text-case";
-import z from "zod";
 
 import BaseLayout from "~/layouts/base-layout.astro";
 import { IMAGE_FORMAT } from "~/lib/compressor/constants";
-import { dayjs } from "~/lib/date";
 import { paginate } from "~/lib/paginate";
 import EventCard from "./_event-card.astro";
+import { filterEvents, getEvents } from "./_list";
+import { schema } from "./_params";
 
-const listType = z
-	.enum(["future", "past"])
-	.catch("future")
-	.parse(Astro.url.searchParams.get("list"));
-const oppositeListType = listType === "future" ? "past" : "future";
+const params = Astro.locals.parseQuery(schema);
+const oppositeList = params.list === "future" ? "past" : "future";
 
-const event = (() => {
-	const active = [] as number[];
-	const past = [] as number[];
-	const future = [] as number[];
-
-	const now = dayjs();
-	let lastEndAt: dayjs.Dayjs;
-	for (const [id, { startAt, endAt }] of [...events.entries()]) {
-		if (!startAt.en || !endAt.en) {
-			future.push(id);
-			continue;
-		} else if (
-			now.isBefore(startAt.en) ||
-			now.isBetween(startAt.en, endAt.en)
-		) {
-			active.push(id);
-		} else {
-			past.push(id);
-		}
-
-		lastEndAt = dayjs(endAt.en);
-	}
-
-	return {
-		active: active.map((id) => ({ id, ...events.get(id)! })),
-		list:
-			listType === "past"
-				? past.reverse().map((id) => ({ id, ...events.get(id)! }))
-				: future.map((id) => {
-						const { startAt, endAt, ...event } = events.get(id)!;
-
-						const eventDuration = dayjs(endAt.jp).diff(startAt.jp);
-						const startAtEn = lastEndAt.startOf("hours").add(43, "hours");
-						const endAtEn = startAtEn.add(eventDuration);
-						lastEndAt = endAtEn;
-
-						return {
-							id,
-							startAt: { ...startAt, en: startAtEn.toDate() },
-							endAt: { ...endAt, en: endAtEn.toDate() },
-							...event,
-						};
-					}),
-	};
-})();
-
+const events = getEvents(params);
+const { filtered } = filterEvents(params, events.list);
 const page = paginate({
-	items: event.list,
+	items: filtered,
 	context: Astro,
 	size: 6,
 	extraProps: {
 		"hx-select": "#events > *",
 		"hx-swap": "afterend",
-		"hx-vals": JSON.stringify({ list: listType }),
+		"hx-vals": JSON.stringify(params),
 	},
 });
 ---
 
 <BaseLayout
-	background={event.active.length > 0
+	background={events.active.length > 0
 		? {
-				src: `/assets/event/${event.active[0].id}_background.${IMAGE_FORMAT}`,
-				alt: `${unwrap(event.active[0].name)} background`,
+				src: `/assets/event/${events.active[0].id}_background.${IMAGE_FORMAT}`,
+				alt: `${unwrap(events.active[0].name)} background`,
 			}
 		: undefined}
 >
@@ -94,8 +46,10 @@ const page = paginate({
 				class="flex flex-wrap justify-center gap-x-2 gap-y-4"
 			>
 				{
-					event.active.length > 0 ? (
-						event.active.map((event) => <EventCard {event} predicted={false} />)
+					events.active.length > 0 ? (
+						events.active.map((event) => (
+							<EventCard {event} predicted={false} />
+						))
 					) : (
 						<p class="text-base-content/50">No active event at the moment.</p>
 					)
@@ -105,24 +59,45 @@ const page = paginate({
 
 		<div class="flex flex-col items-center gap-4">
 			<div id="events-heading" class="inline-flex gap-2">
+				<div
+					class="tooltip tooltip-right"
+					data-tip={`Filter ${params.list} events`}
+				>
+					<button
+						class="btn btn-sm btn-circle btn-success"
+						hx-get="/page/events/filter"
+						hx-indicator="this"
+						hx-vals={JSON.stringify(params)}
+					>
+						<iconify-icon
+							icon="lucide:list-filter"
+							width="none"
+							class="htmx-indicator-replace size-4"></iconify-icon>
+						<iconify-icon
+							icon="svg-spinners:90-ring-with-bg"
+							width="none"
+							class="htmx-indicator size-4"></iconify-icon>
+					</button>
+				</div>
+
 				<h2 class="badge badge-accent badge-xl w-48 font-medium">
-					{titleCase(listType)} events
+					{titleCase(params.list)} events
 				</h2>
 
 				<div
 					class="tooltip tooltip-left"
-					data-tip={`Show ${oppositeListType} events`}
+					data-tip={`Show ${oppositeList} events`}
 				>
 					<button
-						class="btn btn-sm btn-circle"
+						class="btn btn-sm btn-circle btn-success"
 						hx-get
 						hx-indicator="this"
-						hx-vals={JSON.stringify({ list: oppositeListType })}
+						hx-vals={JSON.stringify({ ...params, list: oppositeList })}
 						hx-select-oob="#events-heading, #events"
 						hx-swap="none transition:true"
 					>
 						<iconify-icon
-							icon={oppositeListType === "future"
+							icon={oppositeList === "future"
 								? "lucide:calendar-clock"
 								: "lucide:history"}
 							width="none"
@@ -145,7 +120,7 @@ const page = paginate({
 						<EventCard
 							{...(page.isLastElement(idx) && page.props)}
 							{event}
-							predicted={listType === "future"}
+							predicted={params.list === "future"}
 						/>
 					))
 				}
