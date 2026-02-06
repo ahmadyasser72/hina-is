@@ -94,8 +94,9 @@ const { facets } = filterEvents(params, events.list);
 				hx-get="/page/events"
 				hx-indicator="this"
 				hx-vals={JSON.stringify(params)}
-				hx-select-oob="#events"
-				hx-swap="none"
+				hx-target="#events"
+				hx-select="#events"
+				hx-swap="outerHTML show:top"
 				hx-on--after-request="event.detail.successful && filter_modal.close()"
 			>
 				<iconify-icon
