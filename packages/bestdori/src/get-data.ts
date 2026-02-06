@@ -261,10 +261,13 @@ const all = await (async () => {
 								return all.attributes.get(attribute)!;
 							},
 							get band() {
-								const first = all.characters.get(characters[0]!)!;
+								const first = {
+									id: characters[0]!,
+									...all.characters.get(characters[0]!)!,
+								};
 								const theRest = characters
 									.slice(1)
-									.map((id) => all.characters.get(id)!);
+									.map((id) => ({ id, ...all.characters.get(id)! }));
 
 								return theRest.every(({ band }) => band.id === first.band.id)
 									? first.band
@@ -276,8 +279,7 @@ const all = await (async () => {
 										).map((characters) => {
 											const id = characters?.[0]?.band.id!;
 											const band = all.bands.get(id)!;
-											const count = characters!.length;
-											return { id, count, ...band };
+											return { id, characters: characters!, ...band };
 										});
 							},
 							get characters() {

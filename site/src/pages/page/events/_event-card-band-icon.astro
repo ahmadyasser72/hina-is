@@ -1,0 +1,55 @@
+---
+import type { Bandori } from "@hina-is/bestdori/data";
+import { unwrap } from "@hina-is/bestdori/utilities";
+
+import { colord } from "colord";
+
+import { IMAGE_FORMAT } from "~/lib/compressor/constants";
+
+interface Props {
+	band: Bandori.Band & {
+		id: number;
+		characters: (Bandori.Character & { id: number })[];
+	};
+}
+
+const { band } = Astro.props;
+
+const { characters } = band;
+const name = unwrap(band.name);
+const color = colord(band.color!);
+---
+
+<div
+	class="tooltip group even:tooltip-bottom"
+	style={`--tt-bg: ${color.toHex()}`}
+>
+	<div
+		class:list={[
+			"tooltip-content flex flex-col-reverse gap-1 group-even:flex-col",
+			color.brightness() < 0.67 ? "text-white" : "text-black",
+		]}
+		style={`--tt-bg: ${color.toHex()}`}
+	>
+		<span class="font-medium">{name}</span>
+		<div class="flex justify-center gap-1">
+			{
+				characters.map(({ id, nickname, name }) => (
+					<img
+						src={`/assets/character/${id}.${IMAGE_FORMAT}`}
+						alt={`${unwrap(nickname) ?? unwrap(name)} icon`}
+						loading="lazy"
+						class="size-8"
+					/>
+				))
+			}
+		</div>
+	</div>
+
+	<img
+		src={`/assets/band/${band.id}.svg`}
+		alt={`${name} icon`}
+		loading="lazy"
+		class:list={["size-5", color.brightness() > 0.67 && "dark:drop-shadow-lg"]}
+	/>
+</div>

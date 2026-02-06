@@ -6,6 +6,7 @@ import { colord } from "colord";
 
 import { IMAGE_FORMAT } from "~/lib/compressor/constants";
 import { dayjs, formatDuration } from "~/lib/date";
+import EventCardBandIcon from "./_event-card-band-icon.astro";
 import EventCardCharacterIcon from "./_event-card-character-icon.astro";
 import EventCardTime from "./_event-card-time.astro";
 
@@ -77,62 +78,38 @@ const progress = (() => {
 					{event.type}
 				</div>
 
-				<div
-					class:list={[
-						"badge font-medium",
-						Array.isArray(band)
-							? "dark:badge-primary dark:badge-soft"
-							: colord(band.color!).brightness() < 0.67
-								? "text-white"
-								: "text-black",
-					]}
-					style={!Array.isArray(band) && `--badge-bg: ${band.color!}`}
-				>
-					{
-						Array.isArray(band) ? (
-							band
-								.map(({ color, ...band }) => ({
-									...band,
-									color: colord(color!),
-								}))
-								.map(({ id, name, color, count }, idx) => (
-									<div
-										class:list={[
-											"tooltip",
-											idx % 2 && "tooltip-bottom",
-											color.brightness() < 0.67
-												? "before:text-white"
-												: "before:text-black",
-										]}
-										data-tip={`${unwrap(name)} (${count})`}
-										style={`--tt-bg: ${color.toHex()}`}
-									>
-										<img
-											src={`/assets/band/${id}.svg`}
-											alt={`${unwrap(name)} icon`}
-											loading="lazy"
-											class="size-5"
-										/>
-									</div>
-								))
-						) : (
-							<>
-								<img
-									src={`/assets/band/${band.id}.svg`}
-									alt={`${unwrap(band.name)} icon`}
-									loading="lazy"
-									class:list={[
-										"size-5",
-										colord(band.color!).brightness() > 0.67 &&
-											"dark:drop-shadow-lg",
-									]}
-								/>
+				{
+					Array.isArray(band) ? (
+						<div class="badge dark:badge-primary dark:badge-soft">
+							{band.map((band) => (
+								<EventCardBandIcon {band} />
+							))}
+						</div>
+					) : (
+						<div
+							class:list={[
+								"badge font-medium",
+								colord(band.color!).brightness() < 0.67
+									? "text-white"
+									: "text-black",
+							]}
+							style={`--badge-bg: ${band.color!}`}
+						>
+							<img
+								src={`/assets/band/${band.id}.svg`}
+								alt={`${unwrap(band.name)} icon`}
+								loading="lazy"
+								class:list={[
+									"size-5",
+									colord(band.color!).brightness() > 0.67 &&
+										"dark:drop-shadow-lg",
+								]}
+							/>
 
-								{unwrap(band.name)}
-							</>
-						)
-					}
-				</div>
+							{unwrap(band.name)}
+						</div>
+					)
+				}
 			</div>
 
 			<div class="flex flex-wrap justify-center gap-1">
