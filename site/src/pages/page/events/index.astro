@@ -89,7 +89,7 @@ const page = paginate({
 						class="btn btn-sm btn-circle btn-success"
 						hx-get
 						hx-indicator="this"
-						hx-vals={JSON.stringify({ ...params, list: oppositeList })}
+						hx-vals={JSON.stringify({ list: oppositeList })}
 						hx-select-oob="#events"
 						hx-swap="none transition:true"
 					>
