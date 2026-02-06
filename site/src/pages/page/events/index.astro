@@ -20,7 +20,7 @@ const page = paginate({
 	context: Astro,
 	size: 6,
 	extraProps: {
-		"hx-select": "#events > *",
+		"hx-select": "#events .event-card",
 		"hx-swap": "afterend",
 		"hx-vals": JSON.stringify(params),
 	},
@@ -36,15 +36,12 @@ const page = paginate({
 		: undefined}
 >
 	<div class="flex flex-col gap-8">
-		<div class="flex flex-col items-center gap-4">
+		<div id="active-events" class="flex flex-col items-center gap-4">
 			<h2 class="badge badge-accent badge-xl w-48 font-medium">
 				Active events
 			</h2>
 
-			<div
-				id="active-events"
-				class="flex flex-wrap justify-center gap-x-2 gap-y-4"
-			>
+			<div class="flex flex-wrap justify-center gap-x-2 gap-y-4">
 				{
 					events.active.length > 0 ? (
 						events.active.map((event) => (
@@ -57,8 +54,8 @@ const page = paginate({
 			</div>
 		</div>
 
-		<div class="flex flex-col items-center gap-4">
-			<div id="events-heading" class="inline-flex gap-2">
+		<div id="events" class="flex flex-col items-center gap-4">
+			<div class="inline-flex gap-2">
 				<div
 					class="tooltip tooltip-right"
 					data-tip={`Filter ${params.list} events`}
@@ -93,7 +90,7 @@ const page = paginate({
 						hx-get
 						hx-indicator="this"
 						hx-vals={JSON.stringify({ ...params, list: oppositeList })}
-						hx-select-oob="#events-heading, #events"
+						hx-select-oob="#events"
 						hx-swap="none transition:true"
 					>
 						<iconify-icon
@@ -111,7 +108,6 @@ const page = paginate({
 			</div>
 
 			<div
-				id="events"
 				hx-indicator="#events-loader"
 				class="flex flex-wrap justify-center gap-x-2 gap-y-4"
 			>
