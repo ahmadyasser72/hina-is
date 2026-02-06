@@ -1,7 +1,7 @@
 ---
 import type { Bandori } from "@hina-is/bestdori/data";
 
-import { dayjs } from "~/lib/date";
+import { dayjs, formatDuration } from "~/lib/date";
 
 interface Props extends Pick<Bandori.Event, "startAt" | "endAt"> {
 	region: Bandori.GameRegion;
@@ -12,8 +12,6 @@ const { startAt, endAt, region, predicted } = Astro.props;
 
 const from = dayjs(startAt[region]).tz();
 const to = dayjs(endAt[region]).tz();
-const durationDays = to.diff(from, "days");
-const durationHours = Math.round(to.diff(from, "hours", true));
 ---
 
 <div class="inline-flex w-64 items-center">
@@ -41,10 +39,10 @@ const durationHours = Math.round(to.diff(from, "hours", true));
 		class="tooltip tooltip-left flex-1"
 		data-tip={predicted
 			? "Predicted date, might be inaccurate"
-			: `Duration: ${durationHours}h`}
+			: formatDuration(from, to)}
 	>
 		<span class="font-medium uppercase underline decoration-dotted">
-			{predicted ? "??" : `${durationDays}d`}
+			{predicted ? "??" : `${Math.round(to.diff(from, "days", true))}d`}
 		</span>
 	</div>
 </div>
