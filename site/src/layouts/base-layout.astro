@@ -72,8 +72,8 @@ const { background } = Astro.props;
 
 		if (node instanceof HTMLDialogElement) {
 			node.show();
-			node.addEventListener("close", () => {
-				node.addEventListener("transitionend", () => node.remove());
+			node.addEventListener("toggle", ({ newState }) => {
+				if (newState === "closed") setTimeout(() => node.remove(), 300);
 			});
 		}
 
