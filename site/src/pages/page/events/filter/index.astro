@@ -26,7 +26,7 @@ const { facets } = filterEvents(params, events.list);
 			hx-vals={JSON.stringify({ list: params.list })}
 		>
 			{
-				facets.map(({ name, type, values }) => (
+				facets.map(({ name, values }) => (
 					<fieldset class="group fieldset border-base-300 rounded-box w-full border p-4 pt-2">
 						<legend class="fieldset-legend">{titleCase(name)}</legend>
 
@@ -37,7 +37,7 @@ const { facets } = filterEvents(params, events.list);
 										{id}
 										{name}
 										{value}
-										{type}
+										type="checkbox"
 										checked={
 											Array.isArray(params[name])
 												? params[name].includes(value as never)
@@ -64,7 +64,7 @@ const { facets } = filterEvents(params, events.list);
 							{params[name] && (
 								<input
 									{name}
-									{type}
+									type="checkbox"
 									value="reset"
 									class="btn max-sm:btn-sm"
 									aria-label="Reset"

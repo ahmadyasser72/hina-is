@@ -5,8 +5,8 @@ import { alwaysArray } from "~/lib/schema";
 export const schema = z
 	.object({
 		list: z.enum(["future", "past"]).catch("future"),
-		attribute: z.string(),
-		event_type: z.string(),
+		attribute: z.string().apply(alwaysArray),
+		event_type: z.string().apply(alwaysArray),
 		band: z.coerce.number().apply(alwaysArray),
 		character: z.coerce.number().apply(alwaysArray),
 	})

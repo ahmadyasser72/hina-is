@@ -54,11 +54,20 @@ export const filterEvents = (
 	for (const event of events) {
 		const bands = toArray(event.band);
 		if (
-			(filter.attribute && filter.attribute !== event.attribute.name) ||
-			(filter.event_type && filter.event_type !== event.type) ||
-			(filterBand?.length &&
-				!filterBand.every((id) => bands.some((b) => b.id === id)))
+			filterBand?.length &&
+			!filterBand.every((id) => bands.some((b) => b.id === id))
 		)
+			continue;
+
+		add(byAttribute, event.attribute.name);
+		if (
+			filter.attribute?.length &&
+			!filter.attribute.includes(event.attribute.name)
+		)
+			continue;
+
+		add(byEventType, event.type);
+		if (filter.event_type?.length && !filter.event_type.includes(event.type))
 			continue;
 
 		const scopedCharacters = filterBand?.length
@@ -78,9 +87,6 @@ export const filterEvents = (
 		)
 			continue;
 
-		add(byAttribute, event.attribute.name);
-		add(byEventType, event.type);
-
 		for (const band of scopedBands) {
 			add(byBand, band.id);
 		}
@@ -95,12 +101,10 @@ export const filterEvents = (
 	const buildFilters = <K, T extends keyof (typeof schema)["shape"]>(
 		map: Map<K, number>,
 		name: T,
-		type: "radio" | "checkbox",
 		getIcon?: (id: K) => string,
 		getLabel?: (id: K) => string,
 	) => ({
 		name,
-		type,
 		values: [...map.entries()]
 			.filter(([, count]) => count > 0)
 			.map(([value, count], idx) => ({
@@ -118,22 +122,19 @@ export const filterEvents = (
 			buildFilters(
 				byAttribute,
 				"attribute",
-				"radio",
 				(id) => `/assets/attribute/${id}.svg`,
 				(id) => id.toUpperCase(),
 			),
-			buildFilters(byEventType, "event_type", "radio"),
+			buildFilters(byEventType, "event_type"),
 			buildFilters(
 				byBand,
 				"band",
-				"checkbox",
 				(id) => `/assets/band/${id}.svg`,
 				(id) => unwrap(bands.get(id)!.name),
 			),
 			buildFilters(
 				byCharacter,
 				"character",
-				"checkbox",
 				(id) => `/assets/character/${id}.${IMAGE_FORMAT}`,
 				(id) => {
 					const character = characters.get(id)!;
