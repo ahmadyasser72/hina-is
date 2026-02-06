@@ -45,10 +45,10 @@ const progress = (() => {
 	<div class="card bg-base-100 w-90 flex-1 shadow-sm">
 		<figure>
 			<img
+				class="aspect-3/1 h-32"
 				src={`/assets/event/${event.id}_banner.${IMAGE_FORMAT}`}
 				alt={`${unwrap(event.name)} banner`}
 				loading="lazy"
-				class="aspect-3/1 h-32"
 			/>
 		</figure>
 		<div class="card-body items-center text-center">
@@ -56,9 +56,9 @@ const progress = (() => {
 				{unwrap(event.name)}
 			</h2>
 
-			<EventCardTime {startAt} {endAt} region="jp" />
+			<EventCardTime {endAt} region="jp" {startAt} />
 
-			<EventCardTime {startAt} {endAt} {predicted} region="en" />
+			<EventCardTime {endAt} {predicted} region="en" {startAt} />
 
 			<div class="flex flex-wrap justify-center gap-1">
 				<div class="badge dark:badge-primary dark:badge-soft font-medium">
@@ -68,10 +68,10 @@ const progress = (() => {
 						style={`--tt-bg: ${attribute.color}`}
 					>
 						<img
+							class="size-5"
 							src={`/assets/attribute/${attribute.name}.svg`}
 							alt=`${attribute.name.toUpperCase()} icon`
 							loading="lazy"
-							class="size-5"
 						/>
 					</div>
 
@@ -98,12 +98,12 @@ const progress = (() => {
 							<img
 								src={`/assets/band/${band.id}.svg`}
 								alt={`${unwrap(band.name)} icon`}
-								loading="lazy"
 								class:list={[
 									"size-5",
 									colord(band.color!).brightness() > 0.67 &&
 										"dark:drop-shadow-lg",
 								]}
+								loading="lazy"
 							/>
 
 							{unwrap(band.name)}
@@ -127,9 +127,9 @@ const progress = (() => {
 							<details class="dropdown dropdown-top dropdown-end">
 								<summary class="btn btn-circle btn-outline size-10">
 									<iconify-icon
+										class="size-4"
 										icon="lucide:chevron-up"
 										width="none"
-										class="size-4"
 									/>
 								</summary>
 								<div class="dropdown-content bg-base-100 rounded-box mb-2 flex w-60 flex-wrap justify-center gap-1 p-2 shadow-sm">
@@ -173,12 +173,12 @@ const progress = (() => {
 	</div>
 
 	<a
-		href={`https://bestdori.com/info/events/${event.id}`}
-		target="_blank"
-		rel="noopener noreferrer"
 		class="btn btn-sm btn-info"
+		href={`https://bestdori.com/info/events/${event.id}`}
+		rel="noopener noreferrer"
+		target="_blank"
 	>
-		<iconify-icon icon="lucide:external-link" width="none" class="size-4"
+		<iconify-icon class="size-4" icon="lucide:external-link" width="none"
 		></iconify-icon>
 		View on Bestdori!
 	</a>

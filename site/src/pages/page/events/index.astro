@@ -36,7 +36,7 @@ const page = paginate({
 		: undefined}
 >
 	<div class="flex flex-col gap-8">
-		<div id="active-events" class="flex flex-col items-center gap-4">
+		<div class="flex flex-col items-center gap-4" id="active-events">
 			<h2 class="badge badge-accent badge-xl w-48 font-medium">
 				Active events
 			</h2>
@@ -54,26 +54,26 @@ const page = paginate({
 			</div>
 		</div>
 
-		<div id="events" class="flex scroll-mt-8 flex-col items-center gap-4">
+		<div class="flex scroll-mt-8 flex-col items-center gap-4" id="events">
 			<div class="inline-flex gap-2">
 				<div
 					class="tooltip tooltip-right"
 					data-tip={`Filter ${params.list} events`}
 				>
 					<button
-						class="btn btn-sm btn-circle btn-success"
 						hx-get="/page/events/filter"
+						class="btn btn-sm btn-circle btn-success"
 						hx-indicator="this"
 						hx-vals={JSON.stringify(params)}
 					>
 						<iconify-icon
+							class="htmx-indicator-replace size-4"
 							icon="lucide:list-filter"
-							width="none"
-							class="htmx-indicator-replace size-4"></iconify-icon>
+							width="none"></iconify-icon>
 						<iconify-icon
+							class="htmx-indicator size-4"
 							icon="svg-spinners:90-ring-with-bg"
-							width="none"
-							class="htmx-indicator size-4"></iconify-icon>
+							width="none"></iconify-icon>
 					</button>
 				</div>
 
@@ -86,31 +86,31 @@ const page = paginate({
 					data-tip={`Show ${oppositeList} events`}
 				>
 					<button
-						class="btn btn-sm btn-circle btn-success"
 						hx-get
-						hx-indicator="this"
-						hx-vals={JSON.stringify({ list: oppositeList })}
 						hx-target="#events"
+						class="btn btn-sm btn-circle btn-success"
+						hx-indicator="this"
 						hx-select="#events"
 						hx-swap="outerHTML transition:true show:top"
+						hx-vals={JSON.stringify({ list: oppositeList })}
 					>
 						<iconify-icon
+							class="htmx-indicator-replace size-4"
 							icon={oppositeList === "future"
 								? "lucide:calendar-clock"
 								: "lucide:history"}
-							width="none"
-							class="htmx-indicator-replace size-4"></iconify-icon>
+							width="none"></iconify-icon>
 						<iconify-icon
+							class="htmx-indicator size-4"
 							icon="svg-spinners:90-ring-with-bg"
-							width="none"
-							class="htmx-indicator size-4"></iconify-icon>
+							width="none"></iconify-icon>
 					</button>
 				</div>
 			</div>
 
 			<div
-				hx-indicator="#events-loader"
 				class="flex flex-wrap justify-center gap-x-2 gap-y-4"
+				hx-indicator="#events-loader"
 			>
 				{
 					page.items.map((event, idx) => (
@@ -123,12 +123,11 @@ const page = paginate({
 				}
 			</div>
 
-			<div id="events-loader" class="htmx-indicator relative mt-8 h-32 w-full">
+			<div class="htmx-indicator relative mt-8 h-32 w-full" id="events-loader">
 				<iconify-icon
-					icon="svg-spinners:90-ring-with-bg"
-					width="none"
 					class="text-accent center bg-accent-content/80 absolute size-32 rounded-full"
-				></iconify-icon>
+					icon="svg-spinners:90-ring-with-bg"
+					width="none"></iconify-icon>
 
 				<span
 					class="badge center badge-lg badge-accent absolute w-max font-medium"

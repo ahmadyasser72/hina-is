@@ -11,20 +11,20 @@ const events = getEvents(params);
 const { facets } = filterEvents(params, events.list);
 ---
 
-<dialog id="filter_modal" class="modal max-sm:modal-bottom">
+<dialog class="modal max-sm:modal-bottom" id="filter_modal">
 	<div class="modal-box max-h-4/5 w-full sm:max-w-xl">
 		<h3 class="text-center text-lg font-medium">Filter {params.list} events</h3>
 
 		<form
-			id="filter"
-			class="flex flex-col gap-1"
-			hx-trigger="input"
 			hx-target="this"
+			hx-trigger="input"
+			class="flex flex-col gap-1"
+			id="filter"
+			hx-disabled-elt="#filter input"
+			hx-include="#filter"
 			hx-select="#filter"
 			hx-select-oob="#apply-filter"
 			hx-swap="outerHTML transition:true"
-			hx-disabled-elt="#filter input"
-			hx-include="#filter"
 			hx-vals={JSON.stringify({ list: params.list })}
 		>
 			{
@@ -36,34 +36,34 @@ const { facets } = filterEvents(params, events.list);
 							{values.map(({ id, value, label, icon, count }) => (
 								<div>
 									<input
+										class="peer hidden"
 										{id}
 										{name}
-										{value}
 										type="checkbox"
+										{value}
 										checked={
 											Array.isArray(params[name])
 												? params[name].includes(value as never)
 												: params[name] === value
 										}
-										class="peer hidden"
 									/>
 									<label
-										for={id}
-										class="btn max-sm:btn-sm peer-[&:not(:checked):not(:disabled)]:btn-outline peer-checked:btn-accent peer-disabled:btn-disabled peer-disabled:btn-neutral"
 										hx-get="/page/events/filter"
 										hx-trigger="input from:previous"
+										class="btn max-sm:btn-sm peer-[&:not(:checked):not(:disabled)]:btn-outline peer-checked:btn-accent peer-disabled:btn-disabled peer-disabled:btn-neutral"
+										for={id}
 									>
 										{icon && (
 											<>
 												<img
+													class="htmx-indicator-replace size-6 sm:size-8"
 													src={icon}
 													alt={`${label} icon`}
-													class="htmx-indicator-replace size-6 sm:size-8"
 												/>
 												<iconify-icon
+													class="htmx-indicator size-6 sm:size-8"
 													icon="svg-spinners:90-ring-with-bg"
 													width="none"
-													class="htmx-indicator size-6 sm:size-8"
 												/>
 											</>
 										)}
@@ -74,12 +74,12 @@ const { facets } = filterEvents(params, events.list);
 
 							{params[name] && (
 								<input
+									hx-get="/page/events/filter"
+									class="btn max-sm:btn-sm"
 									{name}
 									type="checkbox"
 									value="reset"
-									class="btn max-sm:btn-sm"
 									aria-label="Reset"
-									hx-get="/page/events/filter"
 								/>
 							)}
 						</div>
@@ -90,31 +90,31 @@ const { facets } = filterEvents(params, events.list);
 
 		<div class="bg-base-100 sticky bottom-0 w-full px-4 py-2">
 			<button
-				id="apply-filter"
-				class="btn btn-primary w-full"
 				hx-get="/page/events"
-				hx-indicator="this"
-				hx-vals={JSON.stringify(params)}
 				hx-target="#events"
+				class="btn btn-primary w-full"
+				id="apply-filter"
+				hx-indicator="this"
+				hx-on--after-request="event.detail.successful && filter_modal.close()"
 				hx-select="#events"
 				hx-swap="outerHTML show:top"
-				hx-on--after-request="event.detail.successful && filter_modal.close()"
+				hx-vals={JSON.stringify(params)}
 			>
 				<iconify-icon
+					class="htmx-indicator-replace size-6"
 					icon="lucide:filter"
-					width="none"
-					class="htmx-indicator-replace size-6"></iconify-icon>
+					width="none"></iconify-icon>
 				<iconify-icon
+					class="htmx-indicator size-6"
 					icon="svg-spinners:90-ring-with-bg"
-					width="none"
-					class="htmx-indicator size-6"></iconify-icon>
+					width="none"></iconify-icon>
 
 				Apply filter
 			</button>
 		</div>
 	</div>
 
-	<form method="dialog" class="modal-backdrop">
+	<form class="modal-backdrop" method="dialog">
 		<button>close</button>
 	</form>
 </dialog>

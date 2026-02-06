@@ -21,30 +21,30 @@ const page = paginate({
 				page.items.map(([id, { voice }], idx) => (
 					<button
 						{...(page.isLastElement(idx) && page.props)}
-						data-stamp={id}
-						class="btn btn-ghost relative aspect-40/33 h-32"
 						hx-post="/stamp/player/room"
+						class="btn btn-ghost relative aspect-40/33 h-32"
+						data-stamp={id}
 						hx-vals={JSON.stringify({ id })}
 					>
 						<img
+							class="w-full"
 							src={`/assets/stamp/${id}.${IMAGE_FORMAT}`}
 							alt={`Stamp #${id}`}
-							loading="lazy"
 							decoding="async"
-							class="w-full"
+							loading="lazy"
 						/>
 
 						{voice !== null && (
 							<div class="voice-icon btn bg-base-100/50 btn-circle absolute right-4 bottom-4 size-6 border-0 backdrop-blur-sm">
 								<iconify-icon
+									class="htmx-indicator-replace size-4"
 									icon="lucide:volume-2"
 									width="none"
-									class="htmx-indicator-replace size-4"
 								/>
 								<iconify-icon
+									class="htmx-indicator size-4"
 									icon="svg-spinners:90-ring-with-bg"
 									width="none"
-									class="htmx-indicator size-4"
 								/>
 							</div>
 						)}
@@ -54,7 +54,7 @@ const page = paginate({
 		</div>
 	</div>
 
-	<form method="dialog" class="modal-backdrop">
+	<form class="modal-backdrop" method="dialog">
 		<button>close</button>
 	</form>
 </dialog>

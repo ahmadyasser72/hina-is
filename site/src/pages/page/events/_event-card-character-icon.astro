@@ -43,10 +43,10 @@ const color = colord(character.colorCode);
 					</div>
 
 					<img
+						class="size-8"
 						src={`/assets/band/${character.band.id}.svg`}
 						alt={`${band} icon`}
 						loading="lazy"
-						class="size-8"
 					/>
 				</div>
 			) : (
@@ -55,9 +55,9 @@ const color = colord(character.colorCode);
 		}
 	</div>
 	<img
+		class="size-10"
 		src={`/assets/character/${character.id}.${IMAGE_FORMAT}`}
 		alt={`${name} icon`}
 		loading="lazy"
-		class="size-10"
 	/>
 </div>

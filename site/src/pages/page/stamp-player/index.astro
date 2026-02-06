@@ -4,25 +4,25 @@ import BaseLayout from "~/layouts/base-layout.astro";
 
 <BaseLayout>
 	<div class="flex h-full flex-col">
-		<div id="stamp-container" class="relative w-full flex-1 shadow-sm"></div>
+		<div class="relative w-full flex-1 shadow-sm" id="stamp-container"></div>
 
 		<div class="mt-20 flex w-full flex-col items-center gap-4 px-2">
 			<h2 class="text-xl font-medium">Stamp player</h2>
 			<button
 				hx-get="/page/stamp-player/list"
-				hx-indicator="this"
-				data-scroll-here
 				class="btn sm:btn-wide btn-accent w-full"
+				data-scroll-here
+				hx-indicator="this"
 			>
 				View stamps
 				<iconify-icon
+					class="htmx-indicator-replace size-6"
 					icon="line-md:emoji-smile"
-					width="none"
-					class="htmx-indicator-replace size-6"></iconify-icon>
+					width="none"></iconify-icon>
 				<iconify-icon
+					class="htmx-indicator size-6"
 					icon="svg-spinners:90-ring-with-bg"
-					width="none"
-					class="htmx-indicator size-6"></iconify-icon>
+					width="none"></iconify-icon>
 			</button>
 		</div>
 	</div>

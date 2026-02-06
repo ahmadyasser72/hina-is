@@ -12,8 +12,10 @@ const config = {
 		"prettier-plugin-astro",
 		"@ianvs/prettier-plugin-sort-imports",
 		"prettier-plugin-tailwindcss",
+		"@xeonlink/prettier-plugin-organize-attributes",
 	],
 	overrides: [{ files: "*.astro", options: { parser: "astro" } }],
+
 	importOrder: [
 		"^@hina-is/(.*)$",
 		"",
@@ -22,6 +24,9 @@ const config = {
 		"^~/(.*)$",
 		"^[./]",
 	],
+
+	attributeGroups: ["^hx-(get|post|trigger)$", "$CODE_GUIDE", "^hx-"],
+	attributeSort: "ASC",
 };
 
 export default config;

@@ -36,10 +36,10 @@ const color = colord(band.color!);
 			{
 				characters.map(({ id, nickname, name }) => (
 					<img
+						class="size-8"
 						src={`/assets/character/${id}.${IMAGE_FORMAT}`}
 						alt={`${unwrap(nickname) ?? unwrap(name)} icon`}
 						loading="lazy"
-						class="size-8"
 					/>
 				))
 			}
@@ -49,7 +49,7 @@ const color = colord(band.color!);
 	<img
 		src={`/assets/band/${band.id}.svg`}
 		alt={`${name} icon`}
-		loading="lazy"
 		class:list={["size-5", color.brightness() > 0.67 && "dark:drop-shadow-lg"]}
+		loading="lazy"
 	/>
 </div>
