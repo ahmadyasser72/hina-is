@@ -16,21 +16,8 @@ const durationDays = to.diff(from, "days");
 const durationHours = Math.round(to.diff(from, "hours", true));
 ---
 
-<div class="inline-flex items-center gap-x-2">
-	{
-		predicted ? (
-			<div
-				class="tooltip tooltip-right"
-				data-tip="Predicted date, might be inaccurate"
-			>
-				<span class="font-medium uppercase underline decoration-dotted">
-					{region}?
-				</span>
-			</div>
-		) : (
-			<span class="font-medium uppercase">{region}</span>
-		)
-	}
+<div class="inline-flex w-64 items-center">
+	<span class="flex-1 font-medium uppercase">{region}</span>
 
 	<span class="badge dark:badge-primary dark:badge-soft inline-flex">
 		<div
@@ -50,9 +37,14 @@ const durationHours = Math.round(to.diff(from, "hours", true));
 		</div>
 	</span>
 
-	<div class="tooltip tooltip-left" data-tip={`Duration: ${durationHours}h`}>
+	<div
+		class="tooltip tooltip-left flex-1"
+		data-tip={predicted
+			? "Predicted date, might be inaccurate"
+			: `Duration: ${durationHours}h`}
+	>
 		<span class="font-medium uppercase underline decoration-dotted">
-			{durationDays}D
+			{predicted ? "??" : `${durationDays}d`}
 		</span>
 	</div>
 </div>
