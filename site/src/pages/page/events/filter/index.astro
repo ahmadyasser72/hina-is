@@ -25,6 +25,7 @@ const { facets } = filterEvents(params, events.list);
 			hx-swap="outerHTML transition:true"
 			hx-disabled-elt="#filter input"
 			hx-include="#filter"
+			hx-vals={JSON.stringify({ list: params.list })}
 		>
 			{
 				facets.map(({ name, values }) => (
