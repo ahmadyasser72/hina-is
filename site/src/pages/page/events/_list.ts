@@ -177,7 +177,11 @@ export const getEvents = ({ list }: z.infer<typeof schema>) => {
 						const { startAt, endAt, ...event } = events.get(id)!;
 
 						const eventDuration = dayjs(endAt.jp).diff(startAt.jp);
-						const startAtEn = lastEndAt.startOf("hours").add(43, "hours");
+						const startAtEn = lastEndAt
+							.utc()
+							.startOf("hours")
+							.add(2, "days")
+							.set("hours", 1);
 						const endAtEn = startAtEn.add(eventDuration);
 						lastEndAt = endAtEn;
 
