@@ -54,7 +54,7 @@ const page = paginate({
 			</div>
 		</div>
 
-		<div id="events" class="flex flex-col items-center gap-4">
+		<div id="events" class="flex scroll-mt-8 flex-col items-center gap-4">
 			<div class="inline-flex gap-2">
 				<div
 					class="tooltip tooltip-right"
@@ -90,8 +90,9 @@ const page = paginate({
 						hx-get
 						hx-indicator="this"
 						hx-vals={JSON.stringify({ list: oppositeList })}
-						hx-select-oob="#events"
-						hx-swap="none transition:true"
+						hx-target="#events"
+						hx-select="#events"
+						hx-swap="outerHTML transition:true show:top"
 					>
 						<iconify-icon
 							icon={oppositeList === "future"
