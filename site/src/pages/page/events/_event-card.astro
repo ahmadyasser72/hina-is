@@ -6,6 +6,7 @@ import { colord } from "colord";
 import { IMAGE_FORMAT } from "~/lib/compressor/constants";
 import { dayjs, formatDuration } from "~/lib/date";
 import EventCardBandIcon from "./_event-card-band-icon.astro";
+import EventCardCardIcon from "./_event-card-card-icon.astro";
 import EventCardCharacterIcon from "./_event-card-character-icon.astro";
 import EventCardTime from "./_event-card-time.astro";
 
@@ -172,6 +173,24 @@ const progress = (() => {
 	</div>
 
 	<div class="join">
+		{
+			event.cards.length > 0 && (
+				<details class="dropdown dropdown-top group">
+					<summary
+						class="btn tooltip tooltip-right join-item btn-sm btn-circle btn-soft"
+						data-tip="Event cards"
+					>
+						<iconify-icon class="size-4" icon="lucide:sparkle" width="none" />
+					</summary>
+					<div class="dropdown-content bg-base-300/80 rounded-box z-10 mb-1 flex w-max max-w-48 flex-wrap-reverse justify-center gap-x-2 p-2 shadow-sm">
+						{event.cards.map((card) => (
+							<EventCardCardIcon {card} />
+						))}
+					</div>
+				</details>
+			)
+		}
+
 		<a
 			class="btn join-item btn-sm btn-info flex-1"
 			href={`https://bestdori.com/info/events/${event.id}`}

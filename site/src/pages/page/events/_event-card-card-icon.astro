@@ -1,0 +1,70 @@
+---
+import type { Bandori } from "@hina-is/bestdori/data";
+
+import { colord } from "colord";
+
+import { IMAGE_FORMAT } from "~/lib/compressor/constants";
+
+interface Props {
+	card: Bandori.Card & { id: number };
+}
+
+const { card } = Astro.props;
+
+const {
+	character: { band, ...character },
+} = card;
+const color = colord(character.colorCode);
+---
+
+<div class="tooltip tooltip-right">
+	<div
+		class:list={[
+			"tooltip-content flex max-w-40 flex-col items-center gap-1",
+			color.brightness() < 0.67 ? "text-white" : "text-black",
+		]}
+		style={`--tt-bg: ${color.toHex()}`}
+	>
+		<span class="line-clamp-2 text-sm">{card.name}</span>
+		<div class="badge badge-neutral not-dark:badge-soft badge-sm font-medium">
+			{card.type.toUpperCase()} &starf;{card.rarity}
+		</div>
+
+		<div class="inline-flex items-center justify-center gap-1">
+			<img
+				class="size-8"
+				src={`/assets/attributes/${card.attribute.name}.svg`}
+				alt=`${card.attribute.name.toUpperCase()} icon`
+				loading="lazy"
+			/>
+			<img
+				class="size-8"
+				src={`/assets/characters/${character.slug}.${IMAGE_FORMAT}`}
+				alt={`${character.name} icon`}
+				loading="lazy"
+			/>
+			<img
+				src={`/assets/bands/${band.slug}.svg`}
+				alt={`${band.name} icon`}
+				class:list={["size-8", color.brightness() > 0.67 && "drop-shadow-lg"]}
+				loading="lazy"
+			/>
+		</div>
+	</div>
+
+	<figure
+		class="hover-gallery rounded-box size-12 hover:shadow-md"
+		style={`background-color: ${character.colorCode}; --tw-shadow-color: ${band.color};`}
+	>
+		<img
+			src={`/assets/cards/${card.slug}-icon-normal.${IMAGE_FORMAT}`}
+			alt={`${card.name} icon`}
+			loading="lazy"
+		/>
+		<img
+			src={`/assets/cards/${card.slug}-icon-trained.${IMAGE_FORMAT}`}
+			alt={`${card.name} icon (trained)`}
+			loading="lazy"
+		/>
+	</figure>
+</div>
