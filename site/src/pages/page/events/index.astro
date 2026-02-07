@@ -23,6 +23,13 @@ const page = paginate({
 		"hx-vals": JSON.stringify(params),
 	},
 });
+
+if (Astro.request.headers.get("hx-request") === "true" && page.current === 1) {
+	const replaceUrl = new URL(Astro.url);
+	replaceUrl.search = Astro.url.search;
+	replaceUrl.searchParams.delete("page");
+	Astro.response.headers.set("hx-replace-url", replaceUrl.href);
+}
 ---
 
 <BaseLayout

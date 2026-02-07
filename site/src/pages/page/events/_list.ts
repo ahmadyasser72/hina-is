@@ -59,17 +59,6 @@ export const filterEvents = (
 		)
 			continue;
 
-		if (!filter.event_type?.length || filter.event_type.includes(event.type)) {
-			add(byAttribute, event.attribute.name);
-		}
-
-		if (
-			!filter.attribute?.length ||
-			filter.attribute.includes(event.attribute.name)
-		) {
-			add(byEventType, event.type);
-		}
-
 		const scopedCharacters = filterBand?.length
 			? event.characters.filter((c) => filterBand.includes(c.band.id))
 			: event.characters;
@@ -82,15 +71,13 @@ export const filterEvents = (
 			: bands;
 
 		if (
-			(filter.attribute?.length &&
-				!filter.attribute.includes(event.attribute.name)) ||
-			(filter.event_type?.length && !filter.event_type.includes(event.type)) ||
-			(filter.character?.length &&
-				!filter.character.every((id) =>
-					scopedCharacters.some((c) => c.id === id),
-				))
+			filter.character?.length &&
+			!filter.character.every((id) => scopedCharacters.some((c) => c.id === id))
 		)
 			continue;
+
+		add(byAttribute, event.attribute.name);
+		add(byEventType, event.type);
 
 		for (const band of scopedBands) {
 			add(byBand, band.id);
@@ -99,6 +86,13 @@ export const filterEvents = (
 		for (const character of scopedCharacters) {
 			add(byCharacter, character.id);
 		}
+
+		if (
+			(filter.attribute?.length &&
+				!filter.attribute.includes(event.attribute.name)) ||
+			(filter.event_type?.length && !filter.event_type.includes(event.type))
+		)
+			continue;
 
 		all.push(event);
 	}
