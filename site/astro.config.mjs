@@ -7,6 +7,7 @@ import { defineConfig, envField } from "astro/config";
 export default defineConfig({
 	adapter: cloudflare({ imageService: "passthrough" }),
 	output: "server",
+	build: { concurrency: 4 },
 
 	env: {
 		schema: {
