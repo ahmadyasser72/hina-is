@@ -4,16 +4,10 @@ import { CACHE_DIR } from "./config";
 import { IMAGE_FORMAT, MAX_IMAGE_WIDTH } from "./constants";
 
 export const compressImage = async (
-	filename: string,
+	cacheName: string,
 	buffer: Buffer<ArrayBuffer>,
 ): Promise<Response> => {
-	const ext = path.extname(filename);
-	if (ext === ".svg")
-		return new Response(buffer, {
-			headers: { "content-type": "image/svg+xml" },
-		});
-
-	const outputFile = Bun.file(path.join(CACHE_DIR, filename));
+	const outputFile = Bun.file(path.join(CACHE_DIR, cacheName));
 
 	const alreadyCompressed = await outputFile.exists();
 	if (alreadyCompressed) return new Response(await outputFile.arrayBuffer());

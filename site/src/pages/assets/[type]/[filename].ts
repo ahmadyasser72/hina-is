@@ -1,3 +1,4 @@
+import { createHash } from "node:crypto";
 import { extname } from "node:path";
 import { bestdori } from "@hina-is/bestdori";
 import {
@@ -22,18 +23,21 @@ export const prerender = true;
 
 export const GET: APIRoute<Props, Params> = async ({ props, params }) => {
 	const response = await bestdori(props.pathname, true);
+	if (props.kind === "raw") return response;
 
-	const filename = [params.type, params.filename].join("__");
+	const cacheName =
+		[
+			params.type,
+			createHash("md5").update(response.url).digest("hex").slice(0, 10),
+		].join("__") + extname(params.filename);
+
 	const buffer = Buffer.from(await response.arrayBuffer());
 	switch (props.kind) {
 		case "audio":
-			return compressAudio(filename, buffer);
+			return compressAudio(cacheName, buffer);
 
 		case "image":
-			return compressImage(filename, buffer);
-
-		case "raw":
-			return new Response(buffer);
+			return compressImage(cacheName, buffer);
 	}
 };
 

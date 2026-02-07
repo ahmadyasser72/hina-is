@@ -1,5 +1,5 @@
 import { exec } from "node:child_process";
-import { exists, mkdir, readFile, writeFile } from "node:fs/promises";
+import { exists, mkdir } from "node:fs/promises";
 import path from "node:path";
 
 import { limitFunction } from "p-limit";
@@ -37,12 +37,18 @@ export const bestdori = async <T = never>(
 ): Promise<Response> => {
 	const url = new URL(pathname, "https://bestdori.com");
 
-	const cachePath = path.join(CACHE_DIR, pathname.replaceAll("/", "_"));
-	const alreadyCached = await exists(cachePath);
-	if (skipFetch !== false && alreadyCached) {
-		const cached = await readFile(cachePath);
-		if (skipFetch === true || skipFetch(JSON.parse(cached.toString())))
-			return new Response(cached);
+	const outputFile = Bun.file(
+		path.join(CACHE_DIR, pathname.replaceAll("/", "_")),
+	);
+	const alreadyCached = await outputFile.exists();
+	if (
+		alreadyCached &&
+		(skipFetch === true ||
+			(typeof skipFetch === "function" && skipFetch(await outputFile.json())))
+	) {
+		const response = new Response(outputFile);
+		Object.defineProperty(response, "url", { value: url.href });
+		return response;
 	}
 
 	const response = await fetch(url);
@@ -57,7 +63,7 @@ export const bestdori = async <T = never>(
 	}
 
 	const data = await response.clone().arrayBuffer();
-	await writeFile(cachePath, Buffer.from(data));
+	await outputFile.write(data);
 
 	return response;
 };

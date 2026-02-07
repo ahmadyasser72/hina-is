@@ -4,10 +4,10 @@ import { CACHE_DIR } from "./config";
 import { AUDIO_BITRATE, AUDIO_FORMAT } from "./constants";
 
 export const compressAudio = async (
-	filename: string,
+	cacheName: string,
 	buffer: Buffer<ArrayBuffer>,
 ): Promise<Response> => {
-	const outputFile = Bun.file(path.join(CACHE_DIR, filename));
+	const outputFile = Bun.file(path.join(CACHE_DIR, cacheName));
 
 	const alreadyCompressed = await outputFile.exists();
 	if (alreadyCompressed) return new Response(await outputFile.arrayBuffer());
@@ -29,7 +29,8 @@ export const compressAudio = async (
 	);
 
 	const exitCode = await ffmpeg.exited;
-	if (exitCode !== 0) throw new Error(`failed to compress audio (${filename})`);
+	if (exitCode !== 0)
+		throw new Error(`failed to compress audio (${cacheName})`);
 
 	const compressed = await new Response(ffmpeg.stdout).arrayBuffer();
 	await outputFile.write(compressed);
