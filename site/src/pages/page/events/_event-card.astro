@@ -172,14 +172,52 @@ const progress = (() => {
 		</div>
 	</div>
 
-	<a
-		class="btn btn-sm btn-info"
-		href={`https://bestdori.com/info/events/${event.id}`}
-		rel="noopener noreferrer"
-		target="_blank"
-	>
-		<iconify-icon class="size-4" icon="lucide:external-link" width="none"
-		></iconify-icon>
-		View on Bestdori!
-	</a>
+	<div class="join">
+		<a
+			class="btn join-item btn-sm btn-info flex-1"
+			href={`https://bestdori.com/info/events/${event.id}`}
+			rel="noopener noreferrer"
+			target="_blank"
+		>
+			<iconify-icon class="size-4" icon="lucide:external-link" width="none"
+			></iconify-icon>
+			View on Bestdori!
+		</a>
+
+		<div class="dropdown dropdown-end dropdown-top">
+			<div
+				class="btn join-item btn-sm btn-circle btn-soft"
+				role="button"
+				tabindex="0"
+			>
+				<iconify-icon class="size-4" icon="lucide:ellipsis" width="none"
+				></iconify-icon>
+			</div>
+			<ul
+				class="dropdown-content menu bg-base-200/80 rounded-box z-10 mb-1 w-max p-2 shadow-sm"
+				tabindex="-1"
+			>
+				<li>
+					<a
+						href={`https://bestdori.com/tool/eventtracker/jp/t10/${event.id}`}
+						rel="noopener noreferrer"
+						target="_blank">T10 Leaderboard (JP)</a
+					>
+				</li>
+				{
+					dayjs(event.startAt.en).isBefore() && (
+						<li>
+							<a
+								href={`https://bestdori.com/tool/eventtracker/en/t10/${event.id}`}
+								rel="noopener noreferrer"
+								target="_blank"
+							>
+								T10 Leaderboard (EN)
+							</a>
+						</li>
+					)
+				}
+			</ul>
+		</div>
+	</div>
 </div>
