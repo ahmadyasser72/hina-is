@@ -43,15 +43,15 @@ export class StampComponent extends HTMLElement {
 	img: HTMLImageElement;
 	audio: HTMLAudioElement | null;
 
-	constructor(id: string, voiced: boolean) {
+	constructor(slug: string, voiced: boolean) {
 		super();
 		this.shadow = this.attachShadow({ mode: "open" });
 		this.shadow.adoptedStyleSheets = [stampStylesheet];
 
 		this.img = document.createElement("img");
-		this.img.src = `/assets/stamp/${id}.${IMAGE_FORMAT}`;
+		this.img.src = `/assets/stamps/${slug}-image.${IMAGE_FORMAT}`;
 		this.audio = voiced
-			? new Audio(`/assets/stamp/${id}.${AUDIO_FORMAT}`)
+			? new Audio(`/assets/stamps/${slug}-voice.${AUDIO_FORMAT}`)
 			: null;
 	}
 

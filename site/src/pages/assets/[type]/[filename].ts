@@ -1,16 +1,11 @@
+import { extname } from "node:path";
 import { bestdori } from "@hina-is/bestdori";
-import {
-	attributes,
-	bands,
-	characters,
-	events,
-	stamps,
-} from "@hina-is/bestdori/data";
+import { getAsset, type AssetType } from "@hina-is/bestdori/assets";
+import * as data from "@hina-is/bestdori/data";
 
 import type {
 	APIRoute,
 	GetStaticPaths,
-	GetStaticPathsResult,
 	InferGetStaticParamsType,
 	InferGetStaticPropsType,
 } from "astro";
@@ -33,63 +28,36 @@ export const GET: APIRoute<Props, Params> = async ({ props, params }) => {
 		case "image":
 			return compressImage(filename, buffer);
 
-		default:
-			throw new Error(`invalid route ${JSON.stringify({ props, params })}`);
+		case "raw":
+			return new Response(buffer);
 	}
 };
 
 export const getStaticPaths = (() => {
-	const attributeAssets = [...attributes.values()].map(({ name, assets }) => ({
-		params: { type: "attribute", filename: `${name}.svg` },
-		props: { kind: "image" as const, pathname: assets.icon },
-	})) satisfies GetStaticPathsResult;
-	const bandAssets = [...bands.entries()]
-		.filter(([, { assets }]) => !!assets.icon)
-		.map(([id, { assets }]) => ({
-			params: { type: "band", filename: `${id}.svg` },
-			props: { kind: "image" as const, pathname: assets.icon! },
-		})) satisfies GetStaticPathsResult;
-	const characterAssets = [...characters.entries()].map(([id, { assets }]) => ({
-		params: { type: "character", filename: `${id}.${IMAGE_FORMAT}` },
-		props: { kind: "image" as const, pathname: assets.icon },
-	})) satisfies GetStaticPathsResult;
+	const types = Object.keys(data) as AssetType[];
 
-	const eventAssets = [...events.entries()].flatMap(([id, { assets }]) =>
-		(["banner", "background"] as const).map((variant) => ({
-			params: {
-				type: "event",
-				filename: [id, variant].join("_") + `.${IMAGE_FORMAT}`,
-			},
-			props: { kind: "image" as const, pathname: assets[variant] },
-		})),
-	) satisfies GetStaticPathsResult;
+	return types.flatMap((type) => {
+		const entries = [...data[type].entries()];
 
-	const stampAssets = [...stamps.entries()].flatMap(
-		([id, { image, voice }]) => {
-			const imageAsset = {
-				params: { type: "stamp", filename: `${id}.${IMAGE_FORMAT}` },
-				props: { kind: "image" as const, pathname: image },
-			};
+		return entries.flatMap(([id, entry]) => {
+			const assets = Object.entries(getAsset(type, { id, ...entry }));
 
-			return voice === null
-				? imageAsset
-				: [
-						imageAsset,
-						{
-							params: { type: "stamp", filename: `${id}.${AUDIO_FORMAT}` },
-							props: { kind: "audio" as const, pathname: voice },
-						},
-					];
-		},
-	) satisfies GetStaticPathsResult;
+			return assets.map(([filename, pathname]) => {
+				let kind: "audio" | "image" | "raw" = "raw";
+				if (pathname.endsWith("mp3")) kind = "audio";
+				else if (pathname.endsWith("png")) kind = "image";
 
-	return [
-		...attributeAssets,
-		...bandAssets,
-		...characterAssets,
-		...eventAssets,
-		...stampAssets,
-	] as const;
+				let format = extname(pathname).slice(1);
+				if (kind === "audio") format = AUDIO_FORMAT;
+				else if (kind === "image") format = IMAGE_FORMAT;
+
+				return {
+					params: { type, filename: `${filename}.${format}` },
+					props: { kind, pathname },
+				};
+			});
+		});
+	});
 }) satisfies GetStaticPaths;
 
 type Props = InferGetStaticPropsType<typeof getStaticPaths>;

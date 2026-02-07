@@ -1,6 +1,4 @@
 ---
-import { unwrap } from "@hina-is/bestdori/utilities";
-
 import { titleCase } from "text-case";
 
 import BaseLayout from "~/layouts/base-layout.astro";
@@ -30,8 +28,8 @@ const page = paginate({
 <BaseLayout
 	background={events.active.length > 0
 		? {
-				src: `/assets/event/${events.active[0].id}_background.${IMAGE_FORMAT}`,
-				alt: `${unwrap(events.active[0].name)} background`,
+				src: `/assets/events/${events.active[0].slug}-background.${IMAGE_FORMAT}`,
+				alt: `${events.active[0].name} background`,
 			}
 		: undefined}
 >
@@ -87,11 +85,11 @@ const page = paginate({
 				>
 					<button
 						hx-get
-						hx-target="#events"
 						class="btn btn-sm btn-circle btn-success"
 						hx-indicator="this"
 						hx-select="#events"
 						hx-swap="outerHTML transition:true show:top"
+						hx-target="#events"
 						hx-vals={JSON.stringify({ list: oppositeList })}
 					>
 						<iconify-icon

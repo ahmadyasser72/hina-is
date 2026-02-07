@@ -16,25 +16,25 @@ const page = paginate({
 
 <dialog class="modal modal-bottom bg-transparent">
 	<div class="modal-box">
-		<div hx-target="this" class="flex h-36 gap-x-1 overflow-y-auto">
+		<div class="flex h-36 gap-x-1 overflow-y-auto" hx-target="this">
 			{
-				page.items.map(([id, { voice }], idx) => (
+				page.items.map(([id, { voiced, slug }], idx) => (
 					<button
 						{...(page.isLastElement(idx) && page.props)}
-						hx-post="/stamp/player/room"
+						hx-post="/page/stamp-player/room"
 						class="btn btn-ghost relative aspect-40/33 h-32"
-						data-stamp={id}
+						data-stamp={slug}
 						hx-vals={JSON.stringify({ id })}
 					>
 						<img
 							class="w-full"
-							src={`/assets/stamp/${id}.${IMAGE_FORMAT}`}
+							src={`/assets/stamps/${slug}-image.${IMAGE_FORMAT}`}
 							alt={`Stamp #${id}`}
 							decoding="async"
 							loading="lazy"
 						/>
 
-						{voice !== null && (
+						{voiced && (
 							<div class="voice-icon btn bg-base-100/50 btn-circle absolute right-4 bottom-4 size-6 border-0 backdrop-blur-sm">
 								<iconify-icon
 									class="htmx-indicator-replace size-4"

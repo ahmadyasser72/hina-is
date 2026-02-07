@@ -4,6 +4,7 @@
 	"private": true,
 	"exports": {
 		".": "./src/index.js",
+		"./assets": "./src/assets.js",
 		"./constants": "./src/constants.js",
 		"./data": "./src/data.js",
 		"./utilities": "./src/utilities.js"
@@ -14,11 +15,13 @@
 	"devDependencies": {
 		"@types/bun": "1.3.6",
 		"@types/node": "25.0.10",
+		"@types/slug": "5.0.9",
 		"devalue": "5.6.2"
 	},
 	"dependencies": {
 		"fast-equals": "6.0.0",
 		"p-limit": "7.2.0",
+		"slug": "11.0.1",
 		"zod": "4.3.6"
 	}
 }

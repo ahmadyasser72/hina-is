@@ -1,6 +1,5 @@
 ---
 import type { Bandori } from "@hina-is/bestdori/data";
-import { unwrap } from "@hina-is/bestdori/utilities";
 
 import { colord } from "colord";
 
@@ -46,14 +45,14 @@ const progress = (() => {
 		<figure>
 			<img
 				class="aspect-3/1 h-32"
-				src={`/assets/event/${event.id}_banner.${IMAGE_FORMAT}`}
-				alt={`${unwrap(event.name)} banner`}
+				src={`/assets/events/${event.slug}-banner.${IMAGE_FORMAT}`}
+				alt={`${event.name} banner`}
 				loading="lazy"
 			/>
 		</figure>
 		<div class="card-body items-center text-center">
 			<h2 class="card-title flex-1">
-				{unwrap(event.name)}
+				{event.name}
 			</h2>
 
 			<EventCardTime {endAt} region="jp" {startAt} />
@@ -69,7 +68,7 @@ const progress = (() => {
 					>
 						<img
 							class="size-5"
-							src={`/assets/attribute/${attribute.name}.svg`}
+							src={`/assets/attributes/${attribute.name}.svg`}
 							alt=`${attribute.name.toUpperCase()} icon`
 							loading="lazy"
 						/>
@@ -96,8 +95,8 @@ const progress = (() => {
 							style={`--badge-bg: ${band.color!}`}
 						>
 							<img
-								src={`/assets/band/${band.id}.svg`}
-								alt={`${unwrap(band.name)} icon`}
+								src={`/assets/bands/${band.slug}.svg`}
+								alt={`${band.name} icon`}
 								class:list={[
 									"size-5",
 									colord(band.color!).brightness() > 0.67 &&
@@ -106,7 +105,7 @@ const progress = (() => {
 								loading="lazy"
 							/>
 
-							{unwrap(band.name)}
+							{band.name}
 						</div>
 					)
 				}

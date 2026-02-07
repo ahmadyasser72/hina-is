@@ -5,14 +5,14 @@ import * as devalue from "devalue";
 import type { z } from "zod";
 
 import { bestdoriJSON } from ".";
+import { getSlug } from "./assets";
 import { Bands } from "./schema/bands";
 import { Cards } from "./schema/cards";
 import { Characters } from "./schema/characters";
 import { CardAttribute } from "./schema/constants";
 import { Events } from "./schema/events";
 import { StampImages, StampVoices } from "./schema/extras/stamps";
-import { Gacha, Gachas } from "./schema/gachas";
-import { Songs } from "./schema/songs";
+import { unwrap } from "./utilities";
 
 console.time("everything");
 
@@ -31,8 +31,6 @@ const SCHEMAS = {
 	cards: Cards,
 	characters: Characters,
 	events: Events,
-	gachas: Gachas,
-	songs: Songs,
 	stampImages: StampImages,
 	stampVoices: StampVoices,
 } as const;
@@ -55,8 +53,6 @@ const all = await (async () => {
 		cards,
 		characters,
 		events,
-		gachas,
-		songs,
 		jpStampImages,
 		enStampImages,
 		jpStampVoices,
@@ -66,44 +62,11 @@ const all = await (async () => {
 		get("cards", "/api/cards/all.5.json"),
 		get("characters", "/api/characters/main.3.json"),
 		get("events", "/api/events/all.5.json"),
-		get("gachas", "/api/gacha/all.5.json"),
-		get("songs", "/api/songs/all.5.json"),
 		get("stampImages", "/api/explorer/jp/assets/stamp/01.json"),
 		get("stampImages", "/api/explorer/en/assets/stamp/01.json"),
 		get("stampVoices", "/api/explorer/jp/assets/sound/voice_stamp.json"),
 		get("stampVoices", "/api/explorer/en/assets/sound/voice_stamp.json"),
 	]);
-
-	const resourceNameList = await time(
-		"fetch resourceNameList",
-		Promise.all(
-			["birthdayspin", "limitedspin", "operationspin", "spin"].map(
-				(resourceName) =>
-					bestdoriJSON<string[]>(
-						`/api/explorer/jp/assets/sound/voice/gacha/${resourceName}.json`,
-						false,
-					).then((values) => ({
-						resourceName,
-						values: new Set(
-							values
-								.filter((it) => it.endsWith("mp3"))
-								.map((it) => it.replace(".mp3", "")),
-						),
-					})),
-			),
-		),
-	);
-
-	const gachaLogoResourceNames = await time(
-		"fetch gachaLogoResourceNames",
-		bestdoriJSON<{ gacha: { screen: Record<string, number> } }>(
-			"/api/explorer/jp/assets/_info.json",
-			false,
-		).then((it) => new Set(Object.keys(it.gacha.screen))),
-	);
-
-	const getAssetPath = (pathname: string, name: { en: string | null }) =>
-		["/assets", !!name.en ? "en" : "jp", pathname].join("/");
 
 	return {
 		get attributes() {
@@ -117,17 +80,13 @@ const all = await (async () => {
 			return new Map(
 				CardAttribute.options.map((name) => [
 					name,
-					{
-						name,
-						color: colors[name],
-						assets: { icon: `/res/icon/${name}.svg` },
-					},
+					{ name, color: colors[name], slug: name },
 				]),
 			);
 		},
 
 		get bands() {
-			const colors = {
+			const colors: Record<string, string> = {
 				1: "#ff3377",
 				2: "#d23341",
 				3: "#f4b600",
@@ -139,26 +98,40 @@ const all = await (async () => {
 			};
 
 			return new Map(
-				[...bands.entries()].map(([id, entry]) => [
+				[...bands.entries()].map(([id, { name }]) => [
 					id,
 					{
-						...entry,
-						color: id in colors ? colors[id as keyof typeof colors] : null,
-						assets: {
-							icon: id in colors ? `/res/icon/band_${id}.svg` : null,
-						},
+						name: unwrap(name),
+						color: colors[id] ?? null,
+						slug: getSlug(id, unwrap(name)),
 					},
 				]),
+			);
+		},
+
+		get characters() {
+			return new Map(
+				[...characters.entries()].map(
+					([id, { bandId, nickname, name, ...entry }]) => [
+						id,
+						{
+							get band() {
+								return { id: bandId, ...all.bands.get(bandId)! };
+							},
+							...entry,
+
+							name: unwrap(nickname) ?? unwrap(name),
+							slug: getSlug(id, unwrap(nickname) ?? unwrap(name)),
+						},
+					],
+				),
 			);
 		},
 
 		get cards() {
 			return new Map(
 				[...cards.entries()].map(
-					([
-						id,
-						{ characterId, attribute, resourceSetName, stat, ...entry },
-					]) => [
+					([id, { characterId, name, attribute, stat, ...entry }]) => [
 						id,
 						{
 							get character() {
@@ -169,55 +142,19 @@ const all = await (async () => {
 							},
 							...entry,
 
-							get assets() {
-								const { resourceName } =
-									resourceNameList.find(({ values }) =>
-										values.has(resourceSetName),
-									) ?? {};
-
-								const out = {
-									icon: [] as [boolean, string][],
-									full: [] as [boolean, string][],
-								};
-
-								const icon = (trained: boolean): [boolean, string] => {
-									const chunkId = Math.floor(id / 50)
-										.toString()
-										.padStart(5, "0");
-
-									return [
-										trained,
-										getAssetPath(
-											`thumb/chara/card${chunkId}_rip/${resourceSetName}_${trained ? "after_training" : "normal"}.png`,
-											entry.name,
-										),
-									];
-								};
-								const full = (trained: boolean): [boolean, string] => {
-									return [
-										trained,
-										getAssetPath(
-											`characters/resourceset/${resourceSetName}_rip/card_${trained ? "after_training" : "normal"}.png`,
-											entry.name,
-										),
-									];
-								};
-
-								const noTrained = stat.training === undefined;
-								const noPreTrained =
-									stat.training?.levelLimit === 0 || entry.type === "others";
-								if (noTrained) {
-									out.icon.push(icon(false));
-									out.full.push(full(false));
-								} else if (noPreTrained) {
-									out.icon.push(icon(true));
-									out.full.push(full(true));
+							name: unwrap(name),
+							slug: getSlug(id, unwrap(name)),
+							get trainingState() {
+								if (stat.training === undefined) {
+									return "no-trained" as const;
+								} else if (
+									stat.training.levelLimit === 0 ||
+									entry.type === "others"
+								) {
+									return "only-trained" as const;
 								} else {
-									out.icon.push(icon(false), icon(true));
-									out.full.push(full(false), icon(true));
+									return "both" as const;
 								}
-
-								return out;
 							},
 						},
 					],
@@ -225,36 +162,10 @@ const all = await (async () => {
 			);
 		},
 
-		get characters() {
-			return new Map(
-				[...characters.entries()].map(([id, { bandId, ...entry }]) => [
-					id,
-					{
-						get band() {
-							return { id: bandId, ...all.bands.get(bandId)! };
-						},
-						...entry,
-
-						assets: { icon: `/res/icon/chara_icon_${id}.png` },
-					},
-				]),
-			);
-		},
-
 		get events() {
 			return new Map(
 				[...events.entries()].map(
-					([
-						id,
-						{
-							attribute,
-							characters,
-							cards,
-							assetBundleName,
-							bannerAssetBundleName,
-							...entry
-						},
-					]) => [
+					([id, { attribute, characters, cards, name, ...entry }]) => [
 						id,
 						{
 							get attribute() {
@@ -293,102 +204,8 @@ const all = await (async () => {
 							},
 							...entry,
 
-							assets: {
-								banner: getAssetPath(
-									`homebanner_rip/${bannerAssetBundleName}.png`,
-									entry.name,
-								),
-								background: getAssetPath(
-									`event/${assetBundleName}/topscreen_rip/bg_eventtop.png`,
-									entry.name,
-								),
-							},
-						},
-					],
-				),
-			);
-		},
-
-		get gachas() {
-			const resolveRates = (rates: Gacha["rates"]["jp"]) => {
-				if (!rates) return null;
-
-				return rates.map(({ cardId, ...entry }) => ({
-					get card() {
-						return { id: cardId, ...all.cards.get(cardId)! };
-					},
-					...entry,
-				}));
-			};
-
-			return new Map(
-				[...gachas.entries()].map(
-					([id, { rates, resourceName, bannerAssetBundleName, ...entry }]) => [
-						id,
-						{
-							get rates() {
-								const { jp, en } = rates;
-								return { jp: resolveRates(jp), en: resolveRates(en) };
-							},
-							...entry,
-
-							assets: {
-								logo: gachaLogoResourceNames.has(resourceName)
-									? getAssetPath(
-											`gacha/screen/${resourceName}_rip/logo.png`,
-											entry.name,
-										)
-									: undefined,
-								banner: bannerAssetBundleName
-									? getAssetPath(
-											`homebanner_rip/${bannerAssetBundleName}.png`,
-											entry.name,
-										)
-									: undefined,
-							},
-						},
-					],
-				),
-			);
-		},
-
-		get songs() {
-			return new Map(
-				[...songs.entries()].map(
-					([id, { bandId, bgmId, jacketImage, ...entry }]) => [
-						id,
-						{
-							get band() {
-								return { id: bandId, ...all.bands.get(bandId)! };
-							},
-							...entry,
-
-							get assets() {
-								return {
-									audio: getAssetPath(
-										`sound/${bgmId}_rip/${bgmId}.mp3`,
-										entry.title,
-									),
-									cover: jacketImage.map((albumId) => {
-										let chunk: number;
-										switch (albumId) {
-											case "miracle":
-											case "kirayume":
-												chunk = 30;
-												break;
-
-											default:
-												chunk = 10 * Math.ceil(id / 10);
-												break;
-										}
-
-										return getAssetPath(
-											`musicjacket/musicjacket${chunk}_rip/assets-star-forassetbundle-startapp-musicjacket-musicjacket${chunk}-${albumId}-jacket.png`,
-											entry.title,
-										);
-									}),
-								};
-							},
+							name: unwrap(name),
+							slug: getSlug(id, unwrap(name)),
 						},
 					],
 				),
@@ -419,19 +236,14 @@ const all = await (async () => {
 					.sort((a, b) => Number(b.voiced) - Number(a.voiced))
 					.map(({ id, region, voiced }) => [
 						id,
-						{
-							image: `/assets/${region}/stamp/01_rip/${id}.png`,
-							voice: voiced
-								? `/assets/${region}/sound/voice_stamp_rip/${id}.mp3`
-								: null,
-						},
+						{ region, voiced, slug: getSlug(id, region) },
 					]),
 			);
 		},
 	};
 })();
 
-const { cards, gachas, songs, ...data } = all;
+const { ...data } = all;
 export type Data = typeof data;
 
 const keys = Object.keys(data).join(", ");

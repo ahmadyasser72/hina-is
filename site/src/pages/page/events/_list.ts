@@ -10,7 +10,7 @@ import {
 	events,
 	type Bandori,
 } from "@hina-is/bestdori/data";
-import { toArray, unwrap } from "@hina-is/bestdori/utilities";
+import { toArray } from "@hina-is/bestdori/utilities";
 
 import type z from "zod";
 
@@ -127,24 +127,22 @@ export const filterEvents = (
 			buildFilters(
 				byAttribute,
 				"attribute",
-				(id) => `/assets/attribute/${id}.svg`,
+				(id) => `/assets/attributes/${id}.svg`,
 				(id) => id.toUpperCase(),
 			),
 			buildFilters(byEventType, "event_type"),
 			buildFilters(
 				byBand,
 				"band",
-				(id) => `/assets/band/${id}.svg`,
-				(id) => unwrap(bands.get(id)!.name),
+				(id) => `/assets/bands/${bands.get(id)!.slug}.svg`,
+				(id) => bands.get(id)!.name,
 			),
 			buildFilters(
 				byCharacter,
 				"character",
-				(id) => `/assets/character/${id}.${IMAGE_FORMAT}`,
-				(id) => {
-					const character = characters.get(id)!;
-					return unwrap(character.nickname) ?? unwrap(character.name);
-				},
+				(id) =>
+					`/assets/characters/${characters.get(id)!.slug}.${IMAGE_FORMAT}`,
+				(id) => characters.get(id)!.name,
 			),
 		],
 	};

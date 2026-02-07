@@ -37,8 +37,8 @@ export const POST: APIRoute = async ({ request, locals }) => {
 	if (!stamp) return new Response(null, { status: 404 });
 
 	const data = {
-		id,
-		voiced: !!stamp.voice,
+		id: stamp.slug,
+		voiced: stamp.voiced,
 		sender: locals.clientId,
 	} satisfies StampPayload;
 	await redis.publish("default", data);
