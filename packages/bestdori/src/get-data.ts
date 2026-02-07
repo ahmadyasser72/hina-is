@@ -143,7 +143,10 @@ const all = await (async () => {
 							...entry,
 
 							name: unwrap(name),
-							slug: getSlug(id, unwrap(name)),
+							get slug() {
+								const character = all.characters.get(characterId)!;
+								return getSlug(id, `${character.name}-${unwrap(name)}`);
+							},
 							get trainingState() {
 								if (stat.training === undefined) {
 									return "no-trained" as const;
