@@ -1,6 +1,10 @@
 import { extname } from "node:path";
 import { bestdori } from "@hina-is/bestdori";
-import { getAsset, type AssetType } from "@hina-is/bestdori/assets";
+import {
+	getAsset,
+	type AssetType,
+	type DataForAsset,
+} from "@hina-is/bestdori/assets";
 import * as data from "@hina-is/bestdori/data";
 
 import type {
@@ -34,11 +38,10 @@ export const GET: APIRoute<Props, Params> = async ({ props, params }) => {
 };
 
 export const getStaticPaths = (() => {
-	const types = Object.keys(data) as AssetType[];
-
-	return types.flatMap((type) => {
-		const entries = [...data[type].entries()];
-
+	const resolveAssets = (
+		type: AssetType,
+		entries: [number | string, DataForAsset<AssetType>][],
+	) => {
 		return entries.flatMap(([id, entry]) => {
 			const assets = Object.entries(getAsset(type, { id, ...entry }));
 
@@ -57,7 +60,27 @@ export const getStaticPaths = (() => {
 				};
 			});
 		});
-	});
+	};
+
+	const assetTypes = [
+		"attributes",
+		"bands",
+		"characters",
+		"events",
+		"stamps",
+	] satisfies AssetType[];
+
+	return [
+		...assetTypes.flatMap((type) =>
+			resolveAssets(type, [...data[type].entries()]),
+		),
+		...resolveAssets(
+			"cards",
+			[...data.events.values()]
+				.flatMap(({ cards }) => cards)
+				.map(({ id, ...data }): [number, typeof data] => [id, data]),
+		),
+	];
 }) satisfies GetStaticPaths;
 
 type Props = InferGetStaticPropsType<typeof getStaticPaths>;

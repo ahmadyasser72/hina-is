@@ -4,25 +4,25 @@ import * as data from "./data";
 import type { MapValue } from "./data";
 
 export type AssetType = keyof typeof data;
-type Data<T extends AssetType> = MapValue<(typeof data)[T]>;
+export type DataForAsset<T extends AssetType> = MapValue<(typeof data)[T]>;
 
 const getRegionAsset = (pathname: string, releasedAt: { en: Date | null }) =>
 	["/assets", !releasedAt.en ? "en" : "jp", pathname].join("/");
 
 export const getAsset = <T extends AssetType>(
 	type: T,
-	data: Data<T> & { id: string | number },
+	data: DataForAsset<T> & { id: string | number },
 ) => {
 	const { id, slug } = data;
 
 	switch (type) {
 		case "attributes": {
-			const { name } = data as Data<"attributes">;
+			const { name } = data as DataForAsset<"attributes">;
 			return { [slug]: `/res/icon/${name}.svg` };
 		}
 
 		case "bands": {
-			const { color } = data as Data<"bands">;
+			const { color } = data as DataForAsset<"bands">;
 			if (color) return { [slug]: `/res/icon/band_${id}.svg` };
 			break;
 		}
@@ -36,7 +36,7 @@ export const getAsset = <T extends AssetType>(
 				.toString()
 				.padStart(5, "0");
 			const { releasedAt, resourceSetName, trainingState } =
-				data as Data<"cards">;
+				data as DataForAsset<"cards">;
 
 			const normal = {
 				[`${slug}-icon-normal`]: getRegionAsset(
@@ -67,7 +67,7 @@ export const getAsset = <T extends AssetType>(
 
 		case "events": {
 			const { startAt, assetBundleName, bannerAssetBundleName } =
-				data as Data<"events">;
+				data as DataForAsset<"events">;
 			return {
 				[`${slug}-banner`]: getRegionAsset(
 					`homebanner_rip/${bannerAssetBundleName}.png`,
@@ -81,7 +81,7 @@ export const getAsset = <T extends AssetType>(
 		}
 
 		case "stamps": {
-			const { region, voiced } = data as Data<"stamps">;
+			const { region, voiced } = data as DataForAsset<"stamps">;
 			return {
 				[`${slug}-image`]: `/assets/${region}/stamp/01_rip/${id}.png`,
 				...(voiced && {
