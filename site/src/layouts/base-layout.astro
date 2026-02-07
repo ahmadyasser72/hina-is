@@ -22,6 +22,11 @@ const { background } = Astro.props;
 		<meta name="viewport" content="width=device-width" />
 		<meta name="generator" content={Astro.generator} />
 		<title>Astro</title>
+
+		<meta
+			name="htmx-config"
+			content={JSON.stringify({ scrollBehavior: "smooth" })}
+		/>
 	</head>
 	<body
 		{...!Astro.locals.clientTimezone && {
