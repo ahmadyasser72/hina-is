@@ -59,16 +59,16 @@ export const filterEvents = (
 		)
 			continue;
 
-		add(byAttribute, event.attribute.name);
-		if (
-			filter.attribute?.length &&
-			!filter.attribute.includes(event.attribute.name)
-		)
-			continue;
+		if (!filter.event_type?.length || filter.event_type.includes(event.type)) {
+			add(byAttribute, event.attribute.name);
+		}
 
-		add(byEventType, event.type);
-		if (filter.event_type?.length && !filter.event_type.includes(event.type))
-			continue;
+		if (
+			!filter.attribute?.length ||
+			filter.attribute.includes(event.attribute.name)
+		) {
+			add(byEventType, event.type);
+		}
 
 		const scopedCharacters = filterBand?.length
 			? event.characters.filter((c) => filterBand.includes(c.band.id))
@@ -82,8 +82,13 @@ export const filterEvents = (
 			: bands;
 
 		if (
-			filter.character?.length &&
-			!filter.character.every((id) => scopedCharacters.some((c) => c.id === id))
+			(filter.attribute?.length &&
+				!filter.attribute.includes(event.attribute.name)) ||
+			(filter.event_type?.length && !filter.event_type.includes(event.type)) ||
+			(filter.character?.length &&
+				!filter.character.every((id) =>
+					scopedCharacters.some((c) => c.id === id),
+				))
 		)
 			continue;
 
