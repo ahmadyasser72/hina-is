@@ -109,7 +109,16 @@ export const filterEvents = async (
 		getLabel?: (name: string) => string,
 	) =>
 		facets[name]
-			.sort(([, a], [, b]) => b - a)
+			.sort(([aValue, aCount], [bValue, bCount]) => {
+				const order = bCount - aCount || aValue.localeCompare(bValue);
+				if (params[name]) {
+					const hasA = params[name].includes(aValue);
+					const hasB = params[name].includes(bValue);
+					return Number(hasB) - Number(hasA) || order;
+				}
+
+				return order;
+			})
 			.map(([value, count], idx) => ({
 				id: `${name}_${idx}`,
 				value,
