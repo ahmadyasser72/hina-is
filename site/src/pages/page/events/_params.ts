@@ -7,7 +7,7 @@ export const schema = z
 		list: z.enum(["future", "past"]).catch("future"),
 		attribute: z.string().apply(alwaysArray),
 		event_type: z.string().apply(alwaysArray),
-		band: z.coerce.number().apply(alwaysArray),
-		character: z.coerce.number().apply(alwaysArray),
+		band: z.string().apply(alwaysArray),
+		character: z.string().apply(alwaysArray),
 	})
 	.partial({ attribute: true, event_type: true, band: true, character: true });

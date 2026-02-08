@@ -4,108 +4,101 @@ import {
 	CHARACTERS,
 	EVENT_TYPES,
 } from "@hina-is/bestdori/constants";
-import {
-	bands,
-	characters,
-	events,
-	type Bandori,
-} from "@hina-is/bestdori/data";
+import * as data from "@hina-is/bestdori/data";
+import { type Bandori } from "@hina-is/bestdori/data";
 import { toArray } from "@hina-is/bestdori/utilities";
 
+import { create, insertMultiple, search } from "@orama/orama";
 import type z from "zod";
 
 import { IMAGE_FORMAT } from "~/lib/compressor/constants";
 import { dayjs } from "~/lib/date";
 import type { schema } from "./_params";
 
-export const filterEvents = (
-	{ list, ...filter }: z.infer<typeof schema>,
+export const filterEvents = async (
+	{ list, ...params }: z.infer<typeof schema>,
 	events: (Bandori.Event & { id: number })[],
 ) => {
-	const createMapByKeys = <K>(keys: K[]) =>
-		new Map(keys.map((key): [K, number] => [key, 0]));
+	const db = (() => {
+		const eventDB = create({
+			schema: {
+				attribute: "enum",
+				event_type: "enum",
+				band: "enum[]",
+				character: "enum[]",
+			},
+		});
 
-	const all = [] as typeof events;
-	const byAttribute = createMapByKeys(ATTRIBUTES);
-	const byEventType = createMapByKeys(EVENT_TYPES);
-	const byBand = createMapByKeys(BANDS);
-	const byCharacter = createMapByKeys(CHARACTERS);
+		insertMultiple(
+			eventDB,
+			events.map(({ id, attribute, type, band, characters }) => ({
+				id: id.toString(),
+				attribute: attribute.name,
+				event_type: type,
+				band: toArray(band).map(({ name }) => name),
+				character: characters.map(({ name }) => name),
+			})),
+		);
 
-	const add = <K>(map: Map<K, number>, key: K) => {
-		const existing = map.get(key);
-		if (typeof existing === "number") map.set(key, existing + 1);
-		else throw new Error(`Unrecognized key: ${key}`);
+		return eventDB;
+	})();
+
+	const baseFilter = {
+		band: params.band ? { containsAll: params.band } : { containsAny: BANDS },
+		character: params.character
+			? { containsAll: params.character }
+			: { containsAny: CHARACTERS },
+	};
+	const filter = {
+		attribute: { attribute: { in: params.attribute ?? ATTRIBUTES } },
+		event_type: { event_type: { in: params.event_type ?? EVENT_TYPES } },
 	};
 
-	const filterBand =
-		filter.band?.length && filter.character?.length
-			? Array.from(
-					new Set([
-						...filter.band,
-						...events.flatMap((e) =>
-							e.characters
-								.filter((c) => filter.character!.includes(c.id))
-								.map((c) => c.band.id),
-						),
-					]),
-				)
-			: filter.band;
+	const [main, { facets: attributeFacet }, { facets: eventTypeFacet }] =
+		await Promise.all([
+			search(db, {
+				facets: { band: {}, character: {} },
+				where: { ...filter.attribute, ...filter.event_type, ...baseFilter },
+			}),
+			search(db, {
+				facets: { attribute: {} },
+				where: { ...filter.event_type, ...baseFilter },
+			}),
+			search(db, {
+				facets: { event_type: {} },
+				where: { ...filter.attribute, ...baseFilter },
+			}),
+		]);
 
-	for (const event of events) {
-		const bands = toArray(event.band);
-		if (
-			filterBand?.length &&
-			!filterBand.every((id) => bands.some((b) => b.id === id))
-		)
-			continue;
+	const selectedBands = new Set(params.band);
+	const selectedCharacterBands = new Set(
+		params.character?.map((name) => data.charactersByName.get(name)!.band.name),
+	);
 
-		const scopedCharacters = filterBand?.length
-			? event.characters.filter((c) => filterBand.includes(c.band.id))
-			: event.characters;
-		const scopedBands = filter.character?.length
-			? bands.filter((b) =>
-					scopedCharacters.some(
-						(c) => filter.character!.includes(c.id) && c.band.id === b.id,
-					),
-				)
-			: bands;
+	const facets = {
+		attribute: Object.entries(attributeFacet!.attribute.values),
+		event_type: Object.entries(eventTypeFacet!.event_type.values),
+		band: Object.entries(main.facets!.band.values).filter(([name, count]) =>
+			selectedCharacterBands.size > 0
+				? selectedCharacterBands.has(name)
+				: count > 0,
+		),
+		character: Object.entries(main.facets!.character.values).filter(
+			([name, count]) =>
+				selectedBands.size > 0
+					? selectedBands.has(data.charactersByName.get(name)!.band.name)
+					: count > 0,
+		),
+	} satisfies Record<keyof typeof params, [string, number][]>;
 
-		if (
-			filter.character?.length &&
-			!filter.character.every((id) => scopedCharacters.some((c) => c.id === id))
-		)
-			continue;
-
-		add(byAttribute, event.attribute.name);
-		add(byEventType, event.type);
-
-		for (const band of scopedBands) {
-			add(byBand, band.id);
-		}
-
-		for (const character of scopedCharacters) {
-			add(byCharacter, character.id);
-		}
-
-		if (
-			(filter.attribute?.length &&
-				!filter.attribute.includes(event.attribute.name)) ||
-			(filter.event_type?.length && !filter.event_type.includes(event.type))
-		)
-			continue;
-
-		all.push(event);
-	}
-
-	const buildFilters = <K, T extends keyof (typeof schema)["shape"]>(
-		map: Map<K, number>,
+	const getFacets = <T extends keyof typeof params>(
 		name: T,
-		getIcon?: (id: K) => string,
-		getLabel?: (id: K) => string,
+		getIcon?: (name: string) => string,
+		getLabel?: (name: string) => string,
 	) => ({
 		name,
-		values: [...map.entries()]
-			.filter(([, count]) => count > 0)
+		values: facets[name]
+			.sort(([, a], [, b]) => b - a)
 			.map(([value, count], idx) => ({
 				id: `${name}_${idx}`,
 				value,
@@ -115,28 +108,26 @@ export const filterEvents = (
 			})),
 	});
 
+	const hits = new Set(main.hits.map(({ id }) => Number(id)));
 	return {
-		filtered: all,
+		filtered: events.filter(({ id }) => hits.has(id)),
 		facets: [
-			buildFilters(
-				byAttribute,
+			getFacets(
 				"attribute",
 				(id) => `/assets/attributes/${id}.svg`,
 				(id) => id.toUpperCase(),
 			),
-			buildFilters(byEventType, "event_type"),
-			buildFilters(
-				byBand,
+			getFacets("event_type"),
+			getFacets(
 				"band",
-				(id) => `/assets/bands/${bands.get(id)!.slug}.svg`,
-				(id) => bands.get(id)!.name,
+				(name) => `/assets/bands/${data.bandsByName.get(name)!.slug}.svg`,
+				(name) => data.bandsByName.get(name)!.name,
 			),
-			buildFilters(
-				byCharacter,
+			getFacets(
 				"character",
-				(id) =>
-					`/assets/characters/${characters.get(id)!.slug}.${IMAGE_FORMAT}`,
-				(id) => characters.get(id)!.name,
+				(name) =>
+					`/assets/characters/${data.charactersByName.get(name)!.slug}.${IMAGE_FORMAT}`,
+				(name) => data.charactersByName.get(name)!.name,
 			),
 		],
 	};
@@ -149,7 +140,7 @@ export const getEvents = ({ list }: z.infer<typeof schema>) => {
 
 	const now = dayjs();
 	let lastEndAt: dayjs.Dayjs;
-	for (const [id, { startAt, endAt }] of [...events.entries()]) {
+	for (const [id, { startAt, endAt }] of [...data.events.entries()]) {
 		if (!startAt.en || !endAt.en) {
 			future.push(id);
 			continue;
@@ -166,12 +157,12 @@ export const getEvents = ({ list }: z.infer<typeof schema>) => {
 	}
 
 	return {
-		active: active.map((id) => ({ id, ...events.get(id)! })),
+		active: active.map((id) => ({ id, ...data.events.get(id)! })),
 		list:
 			list === "past"
-				? past.reverse().map((id) => ({ id, ...events.get(id)! }))
+				? past.reverse().map((id) => ({ id, ...data.events.get(id)! }))
 				: future.map((id) => {
-						const { startAt, endAt, ...event } = events.get(id)!;
+						const { startAt, endAt, ...event } = data.events.get(id)!;
 
 						const eventDuration = dayjs(endAt.jp).diff(startAt.jp);
 						const startAtEn = lastEndAt

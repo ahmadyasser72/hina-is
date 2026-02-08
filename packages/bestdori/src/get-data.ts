@@ -108,6 +108,11 @@ const all = await (async () => {
 				]),
 			);
 		},
+		get bandsByName() {
+			return new Map(
+				[...all.bands.entries()].map(([, entry]) => [entry.name, entry]),
+			);
+		},
 
 		get characters() {
 			return new Map(
@@ -125,6 +130,11 @@ const all = await (async () => {
 						},
 					],
 				),
+			);
+		},
+		get charactersByName() {
+			return new Map(
+				[...all.characters.entries()].map(([, entry]) => [entry.name, entry]),
 			);
 		},
 

@@ -8,7 +8,7 @@ export const partial = true;
 
 const params = Astro.locals.parseQuery(schema);
 const events = getEvents(params);
-const { facets } = filterEvents(params, events.list);
+const { facets } = await filterEvents(params, events.list);
 ---
 
 <dialog class="modal max-sm:modal-bottom" id="filter_modal">
@@ -16,7 +16,6 @@ const { facets } = filterEvents(params, events.list);
 		<h3 class="text-center text-lg font-medium">Filter {params.list} events</h3>
 
 		<form
-			hx-target="this"
 			hx-trigger="input"
 			class="flex flex-col gap-1"
 			id="filter"
@@ -25,6 +24,7 @@ const { facets } = filterEvents(params, events.list);
 			hx-select="#filter"
 			hx-select-oob="#apply-filter"
 			hx-swap="outerHTML transition:true"
+			hx-target="this"
 			hx-vals={JSON.stringify({ list: params.list })}
 		>
 			{
@@ -91,13 +91,13 @@ const { facets } = filterEvents(params, events.list);
 		<div class="bg-base-100 sticky bottom-0 w-full px-4 py-2">
 			<button
 				hx-get="/page/events"
-				hx-target="#events"
 				class="btn btn-primary w-full"
 				id="apply-filter"
 				hx-indicator="this"
 				hx-on--after-request="event.detail.successful && filter_modal.close()"
 				hx-select="#events"
 				hx-swap="outerHTML show:top"
+				hx-target="#events"
 				hx-vals={JSON.stringify(params)}
 			>
 				<iconify-icon

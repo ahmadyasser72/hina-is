@@ -12,7 +12,7 @@ const params = Astro.locals.parseQuery(schema);
 const oppositeList = params.list === "future" ? "past" : "future";
 
 const events = getEvents(params);
-const { filtered } = filterEvents(params, events.list);
+const { filtered } = await filterEvents(params, events.list);
 const page = paginate({
 	items: filtered,
 	context: Astro,

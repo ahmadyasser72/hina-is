@@ -1,6 +1,15 @@
 import type { Data } from "./get-data";
 
-export const { attributes, bands, characters, cards, events, stamps }: Data;
+export const {
+	attributes,
+	bands,
+	bandsByName,
+	characters,
+	charactersByName,
+	cards,
+	events,
+	stamps,
+}: Data;
 
 type MapValue<T> = T extends Map<any, infer V> ? V : never;
 
