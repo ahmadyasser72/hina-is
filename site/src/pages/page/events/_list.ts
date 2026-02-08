@@ -16,7 +16,7 @@ import { dayjs } from "~/lib/date";
 import type { schema } from "./_params";
 
 export const filterEvents = async (
-	{ list, ...params }: z.infer<typeof schema>,
+	{ list, band_type, ...params }: z.infer<typeof schema>,
 	events: (Bandori.Event & { id: number })[],
 ) => {
 	const db = (() => {
@@ -31,13 +31,21 @@ export const filterEvents = async (
 
 		insertMultiple(
 			eventDB,
-			events.map(({ id, attribute, type, band, characters }) => ({
-				id: id.toString(),
-				attribute: attribute.name,
-				event_type: type,
-				band: toArray(band).map(({ name }) => name),
-				character: characters.map(({ name }) => name),
-			})),
+			events.map(({ id, attribute, type, band, characters }) => {
+				let bands: Bandori.Band[];
+				if (band_type === "any") bands = toArray(band);
+				else if (band_type === "mixed-band")
+					bands = Array.isArray(band) ? band : [];
+				else bands = Array.isArray(band) ? [] : [band];
+
+				return {
+					id: id.toString(),
+					attribute: attribute.name,
+					event_type: type,
+					band: bands.map(({ name }) => name),
+					character: characters.map(({ name }) => name),
+				};
+			}),
 		);
 
 		return eventDB;
@@ -99,9 +107,8 @@ export const filterEvents = async (
 		name: T,
 		getIcon?: (name: string) => string,
 		getLabel?: (name: string) => string,
-	) => ({
-		name,
-		values: facets[name]
+	) =>
+		facets[name]
 			.sort(([, a], [, b]) => b - a)
 			.map(([value, count], idx) => ({
 				id: `${name}_${idx}`,
@@ -109,31 +116,30 @@ export const filterEvents = async (
 				count,
 				label: getLabel?.(value) ?? value,
 				icon: getIcon?.(value),
-			})),
-	});
+			}));
 
 	const hits = new Set(main.hits.map(({ id }) => Number(id)));
 	return {
 		filtered: events.filter(({ id }) => hits.has(id)),
-		facets: [
-			getFacets(
+		facets: {
+			attribute: getFacets(
 				"attribute",
 				(id) => `/assets/attributes/${id}.svg`,
 				(id) => id.toUpperCase(),
 			),
-			getFacets("event_type"),
-			getFacets(
+			event_type: getFacets("event_type"),
+			band: getFacets(
 				"band",
 				(name) => `/assets/bands/${data.bandsByName.get(name)!.slug}.svg`,
 				(name) => data.bandsByName.get(name)!.name,
 			),
-			getFacets(
+			character: getFacets(
 				"character",
 				(name) =>
 					`/assets/characters/${data.charactersByName.get(name)!.slug}.${IMAGE_FORMAT}`,
 				(name) => data.charactersByName.get(name)!.name,
 			),
-		],
+		},
 	};
 };
 

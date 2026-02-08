@@ -1,8 +1,9 @@
 ---
-import { titleCase } from "text-case";
+import { headerCase } from "text-case";
 
 import { filterEvents, getEvents } from "../_list";
 import { schema } from "../_params";
+import FilterFieldset from "./_filter-fieldset.astro";
 
 export const partial = true;
 
@@ -16,7 +17,6 @@ const { facets } = await filterEvents(params, events.list);
 		<h3 class="text-center text-lg font-medium">Filter {params.list} events</h3>
 
 		<form
-			hx-trigger="input"
 			class="flex flex-col gap-1"
 			id="filter"
 			hx-disabled-elt="#filter input"
@@ -27,65 +27,28 @@ const { facets } = await filterEvents(params, events.list);
 			hx-target="this"
 			hx-vals={JSON.stringify({ list: params.list })}
 		>
-			{
-				facets.map(({ name, values }) => (
-					<fieldset class="group fieldset border-base-300 rounded-box w-full border p-4 pt-2">
-						<legend class="fieldset-legend">{titleCase(name)}</legend>
+			<FilterFieldset name="attribute" {facets} {params} />
+			<FilterFieldset name="event_type" {facets} {params} />
 
-						<div class="flex flex-wrap gap-1">
-							{values.map(({ id, value, label, icon, count }) => (
-								<div>
-									<input
-										class="peer hidden"
-										{id}
-										{name}
-										type="checkbox"
-										{value}
-										checked={
-											Array.isArray(params[name])
-												? params[name].includes(value as never)
-												: params[name] === value
-										}
-									/>
-									<label
-										hx-get="/page/events/filter"
-										hx-trigger="input from:previous"
-										class="btn max-sm:btn-sm peer-[&:not(:checked):not(:disabled)]:btn-outline peer-checked:btn-accent peer-disabled:btn-disabled peer-disabled:btn-neutral"
-										for={id}
-									>
-										{icon && (
-											<>
-												<img
-													class="htmx-indicator-replace size-6 sm:size-8"
-													src={icon}
-													alt={`${label} icon`}
-												/>
-												<iconify-icon
-													class="htmx-indicator size-6 sm:size-8"
-													icon="svg-spinners:90-ring-with-bg"
-													width="none"
-												/>
-											</>
-										)}
-										{label} ({count})
-									</label>
-								</div>
-							))}
+			<FilterFieldset name="band" {facets} {params}>
+				<div class="join">
+					{
+						schema.shape.band_type.def.innerType.options.map((value) => (
+							<input
+								hx-get="/page/events/filter"
+								class="join-item btn btn-sm checked:btn-accent"
+								name="band_type"
+								type="radio"
+								{value}
+								aria-label={headerCase(value)}
+								checked={params.band_type === value}
+							/>
+						))
+					}
+				</div>
+			</FilterFieldset>
 
-							{params[name] && (
-								<input
-									hx-get="/page/events/filter"
-									class="btn max-sm:btn-sm"
-									{name}
-									type="checkbox"
-									value="reset"
-									aria-label="Reset"
-								/>
-							)}
-						</div>
-					</fieldset>
-				))
-			}
+			<FilterFieldset name="character" {facets} {params} />
 		</form>
 
 		<div class="bg-base-100 sticky bottom-0 w-full px-4 py-2">
