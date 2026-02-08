@@ -91,7 +91,7 @@ if (Astro.request.headers.get("hx-request") === "true" && page.current === 1) {
 					data-tip={`Show ${oppositeList} events`}
 				>
 					<button
-						hx-get
+						hx-get={Astro.url.pathname}
 						class="btn btn-sm btn-circle btn-success"
 						hx-indicator="this"
 						hx-select="#events"
