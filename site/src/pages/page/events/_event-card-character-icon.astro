@@ -14,7 +14,7 @@ interface Props {
 const { character, displayBand, tooltip = "auto" } = Astro.props;
 
 const { band } = character;
-const color = colord(character.colorCode);
+const characterColor = colord(character.colorCode);
 ---
 
 <div
@@ -24,13 +24,13 @@ const color = colord(character.colorCode);
 		tooltip === "top" && "tooltip-top",
 		tooltip === "bottom" && "tooltip-bottom",
 	]}
+	style={`--character: ${characterColor.toHex()}`}
 >
 	<div
 		class:list={[
-			"tooltip-content",
-			color.brightness() < 0.67 ? "text-white" : "text-black",
+			"tooltip-content bg-character",
+			characterColor.brightness() < 0.67 ? "text-white" : "text-black",
 		]}
-		style={`--tt-bg: ${color.toHex()}`}
 	>
 		{
 			displayBand ? (

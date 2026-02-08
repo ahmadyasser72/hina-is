@@ -63,9 +63,9 @@ const progress = (() => {
 			<div class="flex flex-wrap justify-center gap-1">
 				<div class="badge dark:badge-primary dark:badge-soft font-medium">
 					<div
-						class="tooltip before:text-white"
+						class="tooltip before:bg-attribute before:text-white"
 						data-tip={attribute.name.toUpperCase()}
-						style={`--tt-bg: ${attribute.color}`}
+						style={`--attribute: ${attribute.color}`}
 					>
 						<img
 							class="size-5"
@@ -88,12 +88,12 @@ const progress = (() => {
 					) : (
 						<div
 							class:list={[
-								"badge font-medium",
+								"badge bg-band font-medium",
 								colord(band.color!).brightness() < 0.67
 									? "text-white"
 									: "text-black",
 							]}
-							style={`--badge-bg: ${band.color!}`}
+							style={`--band: ${band.color}`}
 						>
 							<img
 								src={`/assets/bands/${band.slug}.svg`}

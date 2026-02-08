@@ -14,16 +14,18 @@ const { card } = Astro.props;
 const {
 	character: { band, ...character },
 } = card;
-const color = colord(character.colorCode);
+const characterColor = colord(character.colorCode);
 ---
 
-<div class="tooltip tooltip-right">
+<div
+	class="tooltip tooltip-right"
+	style={`--band: ${band.color}; --character: ${characterColor.toHex()}`}
+>
 	<div
 		class:list={[
-			"tooltip-content flex max-w-40 flex-col items-center gap-1",
-			color.brightness() < 0.67 ? "text-white" : "text-black",
+			"tooltip-content bg-character flex max-w-40 flex-col items-center gap-1",
+			characterColor.brightness() < 0.67 ? "text-white" : "text-black",
 		]}
-		style={`--tt-bg: ${color.toHex()}`}
 	>
 		<span class="line-clamp-2 text-sm">{card.name}</span>
 		<div class="badge badge-neutral not-dark:badge-soft badge-sm font-medium">
@@ -46,15 +48,17 @@ const color = colord(character.colorCode);
 			<img
 				src={`/assets/bands/${band.slug}.svg`}
 				alt={`${band.name} icon`}
-				class:list={["size-8", color.brightness() > 0.67 && "drop-shadow-lg"]}
+				class:list={[
+					"size-8",
+					characterColor.brightness() > 0.67 && "drop-shadow-lg",
+				]}
 				loading="lazy"
 			/>
 		</div>
 	</div>
 
 	<figure
-		class="hover-gallery rounded-box size-12 hover:shadow-md"
-		style={`background-color: ${character.colorCode}; --tw-shadow-color: ${band.color};`}
+		class="hover-gallery rounded-box shadow-band hover:shadow-character size-12 shadow-md"
 	>
 		<img
 			src={`/assets/cards/${card.slug}-icon-normal.${IMAGE_FORMAT}`}

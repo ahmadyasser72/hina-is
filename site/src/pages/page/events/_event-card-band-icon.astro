@@ -15,19 +15,18 @@ interface Props {
 const { band } = Astro.props;
 
 const { characters } = band;
-const color = colord(band.color!);
+const bandColor = colord(band.color!);
 ---
 
 <div
 	class="tooltip group even:tooltip-bottom"
-	style={`--tt-bg: ${color.toHex()}`}
+	style={`--band: ${bandColor.toHex()}`}
 >
 	<div
 		class:list={[
-			"tooltip-content flex flex-col-reverse gap-1 group-even:flex-col",
-			color.brightness() < 0.67 ? "text-white" : "text-black",
+			"tooltip-content bg-band flex flex-col-reverse gap-1 group-even:flex-col",
+			bandColor.brightness() < 0.67 ? "text-white" : "text-black",
 		]}
-		style={`--tt-bg: ${color.toHex()}`}
 	>
 		<span class="font-medium">{band.name}</span>
 		<div class="flex justify-center gap-1">
@@ -47,7 +46,10 @@ const color = colord(band.color!);
 	<img
 		src={`/assets/bands/${band.slug}.svg`}
 		alt={`${band.name} icon`}
-		class:list={["size-5", color.brightness() > 0.67 && "dark:drop-shadow-lg"]}
+		class:list={[
+			"size-5",
+			bandColor.brightness() > 0.67 && "dark:drop-shadow-lg",
+		]}
 		loading="lazy"
 	/>
 </div>
