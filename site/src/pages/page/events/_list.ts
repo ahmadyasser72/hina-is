@@ -54,17 +54,21 @@ export const filterEvents = async (
 		event_type: { event_type: { in: params.event_type ?? EVENT_TYPES } },
 	};
 
+	const limit = events.length;
 	const [main, { facets: attributeFacet }, { facets: eventTypeFacet }] =
 		await Promise.all([
 			search(db, {
+				limit,
 				facets: { band: {}, character: {} },
 				where: { ...filter.attribute, ...filter.event_type, ...baseFilter },
 			}),
 			search(db, {
+				limit,
 				facets: { attribute: {} },
 				where: { ...filter.event_type, ...baseFilter },
 			}),
 			search(db, {
+				limit,
 				facets: { event_type: {} },
 				where: { ...filter.attribute, ...baseFilter },
 			}),

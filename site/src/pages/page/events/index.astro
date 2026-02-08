@@ -17,11 +17,8 @@ const page = paginate({
 	items: filtered,
 	context: Astro,
 	size: 6,
-	extraProps: {
-		"hx-select": "#events .event-card",
-		"hx-swap": "afterend",
-		"hx-vals": JSON.stringify(params),
-	},
+	extraProps: { "hx-select": "#events .event-card", "hx-swap": "afterend" },
+	params,
 });
 
 if (Astro.request.headers.get("hx-request") === "true" && page.current === 1) {
