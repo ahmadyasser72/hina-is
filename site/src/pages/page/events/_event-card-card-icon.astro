@@ -18,12 +18,12 @@ const characterColor = colord(character.colorCode);
 ---
 
 <div
-	class="tooltip tooltip-right"
+	class="sm:tooltip sm:tooltip-right"
 	style={`--band: ${band.color}; --character: ${characterColor.toHex()}`}
 >
 	<div
 		class:list={[
-			"tooltip-content bg-character flex max-w-40 flex-col items-center gap-1",
+			"tooltip-content bg-character flex max-w-40 flex-col items-center gap-1 max-sm:hidden",
 			characterColor.brightness() < 0.67 ? "text-white" : "text-black",
 		]}
 	>
@@ -57,18 +57,30 @@ const characterColor = colord(character.colorCode);
 		</div>
 	</div>
 
-	<figure
-		class="hover-gallery rounded-box shadow-band hover:shadow-character size-12 shadow-md"
+	<button
+		hx-get={`/page/events/card/${card.slug}`}
+		class="cursor-pointer"
+		hx-indicator="this"
 	>
-		<img
-			src={`/assets/cards/${card.slug}-icon-normal.${IMAGE_FORMAT}`}
-			alt={`${card.name} icon`}
-			loading="lazy"
-		/>
-		<img
-			src={`/assets/cards/${card.slug}-icon-trained.${IMAGE_FORMAT}`}
-			alt={`${card.name} icon (trained)`}
-			loading="lazy"
-		/>
-	</figure>
+		<figure
+			class="hover-gallery rounded-box bg-character/25 shadow-band hover:shadow-character htmx-indicator-replace size-12 shadow-md"
+		>
+			<img
+				src={`/assets/cards/${card.slug}-icon-normal.${IMAGE_FORMAT}`}
+				alt={`${card.name} icon`}
+				loading="lazy"
+			/>
+			<img
+				class="max-sm:hidden"
+				src={`/assets/cards/${card.slug}-icon-trained.${IMAGE_FORMAT}`}
+				alt={`${card.name} icon (trained)`}
+				loading="lazy"
+			/>
+		</figure>
+
+		<iconify-icon
+			class="htmx-indicator size-12"
+			icon="svg-spinners:90-ring-with-bg"
+			width="none"></iconify-icon>
+	</button>
 </div>

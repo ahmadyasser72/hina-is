@@ -1,0 +1,122 @@
+---
+import { events } from "@hina-is/bestdori/data";
+
+import type { GetStaticPaths } from "astro";
+import { colord } from "colord";
+
+import { IMAGE_FORMAT } from "~/lib/compressor/constants";
+
+export const partial = true;
+export const prerender = true;
+
+export const getStaticPaths = (() => {
+	return [...events.values()]
+		.flatMap(({ cards }) => cards)
+		.map((card) => ({ params: { slug: card.slug }, props: { card } }));
+}) satisfies GetStaticPaths;
+
+const { card } = Astro.props;
+const {
+	attribute,
+	character: { band, ...character },
+} = card;
+---
+
+<dialog
+	class="modal max-sm:modal-bottom"
+	style={`--attribute: ${attribute.color};--band: ${band.color} ;--character: ${character.colorCode}`}
+>
+	<div class="modal-box w-full sm:max-w-xl md:max-w-2xl">
+		<div class="flex w-full items-center gap-y-4 max-sm:flex-col-reverse">
+			<div class="flex gap-1 font-medium">
+				<figure
+					class="hover-gallery rounded-box bg-character/25 border-character size-12 border"
+				>
+					<img
+						src={`/assets/cards/${card.slug}-icon-normal.${IMAGE_FORMAT}`}
+						alt={`${card.name} icon`}
+						loading="lazy"
+					/>
+					<img
+						src={`/assets/cards/${card.slug}-icon-trained.${IMAGE_FORMAT}`}
+						alt={`${card.name} icon (trained)`}
+						loading="lazy"
+					/>
+				</figure>
+
+				<div
+					data-tip={character.name}
+					class:list={[
+						"tooltip tooltip-bottom before:bg-character",
+						colord(character.colorCode).brightness() < 0.67
+							? "before:text-white"
+							: "before:text-black",
+					]}
+				>
+					<img
+						class="size-12"
+						src={`/assets/characters/${character.slug}.${IMAGE_FORMAT}`}
+						alt={`${character.name} icon`}
+					/>
+				</div>
+
+				<div
+					data-tip={band.name}
+					class:list={[
+						"tooltip tooltip-bottom before:bg-band",
+						colord(band.color).brightness() < 0.67
+							? "before:text-white"
+							: "before:text-black",
+					]}
+				>
+					<img
+						class="size-12"
+						src={`/assets/bands/${band.slug}.svg`}
+						alt={`${band.name} icon`}
+					/>
+				</div>
+
+				<div
+					class="tooltip tooltip-bottom before:bg-attribute before:text-white"
+					data-tip={attribute.name.toUpperCase()}
+				>
+					<img
+						class="size-12"
+						src={`/assets/attributes/${attribute.name}.svg`}
+						alt=`${attribute.name.toUpperCase()} icon`
+					/>
+				</div>
+			</div>
+
+			<div
+				class="flex flex-1 flex-col items-center gap-1 font-medium sm:items-end"
+			>
+				<h3 class="text-center sm:text-end">{card.name}</h3>
+				<div class="badge bg-attribute badge-sm text-white">
+					{card.type.toUpperCase()} &starf;{card.rarity}
+				</div>
+			</div>
+		</div>
+
+		<figure
+			class="hover-gallery bg-character/5 rounded-box shadow-band hover:shadow-character mt-2 aspect-60/45 w-full shadow-lg"
+		>
+			<img
+				src={`/assets/cards/${card.slug}-full-normal.${IMAGE_FORMAT}`}
+				alt={`${card.name}`}
+			/>
+			<img
+				src={`/assets/cards/${card.slug}-full-normal.${IMAGE_FORMAT}`}
+				alt={`${card.name}`}
+			/>
+			<img
+				src={`/assets/cards/${card.slug}-full-trained.${IMAGE_FORMAT}`}
+				alt={`${card.name} (trained)`}
+			/>
+		</figure>
+	</div>
+
+	<form class="modal-backdrop" method="dialog">
+		<button>close</button>
+	</form>
+</dialog>
