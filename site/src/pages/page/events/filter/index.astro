@@ -42,6 +42,11 @@ const { facets } = await filterEvents(params, events.list);
 								{value}
 								aria-label={headerCase(value)}
 								checked={params.band_type === value}
+								disabled={
+									params.band_type !== value &&
+									params.character &&
+									params.character.length > 1
+								}
 							/>
 						))
 					}
