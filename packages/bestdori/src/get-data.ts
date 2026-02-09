@@ -309,14 +309,16 @@ const all = await (async () => {
 const { ...data } = all;
 export type Data = typeof data;
 
-const keys = Object.keys(data).join(", ");
-const content = await time("uneval data", () => devalue.uneval(data));
+const lines = await Promise.all(
+	Object.entries(data).map(async ([key, map]) => {
+		const out = await time(`uneval ${key}`, () => devalue.uneval(map));
+		return `export const ${key} = ${out}`;
+	}),
+);
+
 await time(
 	"write data.js",
-	writeFile(
-		path.join(import.meta.dirname, "data.js"),
-		`export const { ${keys} } = ${content};`,
-	),
+	writeFile(path.join(import.meta.dirname, "data.js"), lines.join(";")),
 );
 
 console.timeEnd("everything");
