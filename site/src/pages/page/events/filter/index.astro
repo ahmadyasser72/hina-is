@@ -56,10 +56,10 @@ const { facets } = await filterEvents(params, events.list);
 			<FilterFieldset name="character" {facets} {params} />
 		</form>
 
-		<div class="bg-base-100 sticky bottom-0 w-full px-4 py-2">
+		<div class="bg-base-100 join sticky bottom-0 w-full px-4 py-2">
 			<button
 				hx-get="/page/events"
-				class="btn btn-primary w-full"
+				class="btn btn-primary join-item flex-1"
 				id="apply-filter"
 				hx-indicator="this"
 				hx-on--after-request="event.detail.successful && filter_modal.close()"
@@ -77,7 +77,27 @@ const { facets } = await filterEvents(params, events.list);
 					icon="svg-spinners:90-ring-with-bg"
 					width="none"></iconify-icon>
 
-				Apply filter
+				Apply
+			</button>
+
+			<button
+				hx-get="/page/events/filter"
+				class="btn btn-error join-item"
+				id="reset-filter"
+				hx-swap="outerHTML transition:true"
+				hx-target="closest dialog"
+				hx-vals={JSON.stringify(schema.parse({}))}
+			>
+				<iconify-icon
+					class="htmx-indicator-replace size-6"
+					icon="lucide:rotate-ccw"
+					width="none"></iconify-icon>
+				<iconify-icon
+					class="htmx-indicator size-6"
+					icon="svg-spinners:90-ring-with-bg"
+					width="none"></iconify-icon>
+
+				Reset
 			</button>
 		</div>
 	</div>
