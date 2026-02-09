@@ -44,6 +44,7 @@ export const Events = z
 		z.object({
 			eventName: z.string().apply(asRegionTuple),
 			startAt: z.string().apply(asRegionTuple),
+			endAt: z.string().apply(asRegionTuple),
 		}),
 	)
 	.pipe(
@@ -53,14 +54,15 @@ export const Events = z
 					Object.entries(events)
 						.filter(([, { eventName }]) => !!eventName[0])
 						.map(
-							async ([id, { eventName, startAt }]) =>
+							async ([id, { eventName, startAt, endAt }]) =>
 								[
 									id,
 									await bestdoriJSON<z.input<typeof Event>>(
 										`/api/events/${id}.json`,
 										(latest) =>
 											deepEqual(eventName, latest.eventName) &&
-											deepEqual(startAt, latest.startAt),
+											deepEqual(startAt, latest.startAt) &&
+											deepEqual(endAt, latest.endAt),
 									),
 								] as const,
 						),
