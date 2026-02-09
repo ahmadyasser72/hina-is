@@ -12,6 +12,7 @@ interface Props {
 const { card } = Astro.props;
 
 const {
+	attribute,
 	character: { band, ...character },
 } = card;
 const characterColor = colord(character.colorCode);
@@ -19,24 +20,34 @@ const characterColor = colord(character.colorCode);
 
 <div
 	class="sm:tooltip sm:tooltip-right"
-	style={`--band: ${band.color}; --character: ${characterColor.toHex()}`}
+	style={`--attribute: ${attribute.color}; --band: ${band.color}; --character: ${characterColor.toHex()}`}
 >
 	<div
 		class:list={[
-			"tooltip-content bg-character flex max-w-40 flex-col items-center gap-1 max-sm:hidden",
+			"tooltip-content bg-character flex max-w-48 flex-col items-center gap-1 max-sm:hidden",
 			characterColor.brightness() < 0.67 ? "text-white" : "text-black",
 		]}
 	>
-		<span class="line-clamp-2 text-sm">{card.name}</span>
-		<div class="badge badge-neutral not-dark:badge-soft badge-sm font-medium">
-			{card.type.toUpperCase()} &starf;{card.rarity}
+		<div class="max-w-36">
+			<span class="line-clamp-2 text-sm">{card.name}</span>
+		</div>
+
+		<div class="join!">
+			<div class="btn join-item btn-xs btn-accent border border-white">
+				<iconify-icon class="size-4" icon="lucide:zap" width="none"
+				></iconify-icon>
+				{card.skill.multiplier}
+			</div>
+			<div class="btn join-item btn-xs bg-attribute text-white">
+				{card.type.toUpperCase()} &starf;{card.rarity}
+			</div>
 		</div>
 
 		<div class="inline-flex items-center justify-center gap-1">
 			<img
 				class="size-8"
-				src={`/assets/attributes/${card.attribute.name}.svg`}
-				alt=`${card.attribute.name.toUpperCase()} icon`
+				src={`/assets/attributes/${attribute.name}.svg`}
+				alt=`${attribute.name.toUpperCase()} icon`
 				loading="lazy"
 			/>
 			<img

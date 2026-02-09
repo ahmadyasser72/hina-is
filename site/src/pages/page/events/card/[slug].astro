@@ -24,7 +24,7 @@ const {
 
 <dialog
 	class="modal max-sm:modal-bottom"
-	style={`--attribute: ${attribute.color};--band: ${band.color} ;--character: ${character.colorCode}`}
+	style={`--attribute: ${attribute.color}; --band: ${band.color}; --character: ${character.colorCode}`}
 >
 	<div class="modal-box w-full sm:max-w-xl">
 		<div class="flex w-full items-center gap-y-4 max-sm:flex-col-reverse">
@@ -92,10 +92,35 @@ const {
 				class="flex flex-1 flex-col items-center gap-1 font-medium sm:items-end"
 			>
 				<h3 class="text-center sm:text-end">{card.name}</h3>
-				<div class="badge bg-attribute badge-sm text-white">
-					{card.type.toUpperCase()} &starf;{card.rarity}
+				<div
+					class="inline-flex items-center gap-1 max-sm:flex-row-reverse"
+					style={`anchor-name: --anchor-${card.slug}-skill`}
+				>
+					<button
+						class="badge badge-lg badge-accent cursor-pointer"
+						popovertarget={`${card.slug}-skill`}
+					>
+						<iconify-icon class="size-5" icon="lucide:zap" width="none"
+						></iconify-icon>
+						{card.skill.multiplier}
+					</button>
+					<button
+						class="badge bg-attribute badge-lg cursor-pointer text-white"
+						popovertarget={`${card.slug}-skill`}
+					>
+						{card.type.toUpperCase()} &starf;{card.rarity}
+					</button>
 				</div>
 			</div>
+		</div>
+
+		<div
+			class="dropdown dropdown-center sm:dropdown-end dropdown-bottom rounded-box bg-base-100 shadow-attribute mt-2 w-max max-w-90 px-4 py-2 text-center shadow-sm"
+			id={`${card.slug}-skill`}
+			popover
+			style={`position-anchor: --anchor-${card.slug}-skill`}
+		>
+			{card.skill.description}
 		</div>
 
 		<figure

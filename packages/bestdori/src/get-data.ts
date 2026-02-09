@@ -12,6 +12,7 @@ import { Characters } from "./schema/characters";
 import { CardAttribute } from "./schema/constants";
 import { Events } from "./schema/events";
 import { StampImages, StampVoices } from "./schema/extras/stamps";
+import { Skills } from "./schema/skills";
 import { unwrap } from "./utilities";
 
 console.time("everything");
@@ -31,6 +32,7 @@ const SCHEMAS = {
 	cards: Cards,
 	characters: Characters,
 	events: Events,
+	skills: Skills,
 	stampImages: StampImages,
 	stampVoices: StampVoices,
 } as const;
@@ -53,6 +55,7 @@ const all = await (async () => {
 		cards,
 		characters,
 		events,
+		skills,
 		jpStampImages,
 		enStampImages,
 		jpStampVoices,
@@ -62,6 +65,7 @@ const all = await (async () => {
 		get("cards", "/api/cards/all.5.json"),
 		get("characters", "/api/characters/main.3.json"),
 		get("events", "/api/events/all.5.json"),
+		get("skills", "/api/skills/all.10.json"),
 		get("stampImages", "/api/explorer/jp/assets/stamp/01.json"),
 		get("stampImages", "/api/explorer/en/assets/stamp/01.json"),
 		get("stampVoices", "/api/explorer/jp/assets/sound/voice_stamp.json"),
@@ -141,7 +145,7 @@ const all = await (async () => {
 		get cards() {
 			return new Map(
 				[...cards.entries()].map(
-					([id, { characterId, name, attribute, stat, ...entry }]) => [
+					([id, { characterId, name, attribute, skillId, stat, ...entry }]) => [
 						id,
 						{
 							get character() {
@@ -153,6 +157,28 @@ const all = await (async () => {
 							...entry,
 
 							name: unwrap(name),
+							get skill() {
+								const { duration, description, activationEffect, onceEffect } =
+									skills.get(skillId)!;
+
+								const template = unwrap(description);
+								return {
+									description: onceEffect
+										? template
+												.replace(
+													"{0}",
+													onceEffect.onceEffectValue.at(-1)!.toString(),
+												)
+												.replace("{1}", duration.at(-1)!.toFixed(1))
+										: template.replace("{0}", duration.at(-1)!.toFixed(1)),
+									multiplier:
+										(activationEffect.unificationActivateEffectValue ??
+											unwrap(
+												activationEffect.activateEffectTypes.best
+													?.activateEffectValue ?? { jp: 0, en: 0 },
+											)) + "%",
+								};
+							},
 							get slug() {
 								const character = all.characters.get(characterId)!;
 								return getSlug(id, `${character.name}-${unwrap(name)}`);
