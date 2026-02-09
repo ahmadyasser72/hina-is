@@ -6,7 +6,7 @@ import {
 } from "@hina-is/bestdori/constants";
 import * as data from "@hina-is/bestdori/data";
 import { type Bandori } from "@hina-is/bestdori/data";
-import { toArray } from "@hina-is/bestdori/utilities";
+import { formatEventType, toArray } from "@hina-is/bestdori/utilities";
 
 import { create, insertMultiple, search } from "@orama/orama";
 import type z from "zod";
@@ -42,8 +42,8 @@ export const filterEvents = async (
 					id: id.toString(),
 					attribute: attribute.name,
 					event_type: type,
-					band: bands.map(({ name }) => name),
-					character: characters.map(({ name }) => name),
+					band: bands.map(({ slug }) => slug),
+					character: characters.map(({ slug }) => slug),
 				};
 			}),
 		);
@@ -84,21 +84,21 @@ export const filterEvents = async (
 
 	const selectedBands = new Set(params.band);
 	const selectedCharacterBands = new Set(
-		params.character?.map((name) => data.charactersByName.get(name)!.band.name),
+		params.character?.map((slug) => data.charactersBySlug.get(slug)!.band.slug),
 	);
 
 	const facets = {
 		attribute: Object.entries(attributeFacet!.attribute.values),
 		event_type: Object.entries(eventTypeFacet!.event_type.values),
-		band: Object.entries(main.facets!.band.values).filter(([name, count]) =>
+		band: Object.entries(main.facets!.band.values).filter(([slug, count]) =>
 			selectedCharacterBands.size > 0
-				? selectedCharacterBands.has(name)
+				? selectedCharacterBands.has(slug)
 				: count > 0,
 		),
 		character: Object.entries(main.facets!.character.values).filter(
-			([name, count]) =>
+			([slug, count]) =>
 				selectedBands.size > 0
-					? selectedBands.has(data.charactersByName.get(name)!.band.name)
+					? selectedBands.has(data.charactersBySlug.get(slug)!.band.slug)
 					: count > 0,
 		),
 	} satisfies Record<keyof typeof params, [string, number][]>;
@@ -136,17 +136,18 @@ export const filterEvents = async (
 				(id) => `/assets/attributes/${id}.svg`,
 				(id) => id.toUpperCase(),
 			),
-			event_type: getFacets("event_type"),
+			event_type: getFacets("event_type", undefined, (type) =>
+				formatEventType(type as never),
+			),
 			band: getFacets(
 				"band",
-				(name) => `/assets/bands/${data.bandsByName.get(name)!.slug}.svg`,
-				(name) => data.bandsByName.get(name)!.name,
+				(slug) => `/assets/bands/${slug}.svg`,
+				(slug) => data.bandsBySlug.get(slug)!.name,
 			),
 			character: getFacets(
 				"character",
-				(name) =>
-					`/assets/characters/${data.charactersByName.get(name)!.slug}.${IMAGE_FORMAT}`,
-				(name) => data.charactersByName.get(name)!.name,
+				(slug) => `/assets/characters/${slug}.${IMAGE_FORMAT}`,
+				(slug) => data.charactersBySlug.get(slug)!.name,
 			),
 		},
 	};

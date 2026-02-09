@@ -28,13 +28,13 @@ export const GachaType = z.enum([
 ]);
 
 export const EventTypeMap = {
-	story: "Normal",
-	versus: "VS Live",
-	mission_live: "Mission Live",
-	challenge: "Challenge Live",
-	live_try: "Live Goals",
-	medley: "Medley Live",
-	festival: "Team Live Festival",
+	story: "normal",
+	versus: "vs-live",
+	mission_live: "mission-live",
+	challenge: "challenge-live",
+	live_try: "live-goals",
+	medley: "medley-live",
+	festival: "team-live-festival",
 } as const;
 export const EventType = z
 	.enum([

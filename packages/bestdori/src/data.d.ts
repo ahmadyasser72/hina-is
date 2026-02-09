@@ -3,9 +3,9 @@ import type { Data } from "./get-data";
 export const {
 	attributes,
 	bands,
-	bandsByName,
+	bandsBySlug,
 	characters,
-	charactersByName,
+	charactersBySlug,
 	cards,
 	events,
 	stamps,
