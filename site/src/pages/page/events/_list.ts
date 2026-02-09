@@ -110,7 +110,9 @@ export const filterEvents = async (
 	) =>
 		facets[name]
 			.sort(([aValue, aCount], [bValue, bCount]) => {
-				const order = bCount - aCount || aValue.localeCompare(bValue);
+				const order =
+					bCount - aCount ||
+					aValue.localeCompare(bValue, undefined, { numeric: true });
 				if (params[name]) {
 					const hasA = params[name].includes(aValue);
 					const hasB = params[name].includes(bValue);
