@@ -26,7 +26,7 @@ const {
 	class="modal max-sm:modal-bottom"
 	style={`--attribute: ${attribute.color};--band: ${band.color} ;--character: ${character.colorCode}`}
 >
-	<div class="modal-box w-full sm:max-w-xl md:max-w-2xl">
+	<div class="modal-box w-full sm:max-w-xl">
 		<div class="flex w-full items-center gap-y-4 max-sm:flex-col-reverse">
 			<div class="flex gap-1 font-medium">
 				<figure
@@ -99,7 +99,7 @@ const {
 		</div>
 
 		<figure
-			class="hover-gallery bg-character/5 rounded-box shadow-band hover:shadow-character mt-2 aspect-60/45 w-full shadow-lg"
+			class="hover-gallery bg-character/5 rounded-box shadow-band hover:shadow-character mt-2 aspect-60/45 w-full shadow-md"
 		>
 			<img
 				src={`/assets/cards/${card.slug}-full-normal.${IMAGE_FORMAT}`}
@@ -114,6 +114,17 @@ const {
 				alt={`${card.name} (trained)`}
 			/>
 		</figure>
+
+		<a
+			class="btn btn-sm btn-info mt-2 w-full"
+			href={`https://bestdori.com/info/cards/${card.id}`}
+			rel="noopener noreferrer"
+			target="_blank"
+		>
+			<iconify-icon class="size-4" icon="lucide:external-link" width="none"
+			></iconify-icon>
+			View on Bestdori!
+		</a>
 	</div>
 
 	<form class="modal-backdrop" method="dialog">
