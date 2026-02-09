@@ -66,6 +66,7 @@ const { background } = Astro.props;
 	import htmx from "htmx.org";
 
 	import "iconify-icon";
+	import "~/lib/global";
 
 	htmx.onLoad((node) => {
 		if (!(node instanceof HTMLElement)) return;

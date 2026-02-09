@@ -5,6 +5,11 @@ import { bestdoriJSON } from "..";
 import { CardAttribute, EventType, Id } from "./constants";
 import { asRegionTuple, dateTimestamp, parseRegionTuple } from "./helpers";
 
+const EventReward = z.object({
+	rewardType: z.string(),
+	rewardId: z.coerce.number().optional(),
+});
+
 // /api/events/$id.json
 export const Event = z
 	.object({
@@ -18,6 +23,9 @@ export const Event = z
 		attributes: z.tuple([z.object({ attribute: CardAttribute })]),
 		characters: z.array(z.object({ characterId: Id })),
 		members: z.array(z.object({ situationId: Id })),
+
+		pointRewards: z.array(EventReward).apply(parseRegionTuple),
+		rankingRewards: z.array(EventReward).apply(parseRegionTuple),
 	})
 	.transform(
 		({

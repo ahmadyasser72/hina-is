@@ -13,6 +13,7 @@ import { CardAttribute } from "./schema/constants";
 import { Events } from "./schema/events";
 import { StampImages, StampVoices } from "./schema/extras/stamps";
 import { Skills } from "./schema/skills";
+import { Stamps } from "./schema/stamps";
 import { unwrap } from "./utilities";
 
 console.time("everything");
@@ -32,6 +33,7 @@ const SCHEMAS = {
 	cards: Cards,
 	characters: Characters,
 	events: Events,
+	stamps: Stamps,
 	skills: Skills,
 	stampImages: StampImages,
 	stampVoices: StampVoices,
@@ -55,6 +57,7 @@ const all = await (async () => {
 		cards,
 		characters,
 		events,
+		stamps,
 		skills,
 		jpStampImages,
 		enStampImages,
@@ -65,6 +68,7 @@ const all = await (async () => {
 		get("cards", "/api/cards/all.5.json"),
 		get("characters", "/api/characters/main.3.json"),
 		get("events", "/api/events/all.5.json"),
+		get("stamps", "/api/stamps/all.2.json"),
 		get("skills", "/api/skills/all.10.json"),
 		get("stampImages", "/api/explorer/jp/assets/stamp/01.json"),
 		get("stampImages", "/api/explorer/en/assets/stamp/01.json"),
@@ -204,7 +208,18 @@ const all = await (async () => {
 		get events() {
 			return new Map(
 				[...events.entries()].map(
-					([id, { attribute, characters, cards, name, ...entry }]) => [
+					([
+						id,
+						{
+							attribute,
+							characters,
+							cards,
+							name,
+							pointRewards,
+							rankingRewards,
+							...entry
+						},
+					]) => [
 						id,
 						{
 							get attribute() {
@@ -240,6 +255,15 @@ const all = await (async () => {
 							},
 							get cards() {
 								return cards.map((id) => ({ id, ...all.cards.get(id)! }));
+							},
+							get stamp() {
+								const id = unwrap(pointRewards).find(
+									({ rewardId, rewardType }) =>
+										rewardType === "stamp" && rewardId,
+								)!.rewardId!;
+
+								const stampId = stamps.get(id)!.imageName;
+								return { id: stampId, ...all.stamps.get(stampId)! };
 							},
 							...entry,
 
