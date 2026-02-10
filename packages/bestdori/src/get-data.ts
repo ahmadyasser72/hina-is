@@ -149,7 +149,18 @@ const all = await (async () => {
 		get cards() {
 			return new Map(
 				[...cards.entries()].map(
-					([id, { characterId, name, attribute, skillId, stat, ...entry }]) => [
+					([
+						id,
+						{
+							characterId,
+							name,
+							attribute,
+							skillId,
+							skillName,
+							stat,
+							...entry
+						},
+					]) => [
 						id,
 						{
 							get character() {
@@ -167,6 +178,7 @@ const all = await (async () => {
 
 								const template = unwrap(description);
 								return {
+									name: unwrap(skillName),
 									description: onceEffect
 										? template
 												.replace(

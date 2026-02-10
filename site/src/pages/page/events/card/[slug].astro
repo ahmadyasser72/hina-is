@@ -115,12 +115,13 @@ const {
 		</div>
 
 		<div
-			class="dropdown dropdown-center sm:dropdown-end dropdown-bottom rounded-box bg-base-100 shadow-attribute mt-2 w-max max-w-90 px-4 py-2 text-center shadow-sm"
+			class="dropdown dropdown-center divide-base-content/60 sm:dropdown-end dropdown-bottom rounded-box bg-base-100 shadow-attribute mt-2 flex w-max max-w-90 flex-col divide-y-2 px-4 py-2 text-center shadow-sm"
 			id={`${card.slug}-skill`}
 			popover
 			style={`position-anchor: --anchor-${card.slug}-skill`}
 		>
-			{card.skill.description}
+			<span class="line-clamp-1 font-medium">{card.skill.name}</span>
+			<span class="text-sm">{card.skill.description}</span>
 		</div>
 
 		<figure

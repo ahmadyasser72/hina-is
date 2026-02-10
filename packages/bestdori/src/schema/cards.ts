@@ -17,6 +17,7 @@ export const Card = z
 		releasedAt: dateTimestamp.apply(parseRegionTuple),
 
 		skillId: z.number().positive(),
+		skillName: z.string().apply(parseRegionTuple),
 		stat: z.object({
 			training: z.object({ levelLimit: z.number().nonnegative() }).optional(),
 		}),
