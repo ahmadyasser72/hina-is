@@ -93,35 +93,25 @@ const {
 			>
 				<h3 class="text-center sm:text-end">{card.name}</h3>
 				<div
-					class="inline-flex items-center gap-1 max-sm:flex-row-reverse"
-					style={`anchor-name: --anchor-${card.slug}-skill`}
+					class="tooltip tooltip-bottom inline-flex items-center gap-1 max-sm:flex-row-reverse"
 				>
-					<button
-						class="badge badge-lg badge-accent cursor-pointer"
-						popovertarget={`${card.slug}-skill`}
+					<div
+						class="tooltip-content divide-base-content rounded-box bg-base-200/90 shadow-attribute text-base-content flex w-max max-w-90 flex-col space-y-1 divide-y text-center shadow-sm sm:max-w-64"
 					>
+						<span class="line-clamp-1">{card.skill.name}</span>
+						<span class="font-normal">{card.skill.description}</span>
+					</div>
+
+					<button class="badge badge-lg badge-accent">
 						<iconify-icon class="size-5" icon="lucide:zap" width="none"
 						></iconify-icon>
 						{card.skill.multiplier}
 					</button>
-					<button
-						class="badge bg-attribute badge-lg cursor-pointer text-white"
-						popovertarget={`${card.slug}-skill`}
-					>
+					<button class="badge bg-attribute badge-lg text-white">
 						{card.type.toUpperCase()} &starf;{card.rarity}
 					</button>
 				</div>
 			</div>
-		</div>
-
-		<div
-			class="dropdown dropdown-center divide-base-content/60 sm:dropdown-end dropdown-bottom rounded-box bg-base-100 shadow-attribute mt-2 flex w-max max-w-90 flex-col divide-y-2 px-4 py-2 text-center shadow-sm"
-			id={`${card.slug}-skill`}
-			popover
-			style={`position-anchor: --anchor-${card.slug}-skill`}
-		>
-			<span class="line-clamp-1 font-medium">{card.skill.name}</span>
-			<span class="text-sm">{card.skill.description}</span>
 		</div>
 
 		<figure
