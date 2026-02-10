@@ -7,7 +7,7 @@ export type AssetType = keyof typeof data;
 export type DataForAsset<T extends AssetType> = MapValue<(typeof data)[T]>;
 
 const getRegionAsset = (pathname: string, releasedAt: { en: Date | null }) =>
-	["/assets", !releasedAt.en ? "en" : "jp", pathname].join("/");
+	["/assets", releasedAt.en ? "en" : "jp", pathname].join("/");
 
 export const getAsset = <T extends AssetType>(
 	type: T,
