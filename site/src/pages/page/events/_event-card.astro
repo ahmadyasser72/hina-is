@@ -9,6 +9,7 @@ import { dayjs, formatDuration } from "~/lib/date";
 import EventCardActions from "./_event-card-actions.astro";
 import EventCardBandIcon from "./_event-card-band-icon.astro";
 import EventCardCharacterIcon from "./_event-card-character-icon.astro";
+import EventCardProgress from "./_event-card-progress.astro";
 import EventCardTime from "./_event-card-time.astro";
 
 interface Props {
@@ -26,19 +27,7 @@ const progress = (() => {
 	const start = dayjs(startAt.en);
 	const end = dayjs(endAt.en);
 
-	if (now.isAfter(end)) return;
-	else if (now.isBefore(start)) {
-		const untilStarted = formatDuration(now, start);
-		return { tooltip: `Starts in ${untilStarted}` };
-	}
-
-	const duration = end.diff(start);
-	const passed = now.diff(start);
-	const untilEnded = formatDuration(now, end);
-	return {
-		value: ((passed / duration) * 100).toFixed(1),
-		tooltip: `Ends in ${untilEnded}`,
-	};
+	if (now.isBefore(end)) return { now, start, end };
 })();
 ---
 
@@ -155,21 +144,7 @@ const progress = (() => {
 				}
 			</div>
 
-			{
-				progress && (
-					<div class="tooltip relative w-full" data-tip={progress.tooltip}>
-						<progress
-							class="progress progress-primary w-full"
-							value={progress.value}
-							max="100"
-						/>
-
-						<span class="center bg-secondary rounded-field text-secondary-content absolute w-14 font-medium">
-							{progress.value}%
-						</span>
-					</div>
-				)
-			}
+			{progress && <EventCardProgress {...progress} />}
 		</div>
 	</div>
 

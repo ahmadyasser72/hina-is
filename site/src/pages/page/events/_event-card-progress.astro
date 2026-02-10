@@ -1,0 +1,39 @@
+---
+import { dayjs, formatDuration } from "~/lib/date";
+
+interface Props {
+	now: dayjs.Dayjs;
+	start: dayjs.Dayjs;
+	end: dayjs.Dayjs;
+}
+
+const { now, start, end } = Astro.props;
+
+let tooltip: string[];
+let progress: number | undefined;
+if (now.isBefore(start)) {
+	const untilStarted = formatDuration(now, start);
+	tooltip = [`Starts in ${untilStarted}`];
+} else {
+	const sinceStarted = formatDuration(start, now);
+	const untilEnded = formatDuration(now, end);
+	tooltip = [`Started ${sinceStarted} ago`, `ends in ${untilEnded}`];
+
+	const duration = end.diff(start);
+	const passed = now.diff(start);
+	progress = (passed / duration) * 100;
+}
+---
+
+<div class="tooltip relative w-full">
+	<div class="tooltip-content" set:html={tooltip.join("<br>")} />
+
+	<progress class="progress progress-primary w-full" value={progress} max="100"
+	></progress>
+
+	<span
+		class="center bg-secondary rounded-field text-secondary-content absolute w-14 font-medium"
+	>
+		{progress ? `${progress.toFixed(1)}%` : "~"}
+	</span>
+</div>
