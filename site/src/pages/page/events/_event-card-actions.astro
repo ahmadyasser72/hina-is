@@ -13,10 +13,10 @@ const { event } = Astro.props;
 const { cards, stamp } = event;
 ---
 
-<div class="join z-10">
+<div class="join">
 	{
 		cards.length > 0 && (
-			<details class="dropdown dropdown-top">
+			<details class="dropdown dropdown-top z-10">
 				<summary
 					class="btn tooltip tooltip-right join-item btn-sm btn-circle btn-soft"
 					data-tip="Event cards"
@@ -43,7 +43,7 @@ const { cards, stamp } = event;
 		View on Bestdori!
 	</a>
 
-	<details class="dropdown dropdown-end dropdown-top">
+	<details class="dropdown dropdown-end dropdown-top z-10">
 		<summary class="btn join-item btn-sm btn-circle btn-soft">
 			<iconify-icon class="size-4" icon="lucide:ellipsis" width="none"
 			></iconify-icon>
