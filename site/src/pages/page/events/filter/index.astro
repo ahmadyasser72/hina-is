@@ -55,7 +55,7 @@ const { facets } = await filterEvents(params, events.list);
 			</FilterFieldset>
 
 			<FilterFieldset name="character" {facets} {params}>
-				<div class="mb-1 flex gap-2">
+				<div class="mb-1 flex gap-4">
 					<label class="label">
 						<input
 							hx-get="/page/events/filter"
@@ -66,6 +66,21 @@ const { facets } = await filterEvents(params, events.list);
 						/>
 						Filter Stamp
 					</label>
+
+					{
+						params.filter_stamp && (
+							<label class="label">
+								<input
+									hx-get="/page/events/filter"
+									class="checkbox checkbox-sm"
+									name="filter_stamp_voice"
+									type="checkbox"
+									checked={params.filter_stamp_voice}
+								/>
+								Voice
+							</label>
+						)
+					}
 				</div>
 			</FilterFieldset>
 		</form>

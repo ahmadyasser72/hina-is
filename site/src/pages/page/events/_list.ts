@@ -16,7 +16,13 @@ import { dayjs } from "~/lib/date";
 import type { schema } from "./_params";
 
 export const filterEvents = async (
-	{ list, band_type, filter_stamp, ...params }: z.infer<typeof schema>,
+	{
+		list,
+		band_type,
+		filter_stamp,
+		filter_stamp_voice,
+		...params
+	}: z.infer<typeof schema>,
 	events: (Bandori.Event & { id: number })[],
 ) => {
 	const db = (() => {
@@ -31,7 +37,10 @@ export const filterEvents = async (
 
 		insertMultiple(
 			eventDB,
-			events.map(({ id, attribute, type, band, characters, stamp }) => {
+			(filter_stamp_voice
+				? events.filter(({ stamp }) => stamp.voiced)
+				: events
+			).map(({ id, attribute, type, band, characters, stamp }) => {
 				let bands: Bandori.Band[];
 				if (band_type === "any") bands = toArray(band);
 				else if (band_type === "mixed-band")
