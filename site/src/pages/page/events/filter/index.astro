@@ -43,9 +43,10 @@ const { facets } = await filterEvents(params, events.list);
 								aria-label={headerCase(value)}
 								checked={params.band_type === value}
 								disabled={
-									params.band_type !== value &&
-									params.character &&
-									params.character.length > 1
+									params.filter_stamp ||
+									(params.band_type !== value &&
+										params.character &&
+										params.character.length > 1)
 								}
 							/>
 						))
@@ -53,7 +54,20 @@ const { facets } = await filterEvents(params, events.list);
 				</div>
 			</FilterFieldset>
 
-			<FilterFieldset name="character" {facets} {params} />
+			<FilterFieldset name="character" {facets} {params}>
+				<div class="mb-1 flex gap-2">
+					<label class="label">
+						<input
+							hx-get="/page/events/filter"
+							class="toggle toggle-sm"
+							name="filter_stamp"
+							type="checkbox"
+							checked={params.filter_stamp}
+						/>
+						Filter Stamp
+					</label>
+				</div>
+			</FilterFieldset>
 		</form>
 
 		<div class="bg-base-100 join sticky bottom-0 w-full px-4 py-2">

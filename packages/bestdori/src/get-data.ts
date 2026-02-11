@@ -275,7 +275,15 @@ const all = await (async () => {
 								)!.rewardId!;
 
 								const stampId = stamps.get(id)!.imageName;
-								return { id: stampId, ...all.stamps.get(stampId)! };
+								const characterId = Number(stampId.split("_")[1]!.slice(0, 3));
+								return {
+									id: stampId,
+									character: {
+										id: characterId,
+										...all.characters.get(characterId)!,
+									},
+									...all.stamps.get(stampId)!,
+								};
 							},
 							...entry,
 

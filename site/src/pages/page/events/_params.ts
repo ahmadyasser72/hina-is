@@ -6,6 +6,7 @@ export const schema = z
 	.object({
 		list: z.enum(["future", "past"]).catch("future"),
 		band_type: z.enum(["any", "single-band", "mixed-band"]).catch("any"),
+		filter_stamp: z.stringbool().catch(false),
 		attribute: z.string().apply(alwaysArray),
 		event_type: z.string().apply(alwaysArray),
 		band: z.string().apply(alwaysArray),
