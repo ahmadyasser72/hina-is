@@ -30,27 +30,29 @@ if (Astro.request.headers.get("hx-request") === "true" && page.current === 1) {
 ---
 
 <BaseLayout
-	background={events.active.length > 0
+	background={events.available.length > 0
 		? {
-				src: `/assets/events/${events.active[0].slug}-background.${IMAGE_FORMAT}`,
-				alt: `${events.active[0].name} background`,
+				src: `/assets/events/${events.available[0].slug}-background.${IMAGE_FORMAT}`,
+				alt: `${events.available[0].name} background`,
 			}
 		: undefined}
 >
 	<div class="flex flex-col gap-8">
-		<div class="flex flex-col items-center gap-4" id="active-events">
+		<div class="flex flex-col items-center gap-4" id="available-events">
 			<h2 class="badge badge-accent badge-xl w-48 font-medium">
-				Active events
+				Available events
 			</h2>
 
 			<div class="flex flex-wrap justify-center gap-x-2 gap-y-4">
 				{
-					events.active.length > 0 ? (
-						events.active.map((event) => (
+					events.available.length > 0 ? (
+						events.available.map((event) => (
 							<EventCard {event} predicted={false} />
 						))
 					) : (
-						<p class="text-base-content/50">No active event at the moment.</p>
+						<p class="text-base-content/50">
+							No available event at the moment.
+						</p>
 					)
 				}
 			</div>

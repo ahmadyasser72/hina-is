@@ -169,7 +169,7 @@ export const filterEvents = async (
 };
 
 export const getEvents = ({ list }: z.infer<typeof schema>) => {
-	const active = [] as number[];
+	const available = [] as number[];
 	const past = [] as number[];
 	const future = [] as number[];
 
@@ -183,7 +183,7 @@ export const getEvents = ({ list }: z.infer<typeof schema>) => {
 			now.isBefore(startAt.en) ||
 			now.isBetween(startAt.en, endAt.en)
 		) {
-			active.push(id);
+			available.push(id);
 		} else {
 			past.push(id);
 		}
@@ -192,7 +192,7 @@ export const getEvents = ({ list }: z.infer<typeof schema>) => {
 	}
 
 	return {
-		active: active.map((id) => ({ id, ...data.events.get(id)! })),
+		available: available.map((id) => ({ id, ...data.events.get(id)! })),
 		list:
 			list === "past"
 				? past.reverse().map((id) => ({ id, ...data.events.get(id)! }))
