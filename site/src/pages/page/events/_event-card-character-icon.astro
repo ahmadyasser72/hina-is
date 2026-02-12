@@ -8,22 +8,16 @@ import { IMAGE_FORMAT } from "~/lib/compressor/constants";
 interface Props {
 	character: Bandori.Character & { id: number };
 	displayBand: boolean;
-	tooltip?: "auto" | "top" | "bottom";
 }
 
-const { character, displayBand, tooltip = "auto" } = Astro.props;
+const { character, displayBand } = Astro.props;
 
 const { band } = character;
 const characterColor = colord(character.colorCode);
 ---
 
 <div
-	class:list={[
-		"tooltip group",
-		tooltip === "auto" && "even:tooltip-bottom",
-		tooltip === "top" && "tooltip-top",
-		tooltip === "bottom" && "tooltip-bottom",
-	]}
+	class="tooltip group even:tooltip-bottom"
 	style={`--character: ${characterColor.toHex()}`}
 >
 	<div

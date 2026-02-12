@@ -110,11 +110,10 @@ const progress = (() => {
 								<EventCardCharacterIcon
 									{character}
 									displayBand={Array.isArray(band)}
-									tooltip="bottom"
 								/>
 							))}
 
-							<details class="dropdown dropdown-top dropdown-end">
+							<details class="dropdown dropdown-top dropdown-end z-0">
 								<summary class="btn btn-circle btn-outline size-10">
 									<iconify-icon
 										class="size-4"
@@ -127,7 +126,6 @@ const progress = (() => {
 										<EventCardCharacterIcon
 											{character}
 											displayBand={Array.isArray(band)}
-											tooltip="top"
 										/>
 									))}
 								</div>

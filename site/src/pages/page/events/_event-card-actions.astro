@@ -13,7 +13,7 @@ const { event } = Astro.props;
 const { cards, stamp } = event;
 ---
 
-<div class="join">
+<div class="join" style={`anchor-name: --${event.slug}`}>
 	{
 		cards.length > 0 && (
 			<details class="dropdown dropdown-top z-10">
@@ -43,96 +43,98 @@ const { cards, stamp } = event;
 		View on Bestdori!
 	</a>
 
-	<details class="dropdown dropdown-end dropdown-top z-10">
-		<summary class="btn join-item btn-sm btn-circle btn-soft">
-			<iconify-icon class="size-4" icon="lucide:ellipsis" width="none"
-			></iconify-icon>
-		</summary>
-		<div
-			class="dropdown-content bg-base-300/80 rounded-box mb-1 flex h-max flex-col-reverse p-2 shadow-sm"
-			style={`anchor-name: --anchor-${event.slug}`}
-		>
-			<div class="join join-vertical">
-				<button
-					class="btn join-item btn-sm btn-circle btn-accent"
-					popovertarget={`${event.slug}-stamp`}
-				>
-					<iconify-icon class="size-4" icon="lucide:smile" width="none"
-					></iconify-icon>
-				</button>
-
-				<button
-					class="btn join-item btn-sm btn-circle btn-accent"
-					popovertarget={`${event.slug}-leaderboard`}
-				>
-					<iconify-icon class="size-4" icon="lucide:trophy" width="none"
-					></iconify-icon>
-				</button>
-			</div>
-		</div>
-	</details>
+	<button
+		class="btn join-item btn-sm btn-circle btn-soft"
+		popovertarget={`${event.slug}-info`}
+	>
+		<iconify-icon class="size-4" icon="lucide:ellipsis" width="none"
+		></iconify-icon>
+	</button>
 </div>
 
 <div
-	class="dropdown dropdown-left dropdown-end bg-base-200/90 rounded-box fixed p-2 shadow-sm"
-	id={`${event.slug}-stamp`}
+	class="dropdown dropdown-end dropdown-top bg-base-300/80 rounded-box mb-1 flex h-max flex-col-reverse p-2 shadow-sm"
+	id={`${event.slug}-info`}
 	popover
-	style={`position-anchor: --anchor-${event.slug}`}
+	style={`position-anchor: --${event.slug}`}
 >
-	<div class="relative aspect-40/33 h-32">
-		<img
-			class="w-full"
-			src={`/assets/stamps/${stamp.slug}-image.${IMAGE_FORMAT}`}
-			alt={`Stamp #${stamp.id}`}
-			loading="lazy"
-		/>
-
-		{
-			stamp.voiced && (
-				<button
-					class="btn bg-base-100/80 btn-circle absolute right-1 bottom-1.5 size-8 border-0 backdrop-blur-sm"
-					onclick={`playStampAudio(this, '${event.stamp.slug}')`}
-				>
-					<iconify-icon
-						class="htmx-indicator-replace size-4"
-						icon="lucide:volume-2"
-						width="none"
-					/>
-					<iconify-icon
-						class="htmx-indicator size-4"
-						icon="svg-spinners:90-ring-with-bg"
-						width="none"
-					/>
-				</button>
-			)
-		}
-	</div>
-</div>
-
-<ul
-	class="dropdown dropdown-left dropdown-end menu bg-base-200/90 rounded-box fixed w-max p-2 shadow-sm"
-	id={`${event.slug}-leaderboard`}
-	popover
-	style={`position-anchor: --anchor-${event.slug}`}
->
-	<li>
-		<a
-			href={`https://bestdori.com/tool/eventtracker/jp/t10/${event.id}`}
-			rel="noopener noreferrer"
-			target="_blank">T10 Leaderboard (JP)</a
+	<div class="join join-vertical">
+		<button
+			class="btn join-item btn-sm btn-circle btn-accent"
+			popovertarget={`${event.slug}-stamp`}
 		>
-	</li>
-	{
-		dayjs(event.startAt.en).isBefore() && (
+			<iconify-icon class="size-4" icon="lucide:smile" width="none"
+			></iconify-icon>
+		</button>
+		<div
+			class="dropdown dropdown-top dropdown-end bg-base-200/90 rounded-box mr-12 mb-1 p-2 shadow-sm"
+			id={`${event.slug}-stamp`}
+			popover
+			style={`position-anchor: --${event.slug}`}
+		>
+			<div class="relative aspect-40/33 h-32">
+				<img
+					class="w-full"
+					src={`/assets/stamps/${stamp.slug}-image.${IMAGE_FORMAT}`}
+					alt={`Stamp #${stamp.id}`}
+					loading="lazy"
+				/>
+
+				{
+					stamp.voiced && (
+						<button
+							class="btn bg-base-100/80 btn-circle absolute right-1 bottom-1.5 size-8 border-0 backdrop-blur-sm"
+							onclick={`playStampAudio(this, '${event.stamp.slug}')`}
+						>
+							<iconify-icon
+								class="htmx-indicator-replace size-4"
+								icon="lucide:volume-2"
+								width="none"
+							/>
+							<iconify-icon
+								class="htmx-indicator size-4"
+								icon="svg-spinners:90-ring-with-bg"
+								width="none"
+							/>
+						</button>
+					)
+				}
+			</div>
+		</div>
+
+		<button
+			class="btn join-item btn-sm btn-circle btn-accent"
+			popovertarget={`${event.slug}-leaderboard`}
+		>
+			<iconify-icon class="size-4" icon="lucide:trophy" width="none"
+			></iconify-icon>
+		</button>
+		<ul
+			class="dropdown dropdown-top dropdown-end menu bg-base-200/90 rounded-box mr-12 mb-1 w-max p-2 shadow-sm"
+			id={`${event.slug}-leaderboard`}
+			popover
+			style={`position-anchor: --${event.slug}`}
+		>
 			<li>
 				<a
-					href={`https://bestdori.com/tool/eventtracker/en/t10/${event.id}`}
+					href={`https://bestdori.com/tool/eventtracker/jp/t10/${event.id}`}
 					rel="noopener noreferrer"
-					target="_blank"
+					target="_blank">T10 Leaderboard (JP)</a
 				>
-					T10 Leaderboard (EN)
-				</a>
 			</li>
-		)
-	}
-</ul>
+			{
+				dayjs(event.startAt.en).isBefore() && (
+					<li>
+						<a
+							href={`https://bestdori.com/tool/eventtracker/en/t10/${event.id}`}
+							rel="noopener noreferrer"
+							target="_blank"
+						>
+							T10 Leaderboard (EN)
+						</a>
+					</li>
+				)
+			}
+		</ul>
+	</div>
+</div>
