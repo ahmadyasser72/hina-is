@@ -1,0 +1,73 @@
+---
+import { stamps } from "@hina-is/bestdori/data";
+
+import BaseLayout from "~/layouts/base-layout.astro";
+import { IMAGE_FORMAT } from "~/lib/compressor/constants";
+import { paginate } from "~/lib/paginate";
+
+const page = paginate({
+	items: [...stamps.entries()],
+	context: Astro,
+	size: 20,
+	extraProps: { "hx-select": ".stamp", "hx-swap": "afterend" },
+});
+---
+
+<BaseLayout>
+	<div class="flex flex-col items-center gap-4" id="stamps">
+		<div class="inline-flex justify-center gap-2">
+			<h2 class="badge badge-accent badge-xl w-48 font-medium">Stamps</h2>
+		</div>
+
+		<div
+			class="flex flex-wrap justify-center gap-x-1 gap-y-2"
+			hx-indicator="#stamps-loader"
+		>
+			{
+				page.items.map(([id, stamp], idx) => (
+					<div
+						{...(page.isLastElement(idx) && page.props)}
+						class="stamp relative aspect-40/33 h-32"
+					>
+						<img
+							class="w-full"
+							src={`/assets/stamps/${stamp.slug}-image.${IMAGE_FORMAT}`}
+							alt={`Stamp #${id}`}
+							loading="lazy"
+						/>
+
+						{stamp.voiced && (
+							<button
+								class="btn bg-base-100/80 btn-circle absolute right-1 bottom-1.5 size-8 border-0 backdrop-blur-sm"
+								onclick={`playStampAudio(this, '${stamp.slug}')`}
+							>
+								<iconify-icon
+									class="htmx-indicator-replace size-4"
+									icon="lucide:volume-2"
+									width="none"
+								/>
+								<iconify-icon
+									class="htmx-indicator size-4"
+									icon="svg-spinners:90-ring-with-bg"
+									width="none"
+								/>
+							</button>
+						)}
+					</div>
+				))
+			}
+		</div>
+
+		<div class="htmx-indicator relative mt-8 h-32 w-full" id="stamps-loader">
+			<iconify-icon
+				class="text-accent center bg-accent-content/80 absolute size-32 rounded-full"
+				icon="svg-spinners:90-ring-with-bg"
+				width="none"></iconify-icon>
+
+			<span
+				class="badge center badge-lg badge-accent absolute w-max font-medium"
+				>loading more stamps...</span
+			>
+		</div>
+	</div>
+</BaseLayout>

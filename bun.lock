@@ -36,9 +36,7 @@
         "@hina-is/bestdori": "workspace:*",
         "@orama/orama": "3.1.18",
         "@tailwindcss/vite": "4.1.18",
-        "@upstash/redis": "1.36.2",
         "astro": "5.17.1",
-        "better-sse": "0.16.1",
         "colord": "2.9.3",
         "daisyui": "5.5.18",
         "dayjs": "1.11.19",
@@ -434,8 +432,6 @@
     "bail": ["bail@2.0.2", "", {}, "sha512-0xO6mYd7JB2YesxDKplafRpsiOzPt9V02ddPCLbY1xYGPOX24NTyN50qnUxgCPcSoYMhKpAuBTjQoRZCAkUDRw=="],
 
     "base-64": ["base-64@1.0.0", "", {}, "sha512-kwDPIFCGx0NZHog36dj+tHiwP4QMzsZ3AgMViUBKI0+V5n4U0ufTCUMhnQ04diaRI8EX/QcPfql7zlhZ7j4zgg=="],
-
-    "better-sse": ["better-sse@0.16.1", "", {}, "sha512-1gc5LUmdMX49Whq/XWOfNKBmMpZCaFLWk0Pt4A5p41T/6/sK1cV7Px/3ep84gwZs6Vz6V/tgozz6EscTT0lLoA=="],
 
     "blake3-wasm": ["blake3-wasm@2.1.5", "", {}, "sha512-F1+K8EbfOZE49dtoPtmxUQrpXaBIl3ICvasLh+nJta0xkz+9kF/7uet9fLnwKqhDrmj6g+6K3Tw9yQPUg2ka5g=="],
 

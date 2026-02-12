@@ -15,12 +15,6 @@ export const onRequest = defineMiddleware(
 			cookies.set("timezone", locals.clientTimezone, { path: "/" });
 		}
 
-		const cookieClientId = cookies.get("client-id")?.value;
-		locals.clientId = cookieClientId ?? crypto.randomUUID();
-		if (!cookieClientId) {
-			cookies.set("client-id", locals.clientId, { path: "/" });
-		}
-
 		locals.parseQuery = (schema) => {
 			const querySchema = z
 				.instanceof(URLSearchParams)
