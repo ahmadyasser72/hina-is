@@ -75,6 +75,7 @@ const { cards, stamp } = event;
 			<div class="relative aspect-40/33 h-32">
 				<img
 					class="w-full"
+					{...Astro.locals.useThumbhash(`${stamp.slug}-image`)}
 					src={`/assets/stamps/${stamp.slug}-image.${IMAGE_FORMAT}`}
 					alt={`Stamp #${stamp.id}`}
 					loading="lazy"
