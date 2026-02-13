@@ -86,6 +86,44 @@ const {
 						alt=`${attribute.name.toUpperCase()} icon`
 					/>
 				</div>
+
+				{
+					card.gachaText && (
+						<div class="tooltip tooltip-bottom">
+							<div
+								class:list={[
+									"tooltip-content bg-character sm:max-w-64",
+									colord(character.colorCode).brightness() < 0.67
+										? "text-white"
+										: "text-black",
+								]}
+							>
+								{card.gachaText}
+							</div>
+
+							<button
+								class:list={[
+									"btn not-disabled:bg-character btn-circle size-12",
+									colord(character.colorCode).brightness() < 0.67
+										? "not-disabled:text-white"
+										: "not-disabled:text-black",
+								]}
+								onclick={`playCardAudio(this, '${card.slug}')`}
+							>
+								<iconify-icon
+									class="htmx-indicator-replace size-8"
+									icon="lucide:volume-2"
+									width="none"
+								/>
+								<iconify-icon
+									class="htmx-indicator size-8"
+									icon="svg-spinners:90-ring-with-bg"
+									width="none"
+								/>
+							</button>
+						</div>
+					)
+				}
 			</div>
 
 			<div

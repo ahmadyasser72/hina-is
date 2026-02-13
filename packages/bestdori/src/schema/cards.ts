@@ -14,6 +14,7 @@ export const Card = z
 		type: CardType,
 		resourceSetName: z.string(),
 		prefix: z.string().apply(parseRegionTuple),
+		gachaText: z.string().nullable().apply(parseRegionTuple),
 		releasedAt: dateTimestamp.apply(parseRegionTuple),
 
 		skillId: z.number().positive(),

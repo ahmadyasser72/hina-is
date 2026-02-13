@@ -76,6 +76,23 @@ const all = await (async () => {
 		get("stampVoices", "/api/explorer/en/assets/sound/voice_stamp.json"),
 	]);
 
+	const gachaTypeList = await time(
+		"fetch gachaTypeList",
+		Promise.all(
+			["birthdayspin", "limitedspin", "operationspin", "spin"].map((type) =>
+				bestdoriJSON<string[]>(
+					`api/explorer/jp/assets/sound/voice/gacha/${type}.json`,
+					false,
+				).then((entries) => ({
+					type,
+					entries: entries
+						.filter((it) => it.endsWith("mp3"))
+						.map((it) => it.replace(".mp3", "")),
+				})),
+			),
+		),
+	);
+
 	return {
 		get attributes() {
 			const colors = {
@@ -154,6 +171,7 @@ const all = await (async () => {
 						{
 							characterId,
 							name,
+							gachaText,
 							attribute,
 							skillId,
 							skillName,
@@ -172,6 +190,16 @@ const all = await (async () => {
 							...entry,
 
 							name: unwrap(name),
+							gachaText: unwrap(gachaText),
+							get gachaType() {
+								if (!unwrap(gachaText)) return null;
+
+								return (
+									gachaTypeList.find(({ entries }) =>
+										entries.includes(entry.resourceSetName),
+									)?.type ?? null
+								);
+							},
 							get skill() {
 								const { duration, description, activationEffect, onceEffect } =
 									skills.get(skillId)!;

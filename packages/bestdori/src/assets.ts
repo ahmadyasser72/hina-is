@@ -35,8 +35,13 @@ export const getAsset = <T extends AssetType>(
 			const chunkId = Math.floor((id as number) / 50)
 				.toString()
 				.padStart(5, "0");
-			const { releasedAt, resourceSetName, trainingState } =
-				data as DataForAsset<"cards">;
+			const {
+				gachaText,
+				gachaType,
+				releasedAt,
+				resourceSetName,
+				trainingState,
+			} = data as DataForAsset<"cards">;
 
 			const normal = {
 				[`${slug}-icon-normal`]: getRegionAsset(
@@ -58,10 +63,17 @@ export const getAsset = <T extends AssetType>(
 					releasedAt,
 				),
 			};
+			const voice = gachaText &&
+				gachaType && {
+					[`${slug}-voice`]: getRegionAsset(
+						`/sound/voice/gacha/${gachaType}_rip/${resourceSetName}.mp3`,
+						releasedAt,
+					),
+				};
 
-			if (trainingState === "both") return { ...normal, ...trained };
-			else if (trainingState === "no-trained") return normal;
-			else if (trainingState === "only-trained") return trained;
+			if (trainingState === "both") return { ...normal, ...trained, ...voice };
+			else if (trainingState === "no-trained") return { ...normal, ...voice };
+			else return { ...trained, ...voice };
 			break;
 		}
 
