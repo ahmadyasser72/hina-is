@@ -7,6 +7,7 @@ export const {
 	characters,
 	charactersBySlug,
 	cards,
+	cardsBySlug,
 	events,
 	stamps,
 }: Data;

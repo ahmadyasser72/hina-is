@@ -36,6 +36,7 @@ const progress = (() => {
 		<figure>
 			<img
 				class="aspect-3/1 h-32"
+				{...Astro.locals.useThumbhash(`${event.slug}-banner`)}
 				src={`/assets/events/${event.slug}-banner.${IMAGE_FORMAT}`}
 				alt={`${event.name} banner`}
 				loading="lazy"

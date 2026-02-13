@@ -12,7 +12,7 @@ const getRegionAsset = (pathname: string, releasedAt: { en: Date | null }) =>
 export const getAsset = <T extends AssetType>(
 	type: T,
 	data: DataForAsset<T> & { id: string | number },
-) => {
+): Record<string, string> => {
 	const { id, slug } = data;
 
 	switch (type) {
@@ -74,7 +74,6 @@ export const getAsset = <T extends AssetType>(
 			if (trainingState === "both") return { ...normal, ...trained, ...voice };
 			else if (trainingState === "no-trained") return { ...normal, ...voice };
 			else return { ...trained, ...voice };
-			break;
 		}
 
 		case "events": {

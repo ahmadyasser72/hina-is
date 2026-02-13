@@ -3,9 +3,10 @@ import z from "zod";
 
 import { dayjs } from "~/lib/date";
 import { maybeArray } from "./lib/schema";
+import { fetchThumbhashMap } from "./lib/thumbhash";
 
 export const onRequest = defineMiddleware(
-	({ isPrerendered, request, cookies, locals, url }, next) => {
+	async ({ isPrerendered, request, cookies, locals, url }, next) => {
 		if (isPrerendered) return next();
 
 		const cookieTimezone = cookies.get("timezone")?.value;
@@ -45,6 +46,12 @@ export const onRequest = defineMiddleware(
 
 			const query = querySchema.parse(url.searchParams);
 			return schema.parse(query);
+		};
+
+		const thumbhashMap = await fetchThumbhashMap({ locals, url });
+		locals.useThumbhash = (id) => {
+			const hash = thumbhashMap.get(id);
+			if (hash) return { "data-thumbhash": hash };
 		};
 
 		return next();

@@ -44,6 +44,7 @@
         "iconify-icon": "3.0.2",
         "tailwindcss": "4.1.18",
         "text-case": "1.2.10",
+        "thumbhash": "0.1.1",
         "zod": "4.3.6",
       },
       "devDependencies": {
@@ -962,6 +963,8 @@
     "text-upper-case": ["text-upper-case@1.2.10", "", {}, "sha512-L1AtZ8R+jtSMTq0Ffma9R4Rzbrc3iuYW89BmWFH41AwnDfRmEBlBOllm1ZivRLQ/6pEu2p+3XKBHx9fsMl2CWg=="],
 
     "text-upper-case-first": ["text-upper-case-first@1.2.10", "", {}, "sha512-VXs7j7BbpKwvolDh5fwpYRmMrUHGkxbY8E90fhBzKUoKfadvWmPT/jFieoZ4UPLzr208pXvQEFbb2zO9Qzs9Fg=="],
+
+    "thumbhash": ["thumbhash@0.1.1", "", {}, "sha512-kH5pKeIIBPQXAOni2AiY/Cu/NKdkFREdpH+TLdM0g6WA7RriCv0kPLgP731ady67MhTAqrVG/4mnEeibVuCJcg=="],
 
     "tiny-inflate": ["tiny-inflate@1.0.3", "", {}, "sha512-pkY1fj1cKHb2seWDy0B16HeWyczlJA9/WW3u3c4z/NiWDsO3DOU5D7nhTLE9CF0yXv/QZFY7sEJmj24dK+Rrqw=="],
 

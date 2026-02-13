@@ -244,6 +244,13 @@ const all = await (async () => {
 				),
 			);
 		},
+		get cardsBySlug() {
+			return new Map(
+				[...all.events.values()]
+					.flatMap(({ cards }) => cards)
+					.map((card) => [card.slug, card]),
+			);
+		},
 
 		get events() {
 			return new Map(

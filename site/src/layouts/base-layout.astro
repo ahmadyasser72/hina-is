@@ -1,8 +1,10 @@
 ---
+import type { JSX } from "astro/jsx-runtime";
+
 import "~/styles/global.css";
 
 interface Props {
-	background?: { src: string; alt: string };
+	background?: JSX.ImgHTMLAttributes;
 }
 
 const { background } = Astro.props;
@@ -36,8 +38,7 @@ const { background } = Astro.props;
 				background && (
 					<img
 						class="absolute h-full w-full object-cover brightness-67 select-none dark:brightness-33"
-						src={background.src}
-						alt={background.alt}
+						{...background}
 					/>
 				)
 			}
@@ -64,6 +65,7 @@ const { background } = Astro.props;
 
 <script>
 	import htmx from "htmx.org";
+	import { thumbHashToDataURL } from "thumbhash";
 
 	import "iconify-icon";
 	import "~/lib/global";
@@ -81,6 +83,22 @@ const { background } = Astro.props;
 		node
 			.querySelector<HTMLElement>("[data-scroll-here]")
 			?.scrollIntoView({ behavior: "smooth" });
+
+		node
+			.querySelectorAll<HTMLImageElement>("[data-thumbhash]")
+			.forEach((img) => {
+				if (img.complete) return;
+
+				const base64Hash = img.dataset.thumbhash!;
+				const binaryHash = new Uint8Array(
+					atob(base64Hash)
+						.split("")
+						.map((x) => x.charCodeAt(0)),
+				);
+
+				const placeholderUrl = thumbHashToDataURL(binaryHash);
+				img.style.background = `center / cover url(${placeholderUrl})`;
+			});
 	});
 
 	htmx.on("htmx:beforeSwap", (e) => {

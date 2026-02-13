@@ -32,6 +32,7 @@ if (Astro.request.headers.get("hx-request") === "true" && page.current === 1) {
 <BaseLayout
 	background={events.available.length > 0
 		? {
+				...Astro.locals.useThumbhash(`${events.available[0].slug}-background`),
 				src: `/assets/events/${events.available[0].slug}-background.${IMAGE_FORMAT}`,
 				alt: `${events.available[0].name} background`,
 			}

@@ -77,11 +77,13 @@ const characterColor = colord(character.colorCode);
 			class="hover-gallery rounded-box bg-character/25 shadow-band hover:shadow-character htmx-indicator-replace size-12 shadow-md"
 		>
 			<img
+				{...Astro.locals.useThumbhash(`${card.slug}-icon-normal`)}
 				src={`/assets/cards/${card.slug}-icon-normal.${IMAGE_FORMAT}`}
 				alt={`${card.name} icon`}
 				loading="lazy"
 			/>
 			<img
+				{...Astro.locals.useThumbhash(`${card.slug}-icon-trained`)}
 				src={`/assets/cards/${card.slug}-icon-trained.${IMAGE_FORMAT}`}
 				alt={`${card.name} icon (trained)`}
 				loading="lazy"
