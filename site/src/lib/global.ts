@@ -25,10 +25,12 @@ window.playStampAudio = (button, slug) =>
 	playAudio(button, `/assets/stamps/${slug}-voice.${AUDIO_FORMAT}`);
 
 window.playCardAudio = (button, slug) => {
-	const tooltip = button.closest<HTMLElement>(".tooltip")!;
+	const dropdown = button.closest<HTMLElement>(".dropdown")!;
 
 	playAudio(button, `/assets/cards/${slug}-voice.${AUDIO_FORMAT}`, {
-		beforePlay: () => tooltip.classList.toggle("tooltip-open", true),
-		afterPlay: () => tooltip.classList.toggle("tooltip-open", false),
+		beforePlay: () =>
+			dropdown.classList.replace("dropdown-close", "dropdown-open"),
+		afterPlay: () =>
+			dropdown.classList.replace("dropdown-open", "dropdown-close"),
 	});
 };
