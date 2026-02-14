@@ -66,42 +66,6 @@ const { cards, stamp } = event;
 			<iconify-icon class="size-4" icon="lucide:smile" width="none"
 			></iconify-icon>
 		</button>
-		<div
-			class="dropdown dropdown-top dropdown-end bg-base-200/90 rounded-box mr-12 mb-1 p-2 shadow-sm"
-			id={`${event.slug}-stamp`}
-			popover
-			style={`position-anchor: --${event.slug}`}
-		>
-			<div class="relative aspect-40/33 h-32">
-				<img
-					class="w-full"
-					{...Astro.locals.useThumbhash(`${stamp.slug}-image`)}
-					src={`/assets/stamps/${stamp.slug}-image.${IMAGE_FORMAT}`}
-					alt={`Stamp #${stamp.id}`}
-					loading="lazy"
-				/>
-
-				{
-					stamp.voiced && (
-						<button
-							class="btn bg-base-100/80 btn-circle absolute right-1 bottom-1.5 size-8 border-0 backdrop-blur-sm"
-							onclick={`playStampAudio(this, '${event.stamp.slug}')`}
-						>
-							<iconify-icon
-								class="htmx-indicator-replace size-4"
-								icon="lucide:volume-2"
-								width="none"
-							/>
-							<iconify-icon
-								class="htmx-indicator size-4"
-								icon="svg-spinners:90-ring-with-bg"
-								width="none"
-							/>
-						</button>
-					)
-				}
-			</div>
-		</div>
 
 		<button
 			class="btn join-item btn-sm btn-circle btn-accent"
@@ -110,32 +74,70 @@ const { cards, stamp } = event;
 			<iconify-icon class="size-4" icon="lucide:trophy" width="none"
 			></iconify-icon>
 		</button>
-		<ul
-			class="dropdown dropdown-top dropdown-end menu bg-base-200/90 rounded-box mr-12 mb-1 w-max p-2 shadow-sm"
-			id={`${event.slug}-leaderboard`}
-			popover
-			style={`position-anchor: --${event.slug}`}
-		>
-			<li>
-				<a
-					href={`https://bestdori.com/tool/eventtracker/jp/t10/${event.id}`}
-					rel="noopener noreferrer"
-					target="_blank">T10 Leaderboard (JP)</a
-				>
-			</li>
-			{
-				dayjs(event.startAt.en).isBefore() && (
-					<li>
-						<a
-							href={`https://bestdori.com/tool/eventtracker/en/t10/${event.id}`}
-							rel="noopener noreferrer"
-							target="_blank"
-						>
-							T10 Leaderboard (EN)
-						</a>
-					</li>
-				)
-			}
-		</ul>
 	</div>
 </div>
+
+<div
+	class="dropdown dropdown-top dropdown-end bg-base-200/90 rounded-box mr-12 mb-1 p-2 shadow-sm"
+	id={`${event.slug}-stamp`}
+	popover
+	style={`position-anchor: --${event.slug}`}
+>
+	<div class="relative aspect-40/33 h-32">
+		<img
+			class="w-full"
+			{...Astro.locals.useThumbhash(`${stamp.slug}-image`)}
+			src={`/assets/stamps/${stamp.slug}-image.${IMAGE_FORMAT}`}
+			alt={`Stamp #${stamp.id}`}
+			loading="lazy"
+		/>
+
+		{
+			stamp.voiced && (
+				<button
+					class="btn bg-base-100/80 btn-circle absolute right-1 bottom-1.5 size-8 border-0 backdrop-blur-sm"
+					onclick={`playStampAudio(this, '${event.stamp.slug}')`}
+				>
+					<iconify-icon
+						class="htmx-indicator-replace size-4"
+						icon="lucide:volume-2"
+						width="none"
+					/>
+					<iconify-icon
+						class="htmx-indicator size-4"
+						icon="svg-spinners:90-ring-with-bg"
+						width="none"
+					/>
+				</button>
+			)
+		}
+	</div>
+</div>
+
+<ul
+	class="dropdown dropdown-top dropdown-end menu bg-base-200/90 rounded-box mr-12 mb-1 w-max p-2 shadow-sm"
+	id={`${event.slug}-leaderboard`}
+	popover
+	style={`position-anchor: --${event.slug}`}
+>
+	<li>
+		<a
+			href={`https://bestdori.com/tool/eventtracker/jp/t10/${event.id}`}
+			rel="noopener noreferrer"
+			target="_blank">T10 Leaderboard (JP)</a
+		>
+	</li>
+	{
+		dayjs(event.startAt.en).isBefore() && (
+			<li>
+				<a
+					href={`https://bestdori.com/tool/eventtracker/en/t10/${event.id}`}
+					rel="noopener noreferrer"
+					target="_blank"
+				>
+					T10 Leaderboard (EN)
+				</a>
+			</li>
+		)
+	}
+</ul>
