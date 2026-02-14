@@ -98,6 +98,9 @@ const { background } = Astro.props;
 
 				const placeholderUrl = thumbHashToDataURL(binaryHash);
 				img.style.background = `center / cover url(${placeholderUrl})`;
+				img.addEventListener("load", () => {
+					img.style.removeProperty("background");
+				});
 			});
 	});
 
