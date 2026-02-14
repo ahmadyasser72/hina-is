@@ -9,6 +9,17 @@ export default defineConfig({
 	output: "server",
 	build: { concurrency: 4 },
 
+	env: {
+		schema: {
+			GOATCOUNTER_ENDPOINT: envField.string({
+				access: "public",
+				context: "server",
+				optional: true,
+				url: true,
+			}),
+		},
+	},
+
 	vite: {
 		plugins: [tailwindcss()],
 		ssr: {
