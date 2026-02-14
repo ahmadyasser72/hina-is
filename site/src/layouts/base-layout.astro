@@ -25,6 +25,12 @@ const { background, title } = Astro.props;
 		<meta name="viewport" content="width=device-width" />
 		<meta name="generator" content={Astro.generator} />
 		<title>Hina is &hearts; {title}</title>
+
+		<script
+			data-goatcounter="https://notsweet.goatcounter.com/count"
+			src="/goatcounter.js"
+			async
+			is:inline></script>
 	</head>
 	<body
 		{...!Astro.locals.clientTimezone && {
