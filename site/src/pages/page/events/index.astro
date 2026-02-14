@@ -30,6 +30,7 @@ if (Astro.request.headers.get("hx-request") === "true" && page.current === 1) {
 ---
 
 <BaseLayout
+	title="Event Schedule"
 	background={events.available.length > 0
 		? {
 				...Astro.locals.useThumbhash(`${events.available[0].slug}-background`),

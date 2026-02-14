@@ -5,9 +5,10 @@ import "~/styles/global.css";
 
 interface Props {
 	background?: JSX.ImgHTMLAttributes;
+	title: string;
 }
 
-const { background } = Astro.props;
+const { background, title } = Astro.props;
 ---
 
 <html lang="en">
@@ -23,7 +24,7 @@ const { background } = Astro.props;
 
 		<meta name="viewport" content="width=device-width" />
 		<meta name="generator" content={Astro.generator} />
-		<title>Astro</title>
+		<title>Hina is &hearts; {title}</title>
 	</head>
 	<body
 		{...!Astro.locals.clientTimezone && {
