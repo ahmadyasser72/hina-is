@@ -314,15 +314,8 @@ const all = await (async () => {
 								)!.rewardId!;
 
 								const stampId = stamps.get(id)!.imageName;
-								const characterId = Number(stampId.split("_")[1]!.slice(0, 3));
-								return {
-									id: stampId,
-									character: {
-										id: characterId,
-										...all.characters.get(characterId)!,
-									},
-									...all.stamps.get(stampId)!,
-								};
+								const stamp = all.stamps.get(stampId)!;
+								return { id: stampId, ...stamp, character: stamp.character! };
 							},
 							...entry,
 
@@ -356,10 +349,23 @@ const all = await (async () => {
 						(a, b) => Number(a.id.split("_")[1]) - Number(b.id.split("_")[1]),
 					)
 					.sort((a, b) => Number(b.voiced) - Number(a.voiced))
-					.map(({ id, region, voiced }) => [
-						id,
-						{ region, voiced, slug: getSlug(id, region) },
-					]),
+					.map(({ id, region, voiced }) => {
+						return [
+							id,
+							{
+								get character() {
+									const characterId = Number(id.split("_")[1]!.slice(0, 3));
+									const character = all.characters.get(characterId);
+									if (!character) return null;
+
+									return { id: characterId, ...character };
+								},
+								region,
+								voiced,
+								slug: getSlug(id, region),
+							},
+						];
+					}),
 			);
 		},
 	};

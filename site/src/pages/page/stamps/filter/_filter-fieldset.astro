@@ -1,0 +1,76 @@
+---
+import { titleCase } from "text-case";
+
+import type { filterStamps } from "../_list";
+
+type Facets = Awaited<ReturnType<typeof filterStamps>>["facets"];
+
+interface Props {
+	name: keyof Facets;
+	facets: Facets;
+	params: Partial<Record<keyof Facets, string[]>>;
+}
+
+const { name, facets, params } = Astro.props;
+const values = facets[name];
+---
+
+<fieldset
+	class="group fieldset border-base-300 rounded-box w-full border p-4 pt-2"
+>
+	<legend class="fieldset-legend">{titleCase(name)}</legend>
+
+	<slot />
+
+	<div class="flex flex-wrap gap-1">
+		{
+			values.map(({ id, value, label, icon, count }) => (
+				<div>
+					<input
+						class="peer hidden"
+						{id}
+						{name}
+						type="checkbox"
+						{value}
+						checked={params[name]?.includes(value)}
+					/>
+					<label
+						hx-get="/page/stamps/filter"
+						hx-trigger="input from:previous"
+						class="btn max-sm:btn-sm peer-[&:not(:checked):not(:disabled)]:btn-outline peer-checked:btn-accent peer-disabled:btn-disabled peer-disabled:btn-neutral"
+						for={id}
+					>
+						{icon && (
+							<>
+								<img
+									class="htmx-indicator-replace size-6 sm:size-8"
+									src={icon}
+									alt={`${label} icon`}
+								/>
+								<iconify-icon
+									class="htmx-indicator size-6 sm:size-8"
+									icon="svg-spinners:90-ring-with-bg"
+									width="none"
+								/>
+							</>
+						)}
+						{label} ({count})
+					</label>
+				</div>
+			))
+		}
+
+		{
+			params[name] && (
+				<input
+					hx-get="/page/stamps/filter"
+					class="btn max-sm:btn-sm"
+					{name}
+					type="checkbox"
+					value="reset"
+					aria-label="Reset"
+				/>
+			)
+		}
+	</div>
+</fieldset>

@@ -1,0 +1,82 @@
+---
+import { headerCase } from "text-case";
+
+import { filterStamps, getStamps } from "../_list";
+import { schema } from "../_params";
+import FilterFieldset from "./_filter-fieldset.astro";
+
+export const partial = true;
+
+const params = Astro.locals.parseQuery(schema);
+const stamps = getStamps();
+const { facets } = await filterStamps(params, stamps);
+---
+
+<dialog class="modal max-sm:modal-bottom" id="filter_modal">
+	<div class="modal-box max-h-4/5 w-full sm:max-w-xl">
+		<h3 class="text-center text-lg font-medium">Filter stamps</h3>
+
+		<form
+			class="flex flex-col gap-1"
+			id="filter"
+			hx-disabled-elt="#filter input"
+			hx-include="#filter"
+			hx-select="#filter"
+			hx-select-oob="#apply-filter"
+			hx-swap="outerHTML transition:true"
+			hx-target="this"
+		>
+			<FilterFieldset name="band" {facets} {params} />
+			<FilterFieldset name="character" {facets} {params} />
+		</form>
+
+		<div class="bg-base-100 join sticky bottom-0 w-full px-4 py-2">
+			<button
+				hx-get="/page/stamps"
+				class="btn btn-primary join-item flex-1"
+				id="apply-filter"
+				hx-indicator="this"
+				hx-on--after-request="event.detail.successful && filter_modal.close()"
+				hx-select="#stamps"
+				hx-swap="outerHTML show:top"
+				hx-target="#stamps"
+				hx-vals={JSON.stringify(params)}
+			>
+				<iconify-icon
+					class="htmx-indicator-replace size-6"
+					icon="lucide:filter"
+					width="none"></iconify-icon>
+				<iconify-icon
+					class="htmx-indicator size-6"
+					icon="svg-spinners:90-ring-with-bg"
+					width="none"></iconify-icon>
+
+				Apply
+			</button>
+
+			<button
+				hx-get="/page/stamps/filter"
+				class="btn btn-error join-item"
+				id="reset-filter"
+				hx-swap="outerHTML transition:true"
+				hx-target="closest dialog"
+				hx-vals={JSON.stringify(schema.parse({}))}
+			>
+				<iconify-icon
+					class="htmx-indicator-replace size-6"
+					icon="lucide:rotate-ccw"
+					width="none"></iconify-icon>
+				<iconify-icon
+					class="htmx-indicator size-6"
+					icon="svg-spinners:90-ring-with-bg"
+					width="none"></iconify-icon>
+
+				Reset
+			</button>
+		</div>
+	</div>
+
+	<form class="modal-backdrop" method="dialog">
+		<button>close</button>
+	</form>
+</dialog>

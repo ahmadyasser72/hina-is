@@ -1,30 +1,60 @@
 ---
-import { stamps } from "@hina-is/bestdori/data";
-
 import BaseLayout from "~/layouts/base-layout.astro";
 import { IMAGE_FORMAT } from "~/lib/compressor/constants";
 import { paginate } from "~/lib/paginate";
+import { filterStamps, getStamps } from "./_list";
+import { schema } from "./_params";
 
+const params = Astro.locals.parseQuery(schema);
+
+const stamps = getStamps();
+const { filtered } = await filterStamps(params, stamps);
 const page = paginate({
-	items: [...stamps.entries()],
+	items: filtered,
 	context: Astro,
 	size: 20,
 	extraProps: { "hx-select": ".stamp", "hx-swap": "afterend" },
+	params,
 });
+
+if (Astro.request.headers.get("hx-request") === "true" && page.current === 1) {
+	const replaceUrl = new URL(Astro.url);
+	replaceUrl.search = Astro.url.search;
+	replaceUrl.searchParams.delete("page");
+	Astro.response.headers.set("hx-replace-url", replaceUrl.href);
+}
 ---
 
 <BaseLayout title="Stamp List">
 	<div class="flex flex-col items-center gap-4" id="stamps">
 		<div class="inline-flex justify-center gap-2">
+			<div class="tooltip tooltip-right" data-tip="Filter stamps">
+				<button
+					hx-get="/page/stamps/filter"
+					class="btn btn-sm btn-circle btn-success"
+					hx-indicator="this"
+					hx-vals={JSON.stringify(params)}
+				>
+					<iconify-icon
+						class="htmx-indicator-replace size-4"
+						icon="lucide:list-filter"
+						width="none"></iconify-icon>
+					<iconify-icon
+						class="htmx-indicator size-4"
+						icon="svg-spinners:90-ring-with-bg"
+						width="none"></iconify-icon>
+				</button>
+			</div>
+
 			<h2 class="badge badge-accent badge-xl w-48 font-medium">Stamps</h2>
 		</div>
 
 		<div
-			class="flex flex-wrap justify-center gap-x-1 gap-y-2"
+			class="flex flex-wrap justify-center gap-x-0.5 gap-y-1"
 			hx-indicator="#stamps-loader"
 		>
 			{
-				page.items.map(([id, stamp], idx) => (
+				page.items.map(({ id, ...stamp }, idx) => (
 					<div
 						{...(page.isLastElement(idx) && page.props)}
 						class="stamp relative aspect-40/33 h-32"
