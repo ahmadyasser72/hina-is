@@ -207,14 +207,18 @@ const all = await (async () => {
 								const template = unwrap(description);
 								return {
 									name: unwrap(skillName),
-									description: onceEffect
-										? template
-												.replace(
-													"{0}",
-													onceEffect.onceEffectValue.at(-1)!.toString(),
-												)
-												.replace("{1}", duration.at(-1)!.toFixed(1))
-										: template.replace("{0}", duration.at(-1)!.toFixed(1)),
+									get description() {
+										const durations = duration.join("/");
+
+										return onceEffect
+											? template
+													.replace(
+														"{0}",
+														`(${onceEffect.onceEffectValue.join("/")})`,
+													)
+													.replace("{1}", `(${durations})`)
+											: template.replace("{0}", `(${durations})`);
+									},
 									multiplier:
 										(activationEffect.unificationActivateEffectValue ??
 											unwrap(
