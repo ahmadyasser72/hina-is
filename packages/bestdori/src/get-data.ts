@@ -2,10 +2,10 @@ import { writeFile } from "node:fs/promises";
 import path from "node:path";
 
 import * as devalue from "devalue";
+import slug from "slug";
 import type { z } from "zod";
 
 import { bestdoriJSON } from ".";
-import { getSlug } from "./assets";
 import { Bands } from "./schema/bands";
 import { Cards } from "./schema/cards";
 import { Characters } from "./schema/characters";
@@ -18,6 +18,9 @@ import { Stamps } from "./schema/stamps";
 import { unwrap } from "./utilities";
 
 console.time("everything");
+
+const getSlug = (id: string | number, string: string) =>
+	slug(`${id} ${string}`);
 
 const time = async <T>(
 	message: string,

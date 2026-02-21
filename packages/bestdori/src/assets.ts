@@ -1,5 +1,3 @@
-import slug from "slug";
-
 import * as data from "./data";
 import type { MapValue } from "./data";
 
@@ -111,6 +109,3 @@ export const getAsset = <T extends AssetType>(
 
 	return {};
 };
-
-export const getSlug = (id: string | number, string: string) =>
-	slug(`${id} ${string}`);
