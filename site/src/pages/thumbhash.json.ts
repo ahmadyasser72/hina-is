@@ -20,8 +20,11 @@ const resolveAssets = (
 		const assets = Object.entries(getAsset(type, { id, ...entry }));
 
 		return assets
-			.filter(([, pathname]) => pathname.endsWith("png"))
-			.map(([filename, pathname]) => ({ filename, pathname }));
+			.map(([filename, pathname]) => ({
+				filename,
+				pathname: typeof pathname === "object" ? pathname.path : pathname,
+			}))
+			.filter(({ pathname }) => pathname.endsWith("png"));
 	});
 };
 
