@@ -22,14 +22,17 @@ import { compressImage } from "~/lib/compressor/image";
 export const prerender = true;
 
 export const GET: APIRoute<Props, Params> = async ({ props, params }) => {
-	let response: Response;
+	let pathname: string;
+	let invalidateCache = false;
 	if (typeof props.pathname === "object") {
 		const { path, invalidate } = props.pathname;
-		response = await bestdori(path, !invalidate);
+		pathname = path;
+		invalidateCache = invalidate;
 	} else {
-		response = await bestdori(props.pathname, true);
+		pathname = props.pathname;
 	}
 
+	const response = await bestdori(pathname, !invalidateCache);
 	if (props.kind === "raw") return response;
 
 	const cacheName =
@@ -44,7 +47,7 @@ export const GET: APIRoute<Props, Params> = async ({ props, params }) => {
 			return compressAudio(cacheName, buffer);
 
 		case "image":
-			return compressImage(cacheName, buffer);
+			return compressImage(cacheName, buffer, invalidateCache);
 	}
 };
 
