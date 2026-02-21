@@ -10,6 +10,7 @@ export const {
 	cardsBySlug,
 	events,
 	stamps,
+	recentNews,
 }: Data;
 
 type MapValue<T> = T extends Map<any, infer V> ? V : never;

@@ -11,18 +11,18 @@ const getRegionAsset = (pathname: string, releasedAt: { en: Date | null }) =>
 
 export const getAsset = <T extends AssetType>(
 	type: T,
-	data: DataForAsset<T> & { id: string | number },
-): Record<string, string> => {
-	const { id, slug } = data;
+	entry: DataForAsset<T> & { id: string | number },
+): Record<string, string | { path: string; invalidate: boolean }> => {
+	const { id, slug } = entry;
 
 	switch (type) {
 		case "attributes": {
-			const { name } = data as DataForAsset<"attributes">;
+			const { name } = entry as DataForAsset<"attributes">;
 			return { [slug]: `/res/icon/${name}.svg` };
 		}
 
 		case "bands": {
-			const { color } = data as DataForAsset<"bands">;
+			const { color } = entry as DataForAsset<"bands">;
 			if (color) return { [slug]: `/res/icon/band_${id}.svg` };
 			break;
 		}
@@ -41,7 +41,7 @@ export const getAsset = <T extends AssetType>(
 				releasedAt,
 				resourceSetName,
 				trainingState,
-			} = data as DataForAsset<"cards">;
+			} = entry as DataForAsset<"cards">;
 
 			const normal = {
 				[`${slug}-icon-normal`]: getRegionAsset(
@@ -78,7 +78,7 @@ export const getAsset = <T extends AssetType>(
 
 		case "events": {
 			const { startAt, assetBundleName, bannerAssetBundleName } =
-				data as DataForAsset<"events">;
+				entry as DataForAsset<"events">;
 			return {
 				[`${slug}-banner`]: getRegionAsset(
 					`homebanner_rip/${bannerAssetBundleName}.png`,
@@ -92,9 +92,16 @@ export const getAsset = <T extends AssetType>(
 		}
 
 		case "stamps": {
-			const { region, voiced } = data as DataForAsset<"stamps">;
+			const isLatestStamp = data.recentNews.events
+				.map(({ stamp }) => stamp.id)
+				.includes(id as never);
+
+			const { region, voiced } = entry as DataForAsset<"stamps">;
 			return {
-				[`${slug}-image`]: `/assets/${region}/stamp/01_rip/${id}.png`,
+				[`${slug}-image`]: {
+					path: `/assets/${region}/stamp/01_rip/${id}.png`,
+					invalidate: isLatestStamp,
+				},
 				...(voiced && {
 					[`${slug}-voice`]: `/assets/${region}/sound/voice_stamp_rip/${id}.mp3`,
 				}),

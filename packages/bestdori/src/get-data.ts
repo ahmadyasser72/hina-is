@@ -12,6 +12,7 @@ import { Characters } from "./schema/characters";
 import { CardAttribute } from "./schema/constants";
 import { Events } from "./schema/events";
 import { StampImages, StampVoices } from "./schema/extras/stamps";
+import { RecentNews } from "./schema/recent-news";
 import { Skills } from "./schema/skills";
 import { Stamps } from "./schema/stamps";
 import { unwrap } from "./utilities";
@@ -37,6 +38,7 @@ const SCHEMAS = {
 	skills: Skills,
 	stampImages: StampImages,
 	stampVoices: StampVoices,
+	recentNews: RecentNews,
 } as const;
 
 const get = async <K extends keyof typeof SCHEMAS>(
@@ -63,6 +65,7 @@ const all = await (async () => {
 		enStampImages,
 		jpStampVoices,
 		enStampVoices,
+		recentNews,
 	] = await Promise.all([
 		get("bands", "/api/bands/main.1.json"),
 		get("cards", "/api/cards/all.5.json"),
@@ -74,6 +77,7 @@ const all = await (async () => {
 		get("stampImages", "/api/explorer/en/assets/stamp/01.json"),
 		get("stampVoices", "/api/explorer/jp/assets/sound/voice_stamp.json"),
 		get("stampVoices", "/api/explorer/en/assets/sound/voice_stamp.json"),
+		get("recentNews", "/api/news/dynamic/recent.json"),
 	]);
 
 	const gachaTypeList = await time(
@@ -367,6 +371,12 @@ const all = await (async () => {
 						];
 					}),
 			);
+		},
+
+		get recentNews() {
+			const { events } = recentNews;
+
+			return { events: events.map((id) => ({ id, ...all.events.get(id)! })) };
 		},
 	};
 })();

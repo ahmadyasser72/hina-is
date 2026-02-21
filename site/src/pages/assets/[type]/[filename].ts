@@ -22,7 +22,14 @@ import { compressImage } from "~/lib/compressor/image";
 export const prerender = true;
 
 export const GET: APIRoute<Props, Params> = async ({ props, params }) => {
-	const response = await bestdori(props.pathname, true);
+	let response: Response;
+	if (typeof props.pathname === "object") {
+		const { path, invalidate } = props.pathname;
+		response = await bestdori(path, !invalidate);
+	} else {
+		response = await bestdori(props.pathname, true);
+	}
+
 	if (props.kind === "raw") return response;
 
 	const cacheName =
@@ -50,11 +57,13 @@ export const getStaticPaths = (() => {
 			const assets = Object.entries(getAsset(type, { id, ...entry }));
 
 			return assets.map(([filename, pathname]) => {
-				let kind: "audio" | "image" | "raw" = "raw";
-				if (pathname.endsWith("mp3")) kind = "audio";
-				else if (pathname.endsWith("png")) kind = "image";
+				const path = typeof pathname === "object" ? pathname.path : pathname;
 
-				let format = extname(pathname).slice(1);
+				let kind: "audio" | "image" | "raw" = "raw";
+				if (path.endsWith("mp3")) kind = "audio";
+				else if (path.endsWith("png")) kind = "image";
+
+				let format = extname(path).slice(1);
 				if (kind === "audio") format = AUDIO_FORMAT;
 				else if (kind === "image") format = IMAGE_FORMAT;
 
