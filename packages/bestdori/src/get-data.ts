@@ -149,7 +149,7 @@ const all = await (async () => {
 		get characters() {
 			return new Map(
 				[...characters.entries()].map(
-					([id, { bandId, nickname, name, ...entry }]) => [
+					([id, { bandId, nickname, name, colorCode, ...entry }]) => [
 						id,
 						{
 							get band() {
@@ -157,6 +157,7 @@ const all = await (async () => {
 							},
 							...entry,
 
+							color: colorCode,
 							name: unwrap(nickname) ?? unwrap(name),
 							slug: getSlug(id, unwrap(nickname) ?? unwrap(name)),
 						},

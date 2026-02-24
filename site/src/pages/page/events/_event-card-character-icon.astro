@@ -1,7 +1,6 @@
 ---
 import type { Bandori } from "@hina-is/bestdori/data";
 
-import { colord } from "colord";
 
 import { IMAGE_FORMAT } from "~/lib/compressor/constants";
 
@@ -13,19 +12,13 @@ interface Props {
 const { character, displayBand } = Astro.props;
 
 const { band } = character;
-const characterColor = colord(character.colorCode);
 ---
 
 <div
-	class="tooltip group even:tooltip-bottom after:bg-character"
-	style={`--character: ${characterColor.toHex()}`}
+	class="tooltip group even:tooltip-bottom tooltip-character"
+	data-character={character.slug}
 >
-	<div
-		class:list={[
-			"tooltip-content bg-character",
-			characterColor.brightness() < 0.67 ? "text-white" : "text-black",
-		]}
-	>
+	<div class="tooltip-content">
 		{
 			displayBand ? (
 				<div class="inline-flex items-center gap-1 group-even:flex-row-reverse">

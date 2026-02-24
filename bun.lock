@@ -15,6 +15,7 @@
     "packages/bestdori": {
       "name": "@hina-is/bestdori",
       "dependencies": {
+        "colord": "2.9.3",
         "fast-equals": "6.0.0",
         "p-limit": "7.3.0",
         "slug": "11.0.1",
@@ -37,7 +38,6 @@
         "@orama/orama": "3.1.18",
         "@tailwindcss/vite": "4.1.18",
         "astro": "5.17.1",
-        "colord": "2.9.3",
         "daisyui": "5.5.18",
         "dayjs": "1.11.19",
         "htmx.org": "2.0.8",

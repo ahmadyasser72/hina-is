@@ -1,0 +1,395 @@
+[data-attribute="powerful"],
+[data-attribute="powerful"] & {
+	--attribute: #ff345a;
+	--attribute-content: #fff;
+}
+
+[data-attribute="cool"],
+[data-attribute="cool"] & {
+	--attribute: #4057e3;
+	--attribute-content: #fff;
+}
+
+[data-attribute="pure"],
+[data-attribute="pure"] & {
+	--attribute: #44c527;
+	--attribute-content: #fff;
+}
+
+[data-attribute="happy"],
+[data-attribute="happy"] & {
+	--attribute: #ff6600;
+	--attribute-content: #fff;
+}
+
+[data-band="1-poppinparty"],
+[data-band="1-poppinparty"] & {
+	--band: #ff3377;
+	--band-content: #fff;
+}
+
+[data-band="2-afterglow"],
+[data-band="2-afterglow"] & {
+	--band: #d23341;
+	--band-content: #fff;
+}
+
+[data-band="3-hello-happy-world"],
+[data-band="3-hello-happy-world"] & {
+	--band: #f4b600;
+	--band-content: #000;
+}
+
+[data-band="4-pastelpalettes"],
+[data-band="4-pastelpalettes"] & {
+	--band: #33ddaa;
+	--band-content: #fff;
+}
+
+[data-band="5-roselia"],
+[data-band="5-roselia"] & {
+	--band: #3344aa;
+	--band-content: #fff;
+}
+
+[data-band="18-raise-a-suilen"],
+[data-band="18-raise-a-suilen"] & {
+	--band: #22cccc;
+	--band-content: #fff;
+}
+
+[data-band="21-morfonica"],
+[data-band="21-morfonica"] & {
+	--band: #2dc1f8;
+	--band-content: #fff;
+}
+
+[data-band="45-mygo"],
+[data-band="45-mygo"] & {
+	--band: #2273a5;
+	--band-content: #fff;
+}
+
+[data-character="1-kasumi-toyama"],
+[data-character="1-kasumi-toyama"] & {
+	--character: #ff5522;
+	--character-content: #fff;
+}
+
+[data-character="2-tae-hanazono"],
+[data-character="2-tae-hanazono"] & {
+	--character: #0077dd;
+	--character-content: #fff;
+}
+
+[data-character="3-rimi-ushigome"],
+[data-character="3-rimi-ushigome"] & {
+	--character: #ff55bb;
+	--character-content: #fff;
+}
+
+[data-character="4-saya-yamabuki"],
+[data-character="4-saya-yamabuki"] & {
+	--character: #ffcc11;
+	--character-content: #000;
+}
+
+[data-character="5-arisa-ichigaya"],
+[data-character="5-arisa-ichigaya"] & {
+	--character: #aa66dd;
+	--character-content: #fff;
+}
+
+[data-character="6-ran-mitake"],
+[data-character="6-ran-mitake"] & {
+	--character: #ee0022;
+	--character-content: #fff;
+}
+
+[data-character="7-moca-aoba"],
+[data-character="7-moca-aoba"] & {
+	--character: #00ccaa;
+	--character-content: #fff;
+}
+
+[data-character="8-himari-uehara"],
+[data-character="8-himari-uehara"] & {
+	--character: #ff9999;
+	--character-content: #000;
+}
+
+[data-character="9-tomoe-udagawa"],
+[data-character="9-tomoe-udagawa"] & {
+	--character: #bb0033;
+	--character-content: #fff;
+}
+
+[data-character="10-tsugumi-hazawa"],
+[data-character="10-tsugumi-hazawa"] & {
+	--character: #ffee88;
+	--character-content: #000;
+}
+
+[data-character="11-kokoro-tsurumaki"],
+[data-character="11-kokoro-tsurumaki"] & {
+	--character: #ffee22;
+	--character-content: #000;
+}
+
+[data-character="12-kaoru-seta"],
+[data-character="12-kaoru-seta"] & {
+	--character: #aa33cc;
+	--character-content: #fff;
+}
+
+[data-character="13-hagumi-kitazawa"],
+[data-character="13-hagumi-kitazawa"] & {
+	--character: #ff9922;
+	--character-content: #000;
+}
+
+[data-character="14-kanon-matsubara"],
+[data-character="14-kanon-matsubara"] & {
+	--character: #44ddff;
+	--character-content: #000;
+}
+
+[data-character="15-misaki-okusawa"],
+[data-character="15-misaki-okusawa"] & {
+	--character: #006699;
+	--character-content: #fff;
+}
+
+[data-character="16-aya-maruyama"],
+[data-character="16-aya-maruyama"] & {
+	--character: #ff88bb;
+	--character-content: #000;
+}
+
+[data-character="17-hina-hikawa"],
+[data-character="17-hina-hikawa"] & {
+	--character: #55ddee;
+	--character-content: #000;
+}
+
+[data-character="18-chisato-shirasagi"],
+[data-character="18-chisato-shirasagi"] & {
+	--character: #ffeeaa;
+	--character-content: #000;
+}
+
+[data-character="19-maya-yamato"],
+[data-character="19-maya-yamato"] & {
+	--character: #99dd88;
+	--character-content: #000;
+}
+
+[data-character="20-eve-wakamiya"],
+[data-character="20-eve-wakamiya"] & {
+	--character: #ddbbff;
+	--character-content: #000;
+}
+
+[data-character="21-yukina-minato"],
+[data-character="21-yukina-minato"] & {
+	--character: #881188;
+	--character-content: #fff;
+}
+
+[data-character="22-sayo-hikawa"],
+[data-character="22-sayo-hikawa"] & {
+	--character: #00aabb;
+	--character-content: #fff;
+}
+
+[data-character="23-lisa-imai"],
+[data-character="23-lisa-imai"] & {
+	--character: #dd2200;
+	--character-content: #fff;
+}
+
+[data-character="24-ako-udagawa"],
+[data-character="24-ako-udagawa"] & {
+	--character: #dd0088;
+	--character-content: #fff;
+}
+
+[data-character="25-rinko-shirokane"],
+[data-character="25-rinko-shirokane"] & {
+	--character: #bbbbbb;
+	--character-content: #000;
+}
+
+[data-character="26-mashiro-kurata"],
+[data-character="26-mashiro-kurata"] & {
+	--character: #6677cc;
+	--character-content: #fff;
+}
+
+[data-character="27-toko-kirigaya"],
+[data-character="27-toko-kirigaya"] & {
+	--character: #ee6666;
+	--character-content: #fff;
+}
+
+[data-character="28-nanami-hiromachi"],
+[data-character="28-nanami-hiromachi"] & {
+	--character: #ee7744;
+	--character-content: #fff;
+}
+
+[data-character="29-tsukushi-futaba"],
+[data-character="29-tsukushi-futaba"] & {
+	--character: #ee7788;
+	--character-content: #fff;
+}
+
+[data-character="30-rui-yashio"],
+[data-character="30-rui-yashio"] & {
+	--character: #669988;
+	--character-content: #fff;
+}
+
+[data-character="31-layer"],
+[data-character="31-layer"] & {
+	--character: #cc0000;
+	--character-content: #fff;
+}
+
+[data-character="32-lock"],
+[data-character="32-lock"] & {
+	--character: #aaee22;
+	--character-content: #000;
+}
+
+[data-character="33-masking"],
+[data-character="33-masking"] & {
+	--character: #eebb44;
+	--character-content: #000;
+}
+
+[data-character="34-pareo"],
+[data-character="34-pareo"] & {
+	--character: #ff99bb;
+	--character-content: #000;
+}
+
+[data-character="35-chu"],
+[data-character="35-chu"] & {
+	--character: #00bbff;
+	--character-content: #fff;
+}
+
+[data-character="36-tomori-takamatsu"],
+[data-character="36-tomori-takamatsu"] & {
+	--character: #77bbdd;
+	--character-content: #000;
+}
+
+[data-character="37-anon-chihaya"],
+[data-character="37-anon-chihaya"] & {
+	--character: #ff8899;
+	--character-content: #000;
+}
+
+[data-character="38-rana-kaname"],
+[data-character="38-rana-kaname"] & {
+	--character: #77dd77;
+	--character-content: #000;
+}
+
+[data-character="39-soyo-nagasaki"],
+[data-character="39-soyo-nagasaki"] & {
+	--character: #ffdd88;
+	--character-content: #000;
+}
+
+[data-character="40-taki-shina"],
+[data-character="40-taki-shina"] & {
+	--character: #7777aa;
+	--character-content: #fff;
+}
+
+@theme inline {
+	--color-attribute: var(--attribute);
+	--color-attribute-content: var(--attribute-content);
+	--color-band: var(--band);
+	--color-band-content: var(--band-content);
+	--color-character: var(--character);
+	--color-character-content: var(--character-content);
+}
+
+@utility badge-attribute {
+	@layer daisyui.l1.l2 {
+		--badge-color: var(--attribute);
+		--badge-fg: var(--attribute-content);
+	}
+}
+
+@utility btn-attribute {
+	@layer daisyui.l1.l2.l3 {
+		--btn-color: var(--attribute);
+		--btn-fg: var(--attribute-content);
+	}
+}
+
+@utility tooltip-attribute {
+	@layer daisyui.l1.l2 {
+		--tt-bg: var(--attribute);
+
+		> .tooltip-content,
+		&[data-tip]:before {
+			color: var(--attribute-content);
+		}
+	}
+}
+
+@utility badge-band {
+	@layer daisyui.l1.l2 {
+		--badge-color: var(--band);
+		--badge-fg: var(--band-content);
+	}
+}
+
+@utility btn-band {
+	@layer daisyui.l1.l2.l3 {
+		--btn-color: var(--band);
+		--btn-fg: var(--band-content);
+	}
+}
+
+@utility tooltip-band {
+	@layer daisyui.l1.l2 {
+		--tt-bg: var(--band);
+
+		> .tooltip-content,
+		&[data-tip]:before {
+			color: var(--band-content);
+		}
+	}
+}
+
+@utility badge-character {
+	@layer daisyui.l1.l2 {
+		--badge-color: var(--character);
+		--badge-fg: var(--character-content);
+	}
+}
+
+@utility btn-character {
+	@layer daisyui.l1.l2.l3 {
+		--btn-color: var(--character);
+		--btn-fg: var(--character-content);
+	}
+}
+
+@utility tooltip-character {
+	@layer daisyui.l1.l2 {
+		--tt-bg: var(--character);
+
+		> .tooltip-content,
+		&[data-tip]:before {
+			color: var(--character-content);
+		}
+	}
+}

@@ -1,8 +1,6 @@
 ---
 import type { Bandori } from "@hina-is/bestdori/data";
 
-import { colord } from "colord";
-
 import { IMAGE_FORMAT } from "~/lib/compressor/constants";
 
 interface Props {
@@ -15,18 +13,15 @@ const {
 	attribute,
 	character: { band, ...character },
 } = card;
-const characterColor = colord(character.colorCode);
 ---
 
 <div
-	class="tooltip tooltip-right after:bg-character max-sm:after:hidden"
-	style={`--attribute: ${attribute.color}; --band: ${band.color}; --character: ${characterColor.toHex()}`}
+	class="tooltip tooltip-right tooltip-character max-sm:after:hidden"
+	data-attribute={attribute.slug}
+	data-character={character.slug}
 >
 	<div
-		class:list={[
-			"tooltip-content bg-character flex max-w-48 flex-col items-center gap-1 max-sm:hidden",
-			characterColor.brightness() < 0.67 ? "text-white" : "text-black",
-		]}
+		class="tooltip-content flex max-w-48 flex-col items-center gap-1 max-sm:hidden"
 	>
 		<div class="max-w-36">
 			<span class="line-clamp-2 text-sm">{card.name}</span>
@@ -57,12 +52,9 @@ const characterColor = colord(character.colorCode);
 				loading="lazy"
 			/>
 			<img
+				class="size-8"
 				src={`/assets/bands/${band.slug}.svg`}
 				alt={`${band.name} icon`}
-				class:list={[
-					"size-8",
-					characterColor.brightness() > 0.67 && "drop-shadow-lg",
-				]}
 				loading="lazy"
 			/>
 		</div>

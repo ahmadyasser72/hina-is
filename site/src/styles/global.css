@@ -8,6 +8,8 @@
 		properties /* https://github.com/saadeghi/daisyui/issues/3882 */;
 }
 
+@import "./bandori.css";
+
 :not(.htmx-request) > .htmx-indicator:not(.htmx-request),
 .htmx-indicator-replace.htmx-request,
 .htmx-request > .htmx-indicator-replace {
@@ -17,10 +19,4 @@
 .absolute.center,
 .fixed.center {
 	@apply top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2;
-}
-
-@theme inline {
-	--color-attribute: var(--attribute);
-	--color-band: var(--band);
-	--color-character: var(--character);
 }

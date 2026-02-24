@@ -1,8 +1,6 @@
 ---
 import type { Bandori } from "@hina-is/bestdori/data";
 
-import { colord } from "colord";
-
 import { IMAGE_FORMAT } from "~/lib/compressor/constants";
 
 interface Props {
@@ -13,25 +11,17 @@ interface Props {
 }
 
 const { band } = Astro.props;
-
-const { characters } = band;
-const bandColor = colord(band.color!);
 ---
 
 <div
-	class="tooltip group even:tooltip-bottom after:bg-band"
-	style={`--band: ${bandColor.toHex()}`}
+	class="tooltip group even:tooltip-bottom tooltip-band"
+	data-band={band.slug}
 >
-	<div
-		class:list={[
-			"tooltip-content bg-band flex flex-col-reverse gap-1 group-even:flex-col",
-			bandColor.brightness() < 0.67 ? "text-white" : "text-black",
-		]}
-	>
+	<div class="tooltip-content flex flex-col-reverse gap-1 group-even:flex-col">
 		<span class="font-medium">{band.name}</span>
 		<div class="flex justify-center gap-1">
 			{
-				characters.map(({ name, slug }) => (
+				band.characters.map(({ name, slug }) => (
 					<img
 						class="size-8"
 						src={`/assets/characters/${slug}.${IMAGE_FORMAT}`}
@@ -44,12 +34,9 @@ const bandColor = colord(band.color!);
 	</div>
 
 	<img
+		class="size-5"
 		src={`/assets/bands/${band.slug}.svg`}
 		alt={`${band.name} icon`}
-		class:list={[
-			"size-5",
-			bandColor.brightness() > 0.67 && "dark:drop-shadow-lg",
-		]}
 		loading="lazy"
 	/>
 </div>
