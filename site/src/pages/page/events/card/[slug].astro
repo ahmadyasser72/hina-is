@@ -43,7 +43,7 @@ const {
 				<div
 					data-tip={character.name}
 					class:list={[
-						"tooltip tooltip-bottom before:bg-character",
+						"tooltip tooltip-bottom before:bg-character after:bg-character",
 						colord(character.colorCode).brightness() < 0.67
 							? "before:text-white"
 							: "before:text-black",
@@ -59,7 +59,7 @@ const {
 				<div
 					data-tip={band.name}
 					class:list={[
-						"tooltip tooltip-bottom before:bg-band",
+						"tooltip tooltip-bottom before:bg-band after:bg-band",
 						colord(band.color).brightness() < 0.67
 							? "before:text-white"
 							: "before:text-black",
@@ -73,7 +73,7 @@ const {
 				</div>
 
 				<div
-					class="tooltip tooltip-bottom before:bg-attribute before:text-white"
+					class="tooltip tooltip-bottom before:bg-attribute after:bg-attribute before:text-white"
 					data-tip={attribute.name.toUpperCase()}
 				>
 					<img
@@ -109,7 +109,7 @@ const {
 
 							<div
 								class:list={[
-									"dropdown-content bg-character rounded-box mt-2 w-max px-2 py-1 text-sm max-w-64",
+									"dropdown-content bg-character rounded-box mt-2 w-max max-w-64 px-2 py-1 text-sm",
 									colord(character.colorCode).brightness() < 0.67
 										? "text-white"
 										: "text-black",
@@ -127,7 +127,7 @@ const {
 			>
 				<h3 class="text-center sm:text-end">{card.name}</h3>
 				<div
-					class="tooltip tooltip-bottom inline-flex items-center gap-1 max-sm:flex-row-reverse"
+					class="tooltip tooltip-bottom after:bg-base-200 inline-flex items-center gap-1 max-sm:flex-row-reverse"
 				>
 					<div
 						class="tooltip-content divide-base-content rounded-box bg-base-200/90 shadow-attribute text-base-content flex w-max max-w-90 flex-col space-y-1 divide-y text-center shadow-sm sm:max-w-64"
