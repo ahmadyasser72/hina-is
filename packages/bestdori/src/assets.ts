@@ -75,8 +75,23 @@ export const getAsset = <T extends AssetType>(
 		}
 
 		case "events": {
-			const { startAt, assetBundleName, bannerAssetBundleName } =
-				entry as DataForAsset<"events">;
+			const {
+				startAt,
+				assetBundleName,
+				bannerAssetBundleName,
+				bgmAssetBundleName,
+				bgmFileName,
+			} = entry as DataForAsset<"events">;
+
+			let bgmAsset: string;
+			if (bgmFileName.startsWith("bgm") && bgmFileName.endsWith("_chorus")) {
+				const chunkId =
+					10 * Math.ceil(Number(bgmFileName.match(/\d+/)![0]) / 10);
+				bgmAsset = `musicscore/musicscore${chunkId}_rip/${bgmFileName}.mp3`;
+			} else {
+				bgmAsset = `${bgmAssetBundleName}_rip/${bgmFileName}.mp3`;
+			}
+
 			return {
 				[`${slug}-banner`]: getRegionAsset(
 					`homebanner_rip/${bannerAssetBundleName}.png`,
@@ -86,6 +101,7 @@ export const getAsset = <T extends AssetType>(
 					`event/${assetBundleName}/topscreen_rip/bg_eventtop.png`,
 					startAt,
 				),
+				[`${slug}-bgm`]: getRegionAsset(bgmAsset, startAt),
 			};
 		}
 

@@ -15,10 +15,13 @@ export const Event = z
 	.object({
 		eventType: EventType,
 		eventName: z.string().apply(parseRegionTuple),
-		assetBundleName: z.string().nonempty(),
-		bannerAssetBundleName: z.string(),
 		startAt: dateTimestamp.apply(parseRegionTuple),
 		endAt: dateTimestamp.apply(parseRegionTuple),
+
+		assetBundleName: z.string().nonempty(),
+		bannerAssetBundleName: z.string().nonempty(),
+		bgmAssetBundleName: z.string().nonempty(),
+		bgmFileName: z.string().nonempty(),
 
 		attributes: z.tuple([z.object({ attribute: CardAttribute })]),
 		characters: z.array(z.object({ characterId: Id })),

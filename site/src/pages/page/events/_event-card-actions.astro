@@ -61,6 +61,14 @@ const { cards, stamp } = event;
 	<div class="join join-vertical">
 		<button
 			class="btn join-item btn-sm btn-circle btn-accent"
+			popovertarget={`${event.slug}-bgm`}
+		>
+			<iconify-icon class="size-4" icon="lucide:music" width="none"
+			></iconify-icon>
+		</button>
+
+		<button
+			class="btn join-item btn-sm btn-circle btn-accent"
 			popovertarget={`${event.slug}-stamp`}
 		>
 			<iconify-icon class="size-4" icon="lucide:smile" width="none"
@@ -74,6 +82,47 @@ const { cards, stamp } = event;
 			<iconify-icon class="size-4" icon="lucide:trophy" width="none"
 			></iconify-icon>
 		</button>
+	</div>
+</div>
+
+<div
+	class="dropdown dropdown-top dropdown-end bg-base-200/90 rounded-box mr-12 mb-1 p-2 shadow-sm"
+	id={`${event.slug}-bgm`}
+	popover
+	style={`position-anchor: --${event.slug}`}
+>
+	<div class="flex flex-col gap-1">
+		<button
+			class="btn btn-circle btn-primary btn-sm"
+			onclick={`playEventBgm(this, '${event.slug}')`}
+		>
+			<iconify-icon
+				class="htmx-indicator-replace size-4"
+				icon="lucide:play"
+				width="none"></iconify-icon>
+			<iconify-icon
+				class="htmx-indicator size-4"
+				icon="svg-spinners:90-ring-with-bg"
+				width="none"></iconify-icon>
+		</button>
+
+		<button
+			class="btn btn-circle btn-secondary btn-sm"
+			onclick="stopEventBgm()"
+		>
+			<iconify-icon class="size-4" icon="lucide:square" width="none"
+			></iconify-icon>
+		</button>
+		<a
+			class="btn btn-circle btn-secondary btn-sm"
+			href={`/assets/events/${event.slug}-bgm.opus`}
+			target="_blank"
+		>
+			<iconify-icon
+				class="size-4"
+				icon="lucide:arrow-big-down-dash"
+				width="none"></iconify-icon>
+		</a>
 	</div>
 </div>
 
