@@ -51,7 +51,7 @@ export const onRequest = defineMiddleware(
 		const thumbhashMap = await fetchThumbhashMap({ locals, url });
 		locals.useThumbhash = (id) => {
 			const hash = thumbhashMap.get(id);
-			return { "data-thumbhash": hash ?? "UNKNOWN_IMAGE" };
+			if (hash) return { "data-thumbhash": hash };
 		};
 
 		return next();
