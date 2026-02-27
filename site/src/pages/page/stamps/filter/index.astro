@@ -26,6 +26,17 @@ const { facets } = await filterStamps(params, stamps);
 			hx-swap="outerHTML transition:true"
 			hx-target="this"
 		>
+			<label class="label mx-auto">
+				<input
+					hx-get="/page/stamps/filter"
+					class="toggle toggle-sm"
+					name="voice_stamp"
+					type="checkbox"
+					checked={params.voice_stamp}
+				/>
+				Voice stamp
+			</label>
+
 			<FilterFieldset name="band" {facets} {params} />
 			<FilterFieldset name="character" {facets} {params} />
 		</form>

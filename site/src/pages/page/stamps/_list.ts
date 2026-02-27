@@ -12,7 +12,7 @@ import type { schema } from "./_params";
 const UNKNOWN = "unknown";
 
 export const filterStamps = async (
-	params: z.infer<typeof schema>,
+	{ voice_stamp, ...params }: z.infer<typeof schema>,
 	stamps: (Bandori.Stamp & { id: string })[],
 ) => {
 	const db = (() => {
@@ -20,11 +20,13 @@ export const filterStamps = async (
 
 		insertMultiple(
 			stampDB,
-			stamps.map(({ id, character }) => ({
-				id,
-				band: character?.band.slug ?? UNKNOWN,
-				character: character?.slug ?? UNKNOWN,
-			})),
+			(voice_stamp ? stamps.filter(({ voiced }) => voiced) : stamps).map(
+				({ id, character }) => ({
+					id,
+					band: character?.band.slug ?? UNKNOWN,
+					character: character?.slug ?? UNKNOWN,
+				}),
+			),
 		);
 
 		return stampDB;
