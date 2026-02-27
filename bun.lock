@@ -40,6 +40,7 @@
         "astro": "5.17.1",
         "daisyui": "5.5.18",
         "dayjs": "1.11.19",
+        "fast-equals": "6.0.0",
         "htmx.org": "2.0.8",
         "iconify-icon": "3.0.2",
         "tailwindcss": "4.1.18",

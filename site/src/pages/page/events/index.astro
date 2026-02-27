@@ -1,4 +1,5 @@
 ---
+import { deepEqual } from "fast-equals";
 import { titleCase } from "text-case";
 
 import BaseLayout from "~/layouts/base-layout.astro";
@@ -22,8 +23,10 @@ const page = paginate({
 });
 
 if (Astro.request.headers.get("hx-request") === "true" && page.current === 1) {
+	const isDefault = deepEqual(params, schema.parse({}));
+
 	const replaceUrl = new URL(Astro.url);
-	replaceUrl.search = Astro.url.search;
+	replaceUrl.search = isDefault ? "" : Astro.url.search;
 	replaceUrl.searchParams.delete("page");
 	Astro.response.headers.set("hx-replace-url", replaceUrl.href);
 }
