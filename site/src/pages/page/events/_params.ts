@@ -5,9 +5,10 @@ import { alwaysArray } from "~/lib/schema";
 export const schema = z
 	.object({
 		list: z.enum(["future", "past"]).catch("future"),
-		band_type: z.enum(["any", "single-band", "mixed-band"]).catch("any"),
-		filter_stamp: z.stringbool().catch(false),
-		filter_stamp_voice: z.stringbool().catch(false),
+		filter_band: z.enum(["any", "single-band", "mixed-band"]).catch("any"),
+		filter_character: z
+			.enum(["event-bonus", "event-cards", "event-focus", "event-stamp"])
+			.catch("event-bonus"),
 		attribute: z.string().apply(alwaysArray),
 		event_type: z.string().apply(alwaysArray),
 		band: z.string().apply(alwaysArray),

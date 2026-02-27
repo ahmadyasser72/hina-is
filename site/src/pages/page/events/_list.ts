@@ -16,13 +16,7 @@ import { dayjs } from "~/lib/date";
 import type { schema } from "./_params";
 
 export const filterEvents = async (
-	{
-		list,
-		band_type,
-		filter_stamp,
-		filter_stamp_voice,
-		...params
-	}: z.infer<typeof schema>,
+	{ list, filter_band, filter_character, ...params }: z.infer<typeof schema>,
 	events: (Bandori.Event & { id: number })[],
 ) => {
 	const db = (() => {
@@ -37,26 +31,58 @@ export const filterEvents = async (
 
 		insertMultiple(
 			eventDB,
-			(filter_stamp_voice
-				? events.filter(({ stamp }) => stamp.voiced)
-				: events
-			).map(({ id, attribute, type, band, characters, stamp }) => {
+			events.map((event) => {
 				let bands: Bandori.Band[];
-				if (band_type === "any") bands = toArray(band);
-				else if (band_type === "mixed-band")
-					bands = Array.isArray(band) ? band : [];
-				else bands = Array.isArray(band) ? [] : [band];
+				switch (filter_band) {
+					case "mixed-band":
+						bands = Array.isArray(event.band) ? event.band : [];
+						break;
+
+					case "single-band":
+						bands = Array.isArray(event.band) ? [] : [event.band];
+						break;
+
+					case "any":
+					default:
+						bands = toArray(event.band);
+						break;
+				}
+
+				let band: string[];
+				let character: string[];
+				switch (filter_character) {
+					case "event-cards":
+						band = event.cards.map(({ character }) => character.band.slug);
+						character = event.cards.map(({ character }) => character.slug);
+						break;
+
+					case "event-focus":
+						band = event.cards
+							.map(({ character }) => character.band.slug)
+							.slice(0, 1);
+						character = event.cards
+							.map(({ character }) => character.slug)
+							.slice(0, 1);
+						break;
+
+					case "event-stamp":
+						band = [event.stamp.character.band.slug];
+						character = [event.stamp.character.slug];
+						break;
+
+					case "event-bonus":
+					default:
+						band = bands.map(({ slug }) => slug);
+						character = event.characters.map(({ slug }) => slug);
+						break;
+				}
 
 				return {
-					id: id.toString(),
-					attribute: attribute.name,
-					event_type: type,
-					band: filter_stamp
-						? [stamp.character.band.slug]
-						: bands.map(({ slug }) => slug),
-					character: filter_stamp
-						? [stamp.character.slug]
-						: characters.map(({ slug }) => slug),
+					id: event.id.toString(),
+					attribute: event.attribute.name,
+					event_type: event.type,
+					band,
+					character,
 				};
 			}),
 		);

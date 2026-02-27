@@ -1,5 +1,5 @@
 ---
-import { headerCase } from "text-case";
+import { capitalCase, headerCase } from "text-case";
 
 import { filterEvents, getEvents } from "../_list";
 import { schema } from "../_params";
@@ -33,18 +33,18 @@ const { facets } = await filterEvents(params, events.list);
 			<FilterFieldset name="band" {facets} {params}>
 				<div class="join">
 					{
-						schema.shape.band_type.def.innerType.options.map((value) => (
+						schema.shape.filter_band.def.innerType.options.map((value) => (
 							<input
 								hx-get="/page/events/filter"
 								class="join-item btn btn-sm checked:btn-accent"
-								name="band_type"
+								name="filter_band"
 								type="radio"
 								{value}
 								aria-label={headerCase(value)}
-								checked={params.band_type === value}
+								checked={params.filter_band === value}
 								disabled={
-									params.filter_stamp ||
-									(params.band_type !== value &&
+									params.filter_character !== "event-bonus" ||
+									(params.filter_band !== value &&
 										params.character &&
 										params.character.length > 1)
 								}
@@ -55,31 +55,19 @@ const { facets } = await filterEvents(params, events.list);
 			</FilterFieldset>
 
 			<FilterFieldset name="character" {facets} {params}>
-				<div class="mb-1 flex gap-4">
-					<label class="label">
-						<input
-							hx-get="/page/events/filter"
-							class="toggle toggle-sm"
-							name="filter_stamp"
-							type="checkbox"
-							checked={params.filter_stamp}
-						/>
-						Filter Stamp
-					</label>
-
+				<div class="join">
 					{
-						params.filter_stamp && (
-							<label class="label">
-								<input
-									hx-get="/page/events/filter"
-									class="checkbox checkbox-sm"
-									name="filter_stamp_voice"
-									type="checkbox"
-									checked={params.filter_stamp_voice}
-								/>
-								Voice
-							</label>
-						)
+						schema.shape.filter_character.def.innerType.options.map((value) => (
+							<input
+								hx-get="/page/events/filter"
+								class="join-item btn btn-sm checked:btn-accent"
+								name="filter_character"
+								type="radio"
+								{value}
+								aria-label={capitalCase(value)}
+								checked={params.filter_character === value}
+							/>
+						))
 					}
 				</div>
 			</FilterFieldset>
