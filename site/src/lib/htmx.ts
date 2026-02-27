@@ -18,22 +18,29 @@ htmx.onLoad((node) => {
 		?.scrollIntoView({ behavior: "smooth" });
 
 	// thumbhash image placeholder
-	node.querySelectorAll<HTMLImageElement>("[data-thumbhash]").forEach((img) => {
-		if (img.complete) return;
+	node
+		.querySelectorAll<HTMLImageElement>("img[data-thumbhash]")
+		.forEach((img) => {
+			if (img.complete) return;
 
-		const base64Hash = img.dataset.thumbhash!;
-		const binaryHash = new Uint8Array(
-			atob(base64Hash)
-				.split("")
-				.map((x) => x.charCodeAt(0)),
-		);
+			const base64Hash = img.dataset.thumbhash!;
+			if (base64Hash === "UNKNOWN_IMAGE") {
+				img.remove();
+				return;
+			}
 
-		const placeholderUrl = thumbHashToDataURL(binaryHash);
-		img.style.background = `center / cover url(${placeholderUrl})`;
-		img.addEventListener("load", () => {
-			img.style.removeProperty("background");
+			const binaryHash = new Uint8Array(
+				atob(base64Hash)
+					.split("")
+					.map((x) => x.charCodeAt(0)),
+			);
+
+			const placeholderUrl = thumbHashToDataURL(binaryHash);
+			img.style.background = `center / cover url(${placeholderUrl})`;
+			img.addEventListener("load", () => {
+				img.style.removeProperty("background");
+			});
 		});
-	});
 });
 
 // automatic swap target for dialog responses
