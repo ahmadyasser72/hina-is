@@ -19,8 +19,7 @@ import { unwrap } from "./utilities";
 
 console.time("everything");
 
-const getSlug = (id: string | number, string: string) =>
-	slug(`${id} ${string}`);
+const getSlug = (id: string | number, string = "") => slug(`${id} ${string}`);
 
 const time = async <T>(
 	message: string,
@@ -357,23 +356,21 @@ const all = await (async () => {
 						(a, b) => Number(a.id.split("_")[1]) - Number(b.id.split("_")[1]),
 					)
 					.sort((a, b) => Number(b.voiced) - Number(a.voiced))
-					.map(({ id, region, voiced }) => {
-						return [
-							id,
-							{
-								get character() {
-									const characterId = Number(id.split("_")[1]!.slice(0, 3));
-									const character = all.characters.get(characterId);
-									if (!character) return null;
+					.map(({ id, region, voiced }) => [
+						id,
+						{
+							get character() {
+								const characterId = Number(id.split("_")[1]!.slice(0, 3));
+								const character = all.characters.get(characterId);
+								if (!character) return null;
 
-									return { id: characterId, ...character };
-								},
-								region,
-								voiced,
-								slug: getSlug(id, region),
+								return { id: characterId, ...character };
 							},
-						];
-					}),
+							region,
+							voiced,
+							slug: getSlug(id.replace("_", "-")),
+						},
+					]),
 			);
 		},
 
