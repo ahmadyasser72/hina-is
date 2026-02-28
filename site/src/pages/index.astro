@@ -1,15 +1,29 @@
 ---
+import { events } from "@hina-is/bestdori/data";
+
 import BaseLayout from "~/layouts/base-layout.astro";
+import { IMAGE_FORMAT } from "~/lib/compressor/constants";
+
+const randomEvent = [...events.values()][
+	Math.floor(Math.random() * events.size)
+];
 ---
 
-<BaseLayout title="Home">
-	<div class="absolute inset-0 flex items-center">
-		<div class="flex flex-1 flex-col gap-2 text-center">
-			<div class="font-semibold">hina-is</div>
+<BaseLayout
+	title="Home"
+	background={{
+		...Astro.locals.useThumbhash(`${randomEvent.slug}-background`),
+		src: `/assets/events/${randomEvent.slug}-background.${IMAGE_FORMAT}`,
+		alt: `${randomEvent.name} background`,
+	}}
+>
+	<div class="absolute inset-0 flex items-center justify-center">
+		<div class="flex flex-col gap-2">
+			<div class="badge badge-accent badge-xl w-48 font-medium">hina-is</div>
 
-			<div class="flex flex-col gap-1">
-				<a class="link" href="/page/events">Event schedule</a>
-				<a class="link" href="/page/stamps">Stamp list</a>
+			<div class="flex justify-center gap-1">
+				<a class="btn btn-sm underline" href="/page/events">Event list</a>
+				<a class="btn btn-sm underline" href="/page/stamps">Stamp list</a>
 			</div>
 		</div>
 	</div>
