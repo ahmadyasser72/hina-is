@@ -4,6 +4,8 @@ import type { JSX } from "astro/jsx-runtime";
 
 import "~/styles/global.css";
 
+import Footer from "~/components/footer.astro";
+
 interface Props {
 	background?: JSX.ImgHTMLAttributes;
 	description: string;
@@ -69,10 +71,14 @@ const image = new URL(`/open-graph/${route}.webp`, url.origin);
 			}
 
 			<main
-				class="relative flex-1 overflow-auto scroll-smooth py-8 shadow-sm"
+				class="relative flex flex-1 flex-col overflow-auto scroll-smooth shadow-sm"
 				hx-indicator="#app-loader"
 			>
-				<slot />
+				<div class="flex-1 py-8">
+					<slot />
+				</div>
+
+				<Footer />
 			</main>
 		</div>
 

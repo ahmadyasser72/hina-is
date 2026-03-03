@@ -1,0 +1,59 @@
+---
+const githubUrl = "https://github.com/ahmadyasser72/hina-is";
+---
+
+<footer
+	class="bg-base-200/67 text-base-content/67 border-base-content/5 bottom-0 z-10 mt-auto border-t py-8 backdrop-blur-sm md:sticky md:py-6"
+>
+	<div class="container mx-auto px-4 md:px-8">
+		<div
+			class="flex flex-col items-center justify-between gap-4 md:flex-row md:items-start"
+		>
+			<div class="flex flex-col gap-2 text-center text-sm md:text-left">
+				<div class="flex items-center justify-center gap-2 md:justify-start">
+					<span class="badge badge-accent badge-sm font-medium">hina-is</span>
+					<a
+						class="link link-hover inline-flex items-center"
+						href={githubUrl}
+						rel="noopener noreferrer"
+						target="_blank"
+					>
+						<iconify-icon class="mr-1 size-4" icon="lucide:github" width="none"
+						></iconify-icon>
+						view source
+					</a>
+				</div>
+
+				<p>
+					Licensed under <a
+						class="link link-hover font-medium"
+						href={`${githubUrl}/blob/main/LICENSE`}
+						rel="noopener noreferrer"
+						target="_blank">AGPL-3.0</a
+					>.
+				</p>
+			</div>
+
+			<div class="flex flex-col gap-2 text-center md:text-right">
+				<p class="text-sm">
+					Data from <a
+						class="link link-hover"
+						href="https://bestdori.com"
+						rel="noopener noreferrer"
+						target="_blank">Bestdori</a
+					>. Icons by <a class="link link-hover" href="https://lucide.dev"
+						>Lucide</a
+					> & <a
+						class="link link-hover"
+						href="https://github.com/n3r4zzurr0/svg-spinners">SVG Spinners</a
+					>.
+				</p>
+
+				<p class="text-xs italic max-lg:max-w-xs">
+					hina-is is a fan site and is not affiliated with Bushiroad, Craft Egg,
+					or the BanG Dream! franchise.
+				</p>
+			</div>
+		</div>
+	</div>
+</footer>
