@@ -12,6 +12,7 @@ interface Props {
 
 const { background, description, title } = Astro.props;
 
+const fullTitle = `Hina is ♥ ${title}`;
 const url = new URL(Astro.url.pathname, Astro.url.origin);
 const route =
 	Astro.routePattern === "/" ? "index" : Astro.routePattern.slice(1);
@@ -34,18 +35,18 @@ const image = new URL(`/open-graph/${route}.webp`, url.origin);
 		<meta name="viewport" content="width=device-width" />
 		<meta name="generator" content={Astro.generator} />
 
-		<title>Hina is &hearts; {title}</title>
+		<title>{fullTitle}</title>
 		<meta name="description" content={description} />
 
 		<meta content="hina-is" property="og:site_name" />
 		<meta content="website" property="og:type" />
 		<meta content={url} property="og:url" />
-		<meta content={title} property="og:title" />
+		<meta content={fullTitle} property="og:title" />
 		<meta content={description} property="og:description" />
 		<meta content={image} property="og:image" />
 
 		<meta name="twitter:card" content="summary_large_image" />
-		<meta name="twitter:title" content={title} />
+		<meta name="twitter:title" content={fullTitle} />
 		<meta name="twitter:description" content={description} />
 		<meta name="twitter:image" content={image} />
 	</head>
