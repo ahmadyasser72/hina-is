@@ -28,7 +28,10 @@ const birthdayList = [...characters.values()]
 	.sort((a, b) => a.untilNextBirthday - b.untilNextBirthday);
 ---
 
-<BaseLayout title="Birthday Tracker">
+<BaseLayout
+	title="Birthday Tracker"
+	description="Keep track of upcoming character birthdays in BanG Dream! Girls Band Party!."
+>
 	<div class="flex flex-col items-center gap-4">
 		<div class="badge badge-accent badge-xl w-48 font-medium">
 			Birthday Tracker
