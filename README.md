@@ -1,15 +1,26 @@
 # hina-is
 
-A fan site for [BanG Dream!](https://en.wikipedia.org/wiki/BanG_Dream!) that shows events and stamps from the game. Data is pulled live from [Bestdori](https://bestdori.com) (the community BanG Dream! API), processed and bundled at build time, then served as a [Cloudflare Worker](https://workers.cloudflare.com/).
+A fan site for [BanG Dream!](https://en.wikipedia.org/wiki/BanG_Dream!) that shows various content and assets from the game. Data is pulled live from [Bestdori](https://bestdori.com) (the community BanG Dream! API), processed and bundled at build time, then served as a [Cloudflare Worker](https://workers.cloudflare.com/).
 
 ## What's inside
 
 This is a monorepo with two packages:
 
-| Package             | Path                 | What it does                                                        |
-| ------------------- | -------------------- | ------------------------------------------------------------------- |
-| `@hina-is/bestdori` | `packages/bestdori/` | Fetches and caches game data from Bestdori for use in the site      |
-| `@hina-is/site`     | `site/`              | The website — renders event and stamp pages, deployed to Cloudflare |
+| Package             | Path                 | What it does                                                               |
+| ------------------- | -------------------- | -------------------------------------------------------------------------- |
+| `@hina-is/bestdori` | `packages/bestdori/` | Fetches and caches game data from Bestdori for use in the site             |
+| `@hina-is/site`     | `site/`              | The website — renders various game data and assets, deployed to Cloudflare |
+
+## Project structure
+
+```
+.
+├── .github/          # CI/CD workflows and automation
+├── packages/
+│   └── bestdori/     # Internal logic for data fetching and processing
+├── site/             # Frontend website and application logic
+└── package.json      # Monorepo configuration and scripts
+```
 
 ## Prerequisites
 

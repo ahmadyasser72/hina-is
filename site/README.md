@@ -1,12 +1,12 @@
 # @hina-is/site
 
-The front-end website for **hina-is** — a BanG Dream! fan site showing events and stamps from the game.
+The front-end website for **hina-is** — a BanG Dream! fan site showing various game data and assets.
 
 Built with [Astro](https://astro.build) and deployed as a [Cloudflare Worker](https://workers.cloudflare.com/). Game data is provided by the sibling `@hina-is/bestdori` package which pre-fetches everything from Bestdori at build time.
 
 ## Features
 
-Browse and filter BanG Dream! **events** and **stamps**.
+Browse and filter through different categories of BanG Dream! game data and assets.
 
 ## Tech stack
 
@@ -82,11 +82,9 @@ site/
 │   ├── layouts/          # Base page layouts
 │   ├── lib/              # Shared utilities
 │   ├── pages/
-│   │   ├── index.astro          # Home page (random event background)
-│   │   └── page/
-│   │       ├── events/          # Event list and detail pages
-│   │       └── stamps/          # Stamp list and detail pages
-│   └── styles/                  # Global CSS
+│   │   ├── index.astro          # Home page
+│   │   └── page/                # Dynamic content pages and views
+│   └── styles/                  # Global styling (CSS/Tailwind)
 ├── public/               # Static assets
 ├── astro.config.mjs      # Astro configuration
 └── wrangler.jsonc        # Cloudflare Workers configuration

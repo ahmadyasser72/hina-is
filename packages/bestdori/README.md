@@ -6,7 +6,7 @@ It is an internal workspace package consumed by the `@hina-is/site` package at b
 
 ## How it works
 
-1. **Fetch** — Pulls game data (cards, characters, bands, events, stamps, etc.) from the Bestdori API
+1. **Fetch** — Pulls various game data and assets from the Bestdori API
 2. **Cache** — Saves responses locally so they don't need to be re-fetched on every build
 3. **Validate** — Checks the data matches the expected shape
 4. **Transform** — Normalizes and links related data together
@@ -29,13 +29,13 @@ bun update-data
 
 ## Exports
 
-| Export path                   | What it exports                                                 |
-| ----------------------------- | --------------------------------------------------------------- |
-| `@hina-is/bestdori`           | Cached fetch helpers for the Bestdori API                       |
-| `@hina-is/bestdori/assets`    | URL helpers for Bestdori CDN assets                             |
-| `@hina-is/bestdori/constants` | Shared constants                                                |
-| `@hina-is/bestdori/data`      | The pre-built game data (bands, characters, cards, events, ...) |
-| `@hina-is/bestdori/utilities` | Small utility helpers used internally                           |
+| Export path                   | What it exports                                                        |
+| ----------------------------- | ---------------------------------------------------------------------- |
+| `@hina-is/bestdori`           | Cached fetch helpers for the Bestdori API                              |
+| `@hina-is/bestdori/assets`    | URL helpers for Bestdori CDN assets                                    |
+| `@hina-is/bestdori/constants` | Shared constants                                                       |
+| `@hina-is/bestdori/data`      | The pre-built game data (automatically aggregated from all categories) |
+| `@hina-is/bestdori/utilities` | Small utility helpers used internally                                  |
 
 ## Cache directory
 
