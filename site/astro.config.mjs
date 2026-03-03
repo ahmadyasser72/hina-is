@@ -22,8 +22,12 @@ export default defineConfig({
 
 	vite: {
 		plugins: [tailwindcss()],
+		optimizeDeps: {
+			exclude: ["@takumi-rs/core"],
+		},
 		ssr: {
 			external: [
+				"@takumi-rs/image-response",
 				"sharp",
 				"node:child_process",
 				"node:crypto",

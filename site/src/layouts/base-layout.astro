@@ -15,7 +15,7 @@ const { background, description, title } = Astro.props;
 const url = new URL(Astro.url.pathname, Astro.url.origin);
 const route =
 	Astro.routePattern === "/" ? "index" : Astro.routePattern.slice(1);
-const image = new URL(`/open-graph/${route}.png`, url.origin);
+const image = new URL(`/open-graph/${route}.webp`, url.origin);
 ---
 
 <html lang="en">
