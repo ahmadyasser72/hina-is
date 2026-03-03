@@ -4,6 +4,7 @@ import { characters } from "@hina-is/bestdori/data";
 import BaseLayout from "~/layouts/base-layout.astro";
 import { IMAGE_FORMAT } from "~/lib/compressor/constants";
 import { dayjs, formatDuration } from "~/lib/date";
+import { pages } from "~/lib/metadata";
 
 const now = dayjs();
 const thisYear = now.year();
@@ -29,8 +30,8 @@ const birthdayList = [...characters.values()]
 ---
 
 <BaseLayout
-	title="Birthday Tracker"
-	description="Keep track of upcoming character birthdays in BanG Dream! Girls Band Party!."
+	title={pages["page/birthday"].title}
+	description={pages["page/birthday"].description}
 >
 	<div class="flex flex-col items-center gap-4">
 		<div class="badge badge-accent badge-xl w-48 font-medium">

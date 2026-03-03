@@ -4,6 +4,7 @@ import { titleCase } from "text-case";
 
 import BaseLayout from "~/layouts/base-layout.astro";
 import { IMAGE_FORMAT } from "~/lib/compressor/constants";
+import { pages } from "~/lib/metadata";
 import { paginate } from "~/lib/paginate";
 import EventCard from "./_event-card.astro";
 import { filterEvents, getEvents } from "./_list";
@@ -33,7 +34,7 @@ if (Astro.request.headers.get("hx-request") === "true" && page.current === 1) {
 ---
 
 <BaseLayout
-	title="Event Schedule"
+	title={pages["page/events"].title}
 	background={events.available.length > 0
 		? {
 				...Astro.locals.useThumbhash(`${events.available[0].slug}-background`),
@@ -41,7 +42,7 @@ if (Astro.request.headers.get("hx-request") === "true" && page.current === 1) {
 				alt: `${events.available[0].name} background`,
 			}
 		: undefined}
-	description="View upcoming and past event schedules for BanG Dream! Girls Band Party!."
+	description={pages["page/events"].description}
 >
 	<div class="flex flex-col gap-8">
 		<div class="flex flex-col items-center gap-4" id="available-events">
