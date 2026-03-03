@@ -1,7 +1,7 @@
 {
 	"name": "@hina-is/site",
 	"type": "module",
-	"version": "0.0.1",
+	"license": "AGPL-3.0",
 	"scripts": {
 		"check": "astro check",
 		"dev": "astro dev",

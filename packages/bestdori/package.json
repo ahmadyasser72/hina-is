@@ -1,6 +1,7 @@
 {
 	"name": "@hina-is/bestdori",
 	"type": "module",
+	"license": "AGPL-3.0",
 	"private": true,
 	"exports": {
 		".": "./src/index.js",
