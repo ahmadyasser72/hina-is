@@ -81,3 +81,17 @@ Go to your repository → **Settings → Secrets and variables → Actions** and
 
 - Pushes to `main` → deployed to production
 - Pushes to any other branch → uploaded as a staged version (not promoted to production)
+
+## Credits & Attribution
+
+- Icons: [Lucide](https://lucide.dev) (ISC) and [SVG Spinners](https://github.com/n3r4zzurr0/svg-spinners) (MIT) provided via [Iconify](https://iconify.design).
+- Data API: [Bestdori](https://bestdori.com).
+- Game Assets: All original game assets, art, and characters are property of **Bushiroad** and **Craft Egg**.
+
+## License
+
+This project is licensed under the **GNU Affero General Public License v3.0 (AGPL-3.0)**. See the [LICENSE](LICENSE) file for the full text.
+
+> [!IMPORTANT]
+> **Legal Disclaimer:**
+> This project is a fan-made site and is not affiliated with or endorsed by Bushiroad, Craft Egg, or the BanG Dream! franchise. All game assets, characters, and data are copyright of their respective owners. The AGPL-3.0 license applies only to the custom code contained in this repository.

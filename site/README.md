@@ -10,15 +10,15 @@ Browse and filter BanG Dream! **events** and **stamps**.
 
 ## Tech stack
 
-| Thing                                | Tool                                                                            |
-| ------------------------------------ | ------------------------------------------------------------------------------- |
-| Framework                            | [Astro](https://astro.build) (server output)                                    |
-| Styling                              | [Tailwind CSS v4](https://tailwindcss.com) + [daisyUI](https://daisyui.com)     |
-| Filtering                            | [Orama](https://orama.com)                                                      |
-| Runtime                              | [Cloudflare Workers](https://workers.cloudflare.com/) via `@astrojs/cloudflare` |
-| Dates                                | [Day.js](https://day.js.org)                                                    |
-| Icons                                | [Iconify](https://iconify.design)                                               |
-| Interactivity & partial page updates | [htmx](https://htmx.org)                                                        |
+| Thing         | Tool                                                                                                                         |
+| ------------- | ---------------------------------------------------------------------------------------------------------------------------- |
+| Framework     | [Astro](https://astro.build) (server output)                                                                                 |
+| Styling       | [Tailwind CSS v4](https://tailwindcss.com) + [daisyUI](https://daisyui.com)                                                  |
+| Filtering     | [Orama](https://orama.com)                                                                                                   |
+| Runtime       | [Cloudflare Workers](https://workers.cloudflare.com/) via `@astrojs/cloudflare`                                              |
+| Dates         | [Day.js](https://day.js.org)                                                                                                 |
+| Icons         | [Iconify](https://iconify.design) ([Lucide](https://lucide.dev), [SVG Spinners](https://github.com/n3r4zzurr0/svg-spinners)) |
+| Interactivity | [htmx](https://htmx.org)                                                                                                     |
 
 ## Prerequisites
 
@@ -102,3 +102,11 @@ To deploy manually (requires `wrangler` and Cloudflare credentials):
 bun build            # build first
 bun wrangler deploy  # deploy to Cloudflare Workers
 ```
+
+## License
+
+This project is licensed under the **GNU Affero General Public License v3.0 (AGPL-3.0)**. See the [LICENSE](../LICENSE) file for the full text.
+
+> [!IMPORTANT]
+> **Legal Disclaimer:**
+> This project is a fan-made site and is not affiliated with or endorsed by Bushiroad, Craft Egg, or the BanG Dream! franchise. All game assets, characters, and data are copyright of their respective owners. The AGPL-3.0 license applies only to the custom code contained in this repository.

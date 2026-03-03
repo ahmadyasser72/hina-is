@@ -40,3 +40,11 @@ bun update-data
 ## Cache directory
 
 Cached responses are stored in `.bestdori-cache/` at the repo root. This folder is gitignored but preserved in CI between runs so builds stay fast.
+
+## License
+
+This project is licensed under the **GNU Affero General Public License v3.0 (AGPL-3.0)**. See the [LICENSE](../../LICENSE) file for the full text.
+
+> [!IMPORTANT]
+> **Legal Disclaimer:**
+> This project is a fan-made site and is not affiliated with or endorsed by Bushiroad, Craft Egg, or the BanG Dream! franchise. All game assets, characters, and data are copyright of their respective owners. The AGPL-3.0 license applies only to the custom code contained in this repository.
