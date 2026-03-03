@@ -7,8 +7,8 @@ import { dayjs, formatDuration } from "~/lib/date";
 
 const now = dayjs();
 const thisYear = now.year();
-const birthdayList = [...characters.entries()]
-	.map(([id, { birthday, ...entry }]) => {
+const birthdayList = [...characters.values()]
+	.map(({ birthday, ...entry }) => {
 		const birthdayThisYear = dayjs(birthday)
 			.add(1, "days")
 			.startOf("days")
@@ -19,7 +19,7 @@ const birthdayList = [...characters.entries()]
 		const untilNextBirthday = nextBirthday.diff(now);
 
 		return {
-			id,
+			id: entry.slug.split("-").slice(1).join("-"),
 			nextBirthday,
 			untilNextBirthday,
 			...entry,
@@ -38,9 +38,10 @@ const birthdayList = [...characters.entries()]
 			class="timeline timeline-snap-icon max-md:timeline-compact timeline-vertical mx-8"
 		>
 			{
-				birthdayList.map((character, idx) => (
+				birthdayList.map(({ id, ...character }, idx) => (
 					<li
 						class="group"
+						{id}
 						data-band={character.band.slug}
 						data-character={character.slug}
 					>
@@ -72,7 +73,10 @@ const birthdayList = [...characters.entries()]
 								</p>
 							</div>
 
-							<div class="inline-flex items-center gap-2 group-odd:md:flex-row-reverse">
+							<a
+								class="inline-flex items-center gap-2 group-odd:md:flex-row-reverse"
+								href={`#${id}`}
+							>
 								<img
 									class="size-8"
 									src={`/assets/characters/${character.slug}.${IMAGE_FORMAT}`}
@@ -80,7 +84,7 @@ const birthdayList = [...characters.entries()]
 									loading="lazy"
 								/>
 								<span class="font-medium md:text-lg">{character.name}</span>
-							</div>
+							</a>
 
 							<div
 								class="badge badge-band font-medium"

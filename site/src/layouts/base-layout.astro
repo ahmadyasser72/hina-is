@@ -51,7 +51,7 @@ const { background, title } = Astro.props;
 			}
 
 			<main
-				class="relative flex-1 overflow-auto py-8 shadow-sm"
+				class="relative flex-1 overflow-auto scroll-smooth py-8 shadow-sm"
 				hx-indicator="#app-loader"
 			>
 				<slot />
@@ -85,4 +85,12 @@ const { background, title } = Astro.props;
 	import "iconify-icon";
 	import "~/lib/global";
 	import "~/lib/htmx";
+
+	// scroll to url fragment on page load
+	window.addEventListener("load", () => {
+		const hash = window.location.hash;
+		if (!hash) return;
+
+		document.querySelector(hash)?.scrollIntoView({ behavior: "smooth" });
+	});
 </script>
