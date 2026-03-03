@@ -51,6 +51,11 @@ const image = new URL(`/open-graph/${route}.webp`, url.origin);
 		<meta name="twitter:title" content={fullTitle} />
 		<meta name="twitter:description" content={description} />
 		<meta name="twitter:image" content={image} />
+
+		<meta
+			name="google-site-verification"
+			content="KpTaI8oT4Be4mwkos6HvICOSM6jjgFnMrlo1iJ649iE"
+		/>
 	</head>
 	<body
 		{...!Astro.locals.clientTimezone && {
