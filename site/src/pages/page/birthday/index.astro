@@ -1,0 +1,106 @@
+---
+import { characters } from "@hina-is/bestdori/data";
+
+import BaseLayout from "~/layouts/base-layout.astro";
+import { IMAGE_FORMAT } from "~/lib/compressor/constants";
+import { dayjs, formatDuration } from "~/lib/date";
+
+const now = dayjs();
+const thisYear = now.year();
+const birthdayList = [...characters.entries()]
+	.map(([id, { birthday, ...entry }]) => {
+		const birthdayThisYear = dayjs(birthday)
+			.add(1, "days")
+			.startOf("days")
+			.set("years", thisYear);
+		const nextBirthday = now.isBefore(birthdayThisYear)
+			? birthdayThisYear
+			: birthdayThisYear.add(1, "year");
+		const untilNextBirthday = nextBirthday.diff(now);
+
+		return {
+			id,
+			nextBirthday,
+			untilNextBirthday,
+			...entry,
+		};
+	})
+	.sort((a, b) => a.untilNextBirthday - b.untilNextBirthday);
+---
+
+<BaseLayout title="Birthday Tracker">
+	<div class="flex flex-col items-center gap-4">
+		<div class="badge badge-accent badge-xl w-48 font-medium">
+			Birthday Tracker
+		</div>
+
+		<ul
+			class="timeline timeline-snap-icon max-md:timeline-compact timeline-vertical mx-8"
+		>
+			{
+				birthdayList.map((character, idx) => (
+					<li
+						class="group"
+						data-band={character.band.slug}
+						data-character={character.slug}
+					>
+						<hr class="bg-character group-first:hidden" />
+
+						<div class="timeline-middle">
+							<div class="bg-character text-character-content rounded-box border-base-content/20 flex size-8 items-center justify-center border">
+								<iconify-icon class="size-6" icon="lucide:cake" width="none" />
+							</div>
+						</div>
+						<div
+							class:list={[
+								"mt-3 mb-6 flex flex-col gap-1 group-odd:md:items-end",
+								idx % 2 === 0 ? "timeline-start" : "timeline-end",
+							]}
+						>
+							<div class="inline-flex gap-2 font-mono group-odd:md:flex-row-reverse">
+								<span class="italic">
+									{character.nextBirthday.format("YYYY-MM-DD")}
+								</span>
+								<p class="font-light">
+									(
+									<span
+										class="tooltip tooltip-left tooltip-character group-odd:md:tooltip-right -mx-1.5 underline decoration-dotted before:font-sans before:font-normal"
+										data-tip={formatDuration(now, character.nextBirthday)}
+										set:text={character.nextBirthday.from(now)}
+									/>
+									)
+								</p>
+							</div>
+
+							<div class="inline-flex items-center gap-2 group-odd:md:flex-row-reverse">
+								<img
+									class="size-8"
+									src={`/assets/characters/${character.slug}.${IMAGE_FORMAT}`}
+									alt={`${character.name} icon`}
+									loading="lazy"
+								/>
+								<span class="font-medium md:text-lg">{character.name}</span>
+							</div>
+
+							<div
+								class="badge badge-band font-medium"
+								data-band={character.band.slug}
+							>
+								<img
+									class="size-5"
+									src={`/assets/bands/${character.band.slug}.svg`}
+									alt={`${character.band.name} icon`}
+									loading="lazy"
+								/>
+
+								{character.band.name}
+							</div>
+						</div>
+
+						<hr class="from-character to-band bg-linear-to-b from-25% to-50%" />
+					</li>
+				))
+			}
+		</ul>
+	</div>
+</BaseLayout>
