@@ -17,9 +17,11 @@ export function createOgImage({
 		<DocsTemplate
 			title={title}
 			description={description}
-			icon={<img src="icon" height={48} width={48} />}
-			primaryColor="#55ddee"
-			primaryTextColor="#55ddee"
+			icon={
+				<img src="icon" height={48} style={{ borderRadius: 8 }} width={48} />
+			}
+			primaryColor="#00AABB"
+			primaryTextColor="#55DDEE"
 			site="hina-is"
 		/>,
 		{
@@ -51,7 +53,7 @@ const DocsTemplate = ({
 		style={{
 			width: "100%",
 			height: "100%",
-			backgroundColor: "#050505",
+			backgroundColor: "#0f0f0f",
 			position: "relative",
 			display: "flex",
 			flexDirection: "column",
@@ -94,7 +96,7 @@ const DocsTemplate = ({
 				<span
 					style={{
 						fontSize: 44,
-						color: "#a1a1aa",
+						color: "#f0f0f0",
 						fontWeight: 400,
 						lineHeight: 1.4,
 						maxWidth: "95%",

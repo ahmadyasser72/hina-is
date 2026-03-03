@@ -1,5 +1,4 @@
 import type {
-	APIContext,
 	APIRoute,
 	GetStaticPaths,
 	InferGetStaticParamsType,
