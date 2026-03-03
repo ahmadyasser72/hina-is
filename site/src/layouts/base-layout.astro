@@ -11,16 +11,18 @@ interface Props {
 }
 
 const { background, description, title } = Astro.props;
+
+const url = new URL(Astro.url.pathname, Astro.url.origin);
+const route =
+	Astro.routePattern === "/" ? "index" : Astro.routePattern.slice(1);
+const image = new URL(`/open-graph/${route}.png`, url.origin);
 ---
 
 <html lang="en">
 	<head>
 		<meta charset="utf-8" />
 
-		<link
-			href={new URL(Astro.url.pathname, Astro.url.origin)}
-			rel="canonical"
-		/>
+		<link href={url} rel="canonical" />
 
 		<link type="image/png" href="/favicon-96x96.png" rel="icon" sizes="96x96" />
 		<link type="image/svg+xml" href="/favicon.svg" rel="icon" />
@@ -34,6 +36,18 @@ const { background, description, title } = Astro.props;
 
 		<title>Hina is &hearts; {title}</title>
 		<meta name="description" content={description} />
+
+		<meta content="hina-is" property="og:site_name" />
+		<meta content="website" property="og:type" />
+		<meta content={url} property="og:url" />
+		<meta content={title} property="og:title" />
+		<meta content={description} property="og:description" />
+		<meta content={image} property="og:image" />
+
+		<meta name="twitter:card" content="summary_large_image" />
+		<meta name="twitter:title" content={title} />
+		<meta name="twitter:description" content={description} />
+		<meta name="twitter:image" content={image} />
 	</head>
 	<body
 		{...!Astro.locals.clientTimezone && {
