@@ -66,3 +66,10 @@ window.playCardAudio = (button, slug) => {
 		}
 	};
 }
+
+window.scrollKeepHistory = (targetId) => {
+	const selector = `#${targetId}`;
+
+	history.replaceState(null, "", selector);
+	document.querySelector(selector)?.scrollIntoView();
+};

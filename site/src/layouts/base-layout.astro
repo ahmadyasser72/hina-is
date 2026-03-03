@@ -104,14 +104,11 @@ const image = new URL(`/open-graph/${route}.webp`, url.origin);
 	import "~/lib/global";
 	import "~/lib/htmx";
 
-	const scrollToUrlFragment = () => {
+	// scroll to url fragment on page load
+	window.addEventListener("load", () => {
 		const hash = window.location.hash;
 		if (!hash) return;
 
-		document.querySelector(hash)?.scrollIntoView({ behavior: "smooth" });
-	};
-
-	// scroll to url fragment on hash change and page load
-	window.addEventListener("hashchange", scrollToUrlFragment);
-	window.addEventListener("load", scrollToUrlFragment);
+		document.querySelector(hash)?.scrollIntoView();
+	});
 </script>

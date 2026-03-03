@@ -77,9 +77,9 @@ const birthdayList = [...characters.values()]
 								</p>
 							</div>
 
-							<a
-								class="inline-flex items-center gap-2 group-odd:md:flex-row-reverse"
-								href={`#${id}`}
+							<button
+								class="inline-flex cursor-pointer items-center gap-2 group-odd:md:flex-row-reverse"
+								onclick={`scrollKeepHistory('${id}')`}
 							>
 								<img
 									class="size-8"
@@ -88,7 +88,7 @@ const birthdayList = [...characters.values()]
 									loading="lazy"
 								/>
 								<span class="font-medium md:text-lg">{character.name}</span>
-							</a>
+							</button>
 
 							<div
 								class="badge badge-band font-medium"

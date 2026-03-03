@@ -5,6 +5,8 @@ declare global {
 
 		playEventBgm: (button: HTMLButtonElement, slug: string) => void;
 		stopEventBgm: () => void;
+
+		scrollKeepHistory: (targetId: string) => void;
 	}
 }
 
