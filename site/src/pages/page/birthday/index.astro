@@ -11,6 +11,7 @@ const thisYear = now.year();
 const birthdayList = [...characters.values()]
 	.map(({ birthday, ...entry }) => {
 		const birthdayThisYear = dayjs(birthday)
+			.tz()
 			.add(1, "days")
 			.startOf("days")
 			.set("years", thisYear);
