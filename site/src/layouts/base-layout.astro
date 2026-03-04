@@ -65,7 +65,9 @@ const image = new URL(`/open-graph/${route}.webp`, url.origin);
 				"js:{ 'x-timezone': Intl.DateTimeFormat().resolvedOptions().timeZone }",
 		}}
 	>
-		<div class="relative container mx-auto flex h-screen flex-col">
+		<div
+			class="relative container mx-auto flex h-screen flex-col overflow-auto scroll-smooth shadow-sm"
+		>
 			{
 				background && (
 					<img
@@ -75,16 +77,11 @@ const image = new URL(`/open-graph/${route}.webp`, url.origin);
 				)
 			}
 
-			<main
-				class="relative flex flex-1 flex-col overflow-auto scroll-smooth shadow-sm"
-				hx-indicator="#app-loader"
-			>
-				<div class="flex-1 py-8">
-					<slot />
-				</div>
-
-				<Footer />
+			<main class="flex-1 py-8" hx-indicator="#app-loader">
+				<slot />
 			</main>
+
+			<Footer />
 		</div>
 
 		<div
