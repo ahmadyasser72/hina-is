@@ -1,0 +1,108 @@
+---
+import type { Bandori } from "@hina-is/bestdori/data";
+
+import { IMAGE_FORMAT } from "~/lib/compressor/constants";
+import { dayjs, formatDuration } from "~/lib/date";
+
+interface Props {
+	characters: Bandori.Character[];
+}
+
+const { characters } = Astro.props;
+
+const now = dayjs();
+const thisYear = now.year();
+const birthdayList = characters
+	.map(({ birthday, ...entry }) => {
+		const birthdayThisYear = dayjs(birthday)
+			.tz()
+			.add(1, "days")
+			.startOf("days")
+			.set("years", thisYear);
+		const nextBirthday = now.isBefore(birthdayThisYear)
+			? birthdayThisYear
+			: birthdayThisYear.add(1, "year");
+		const untilNextBirthday = nextBirthday.diff(now);
+
+		return {
+			id: entry.slug.split("-").slice(1).join("-"),
+			nextBirthday,
+			untilNextBirthday,
+			...entry,
+		};
+	})
+	.sort((a, b) => a.untilNextBirthday - b.untilNextBirthday);
+---
+
+<ul
+	class="timeline timeline-snap-icon max-md:timeline-compact timeline-vertical mx-8"
+>
+	{
+		birthdayList.map(({ id, ...character }, idx) => (
+			<li
+				class="group"
+				{id}
+				data-band={character.band.slug}
+				data-character={character.slug}
+			>
+				<hr class="bg-character group-first:hidden" />
+
+				<div class="timeline-middle">
+					<div class="bg-character text-character-content rounded-box border-base-content/20 flex size-8 items-center justify-center border">
+						<iconify-icon class="size-6" icon="lucide:cake" width="none" />
+					</div>
+				</div>
+				<div
+					class:list={[
+						"mt-3 mb-6 flex flex-col gap-1 group-odd:md:items-end",
+						idx % 2 === 0 ? "timeline-start" : "timeline-end",
+					]}
+				>
+					<div class="inline-flex gap-2 font-mono group-odd:md:flex-row-reverse">
+						<span class="italic">
+							{character.nextBirthday.format("YYYY-MM-DD")}
+						</span>
+						<p class="font-light">
+							(
+							<span
+								class="tooltip tooltip-left tooltip-character group-odd:md:tooltip-right -mx-1.5 underline decoration-dotted before:font-sans before:font-normal"
+								data-tip={formatDuration(now, character.nextBirthday)}
+								set:text={character.nextBirthday.from(now)}
+							/>
+							)
+						</p>
+					</div>
+
+					<button
+						class="inline-flex cursor-pointer items-center gap-2 group-odd:md:flex-row-reverse"
+						onclick={`scrollKeepHistory('${id}')`}
+					>
+						<img
+							class="size-8"
+							src={`/assets/characters/${character.slug}.${IMAGE_FORMAT}`}
+							alt={`${character.name} icon`}
+							loading="lazy"
+						/>
+						<span class="font-medium md:text-lg">{character.name}</span>
+					</button>
+
+					<div
+						class="badge badge-band font-medium"
+						data-band={character.band.slug}
+					>
+						<img
+							class="size-5"
+							src={`/assets/bands/${character.band.slug}.svg`}
+							alt={`${character.band.name} icon`}
+							loading="lazy"
+						/>
+
+						{character.band.name}
+					</div>
+				</div>
+
+				<hr class="from-character to-band bg-linear-to-b from-25% to-50%" />
+			</li>
+		))
+	}
+</ul>
