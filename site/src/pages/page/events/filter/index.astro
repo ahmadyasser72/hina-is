@@ -55,7 +55,7 @@ const { facets } = await filterEvents(params, events.list);
 			</FilterFieldset>
 
 			<FilterFieldset name="character" {facets} {params}>
-				<div class="join">
+				<div class="join overflow-auto">
 					{
 						schema.shape.filter_character.def.innerType.options.map((value) => (
 							<input
