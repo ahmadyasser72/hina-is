@@ -21,6 +21,10 @@
 	@apply top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2;
 }
 
+#container {
+	scrollbar-gutter: stable;
+}
+
 #scroll-to-top {
 	@apply absolute right-2 translate-y-12 transition-transform max-md:bottom-2 md:top-2 md:right-1/2 md:translate-x-1/2 md:-translate-y-12;
 
