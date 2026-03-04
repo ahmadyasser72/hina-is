@@ -19,10 +19,10 @@ const { facets } = await filterStamps(params, stamps);
 		<form
 			class="flex flex-col gap-1"
 			id="filter"
-			hx-disabled-elt="#filter input"
+			hx-disabled-elt="#filter input, #filter-actions button"
 			hx-include="#filter"
 			hx-select="#filter"
-			hx-select-oob="#apply-filter"
+			hx-select-oob="#filter-actions"
 			hx-swap="outerHTML transition:true"
 			hx-target="this"
 		>
@@ -41,11 +41,13 @@ const { facets } = await filterStamps(params, stamps);
 			<FilterFieldset name="character" {facets} {params} />
 		</form>
 
-		<div class="bg-base-100 join sticky bottom-0 w-full px-4 py-2">
+		<div
+			class="bg-base-100 join sticky bottom-0 w-full px-4 py-2"
+			id="filter-actions"
+		>
 			<button
 				hx-get="/page/stamps"
 				class="btn btn-primary join-item flex-1"
-				id="apply-filter"
 				hx-indicator="this"
 				hx-on--after-request="event.detail.successful && filter_modal.close()"
 				hx-select="#stamps"
@@ -68,7 +70,6 @@ const { facets } = await filterStamps(params, stamps);
 			<button
 				hx-get="/page/stamps/filter"
 				class="btn btn-error join-item"
-				id="reset-filter"
 				hx-swap="outerHTML transition:true"
 				hx-target="closest dialog"
 				hx-vals={JSON.stringify(schema.parse({}))}
