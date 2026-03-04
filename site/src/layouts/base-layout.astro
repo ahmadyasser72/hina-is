@@ -67,6 +67,7 @@ const image = new URL(`/open-graph/${route}.webp`, url.origin);
 	>
 		<div
 			class="relative container mx-auto flex h-screen flex-col overflow-auto scroll-smooth shadow-sm"
+			id="container"
 		>
 			{
 				background && (
@@ -83,6 +84,16 @@ const image = new URL(`/open-graph/${route}.webp`, url.origin);
 
 			<Footer />
 		</div>
+
+		<button
+			class="btn btn-neutral md:btn-sm max-md:btn-circle"
+			id="scroll-to-top"
+			onclick="container.scrollTop = 0"
+		>
+			<span class="max-md:hidden">Back to top</span>
+			<iconify-icon class="size-4" icon="lucide:chevrons-up" width="none"
+			></iconify-icon>
+		</button>
 
 		<div
 			class="htmx-indicator bg-base-100/50 fixed inset-0 z-20"
@@ -118,5 +129,18 @@ const image = new URL(`/open-graph/${route}.webp`, url.origin);
 		if (!hash) return;
 
 		document.querySelector(hash)?.scrollIntoView();
+	});
+
+	let timer: ReturnType<typeof setTimeout> | undefined = undefined;
+	const container = document.getElementById("container")!;
+	const scrollToTopButton = document.getElementById("scroll-to-top")!;
+	container.addEventListener("scroll", () => {
+		clearTimeout(timer);
+		timer = setTimeout(() => {
+			scrollToTopButton.classList.toggle(
+				"active",
+				container.scrollTop >= container.clientHeight * 2,
+			);
+		}, 150);
 	});
 </script>
