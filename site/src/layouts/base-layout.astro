@@ -65,24 +65,26 @@ const image = new URL(`/open-graph/${route}.webp`, url.origin);
 				"js:{ 'x-timezone': Intl.DateTimeFormat().resolvedOptions().timeZone }",
 		}}
 	>
-		<div
-			class="relative container mx-auto flex h-screen flex-col overflow-auto scroll-smooth shadow-sm"
-			id="container"
-		>
+		<div class="relative container mx-auto flex h-screen flex-col shadow-sm">
 			{
 				background && (
 					<img
-						class="absolute h-full w-full object-cover brightness-67 select-none dark:brightness-33"
+						class="absolute -z-10 h-full w-full object-cover brightness-67 select-none dark:brightness-33"
 						{...background}
 					/>
 				)
 			}
 
-			<main class="flex-1 py-8" hx-indicator="#app-loader">
-				<slot />
-			</main>
+			<div
+				class="flex flex-1 flex-col overflow-auto scroll-smooth"
+				id="container"
+			>
+				<main class="flex-1 py-8" hx-indicator="#app-loader">
+					<slot />
+				</main>
 
-			<Footer />
+				<Footer />
+			</div>
 		</div>
 
 		<button
