@@ -57,14 +57,19 @@ const image = new URL(`/open-graph/${route}.webp`, url.origin);
 			content="KpTaI8oT4Be4mwkos6HvICOSM6jjgFnMrlo1iJ649iE"
 		/>
 	</head>
-	<body
-		{...!Astro.locals.clientTimezone && {
-			"hx-get": "",
-			"hx-trigger": "load",
-			"hx-headers":
-				"js:{ 'x-timezone': Intl.DateTimeFormat().resolvedOptions().timeZone }",
-		}}
-	>
+	<body>
+		{
+			!Astro.locals.clientTimezone && (
+				<div
+					hx-get
+					hx-trigger="load"
+					hx-headers="js:{ 'x-timezone': Intl.DateTimeFormat().resolvedOptions().timeZone }"
+					hx-select-oob="#content"
+					hx-swap="delete"
+				/>
+			)
+		}
+
 		<div class="relative container mx-auto flex h-screen flex-col shadow-sm">
 			{
 				background && (
@@ -79,7 +84,7 @@ const image = new URL(`/open-graph/${route}.webp`, url.origin);
 				class="flex flex-1 flex-col overflow-auto scroll-smooth"
 				id="container"
 			>
-				<main class="flex-1 py-8" hx-indicator="#app-loader">
+				<main class="flex-1 py-8" id="content" hx-indicator="#app-loader">
 					<slot />
 				</main>
 
