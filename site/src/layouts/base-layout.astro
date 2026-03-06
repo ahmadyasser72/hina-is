@@ -5,6 +5,7 @@ import type { JSX } from "astro/jsx-runtime";
 import "~/styles/global.css";
 
 import Footer from "~/components/footer.astro";
+import Header from "~/components/header.astro";
 
 interface Props {
 	background?: JSX.ImgHTMLAttributes;
@@ -70,20 +71,24 @@ const image = new URL(`/open-graph/${route}.webp`, url.origin);
 			)
 		}
 
-		<div class="relative container mx-auto flex h-screen flex-col shadow-sm">
+		<div class="flex h-screen flex-col">
 			{
 				background && (
-					<img
-						class="absolute -z-10 h-full w-full object-cover brightness-67 select-none dark:brightness-33"
-						{...background}
-					/>
+					<div class="fixed inset-0 -z-10" id="background-image">
+						<img
+							class="container mx-auto size-full object-cover brightness-67 select-none dark:brightness-33"
+							{...background}
+						/>
+					</div>
 				)
 			}
 
 			<div
-				class="flex flex-1 flex-col overflow-auto scroll-smooth"
+				class="relative flex flex-1 flex-col scroll-smooth *:container *:mx-auto *:shadow-sm"
 				id="container"
 			>
+				<Header />
+
 				<main class="flex-1 py-8" id="content" hx-indicator="#app-loader">
 					<slot />
 				</main>
@@ -93,10 +98,11 @@ const image = new URL(`/open-graph/${route}.webp`, url.origin);
 		</div>
 
 		<button
-			class="btn btn-neutral md:btn-sm max-md:btn-circle"
+			class="btn btn-sm glass fixed right-2 z-90 text-black/67 max-md:bottom-2 md:top-4 md:right-1/2 md:translate-x-1/2"
 			id="scroll-to-top"
 		>
-			<span class="max-md:hidden">Back to top</span>
+			Back to top
+
 			<iconify-icon class="size-4" icon="lucide:chevrons-up" width="none"
 			></iconify-icon>
 		</button>

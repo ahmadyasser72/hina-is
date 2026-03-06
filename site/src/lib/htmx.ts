@@ -48,23 +48,45 @@ htmx.on("htmx:beforeSwap", (e) => {
 	}
 });
 
+// logic for show/hide header and scroll-to-top
 {
+	const header = htmx.find("#header")!;
 	const container = htmx.find("#container")!;
 	const scrollToTopButton = htmx.find("#scroll-to-top")!;
 
+	let lastScrollTop = container.scrollTop;
 	let timer: ReturnType<typeof setTimeout> | undefined = undefined;
 	htmx.on(container, "scroll", function (this: HTMLElement) {
 		clearTimeout(timer);
 		timer = setTimeout(() => {
-			scrollToTopButton.classList.toggle(
-				"active",
-				this.scrollTop >= this.clientHeight,
-			);
+			const screenSize = this.clientHeight;
+			const scrolledEnough = this.scrollTop >= screenSize / 2;
+			const scrollingDown = this.scrollTop > lastScrollTop;
+			const showScrollToTop = scrolledEnough && scrollingDown;
+
+			scrollToTopButton.classList.toggle("active", showScrollToTop);
+			header.classList.toggle("active", !showScrollToTop);
+
+			lastScrollTop = this.scrollTop;
 		}, 150);
 	});
 
 	htmx.on(scrollToTopButton, "click", function (this: HTMLElement) {
 		this.classList.remove("active");
+		setTimeout(() => {
+			header.classList.add("active");
+		}, 150);
+
 		container.scroll({ top: 0 });
+	});
+}
+
+// logic for persistent dark mode
+{
+	const themeController = htmx.find(".theme-controller") as HTMLInputElement;
+	themeController.checked = localStorage.getItem("is-dark") === "true";
+
+	htmx.on(themeController, "input", function (this: HTMLInputElement) {
+		localStorage.setItem("is-dark", this.checked ? "true" : "false");
 	});
 }
