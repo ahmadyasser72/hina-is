@@ -136,22 +136,4 @@ const image = new URL(`/open-graph/${route}.webp`, url.origin);
 
 		document.querySelector(hash)?.scrollIntoView();
 	});
-
-	let timer: ReturnType<typeof setTimeout> | undefined = undefined;
-	const container = document.getElementById("container")!;
-	container.addEventListener("scroll", () => {
-		clearTimeout(timer);
-		timer = setTimeout(() => {
-			scrollToTopButton.classList.toggle(
-				"active",
-				container.scrollTop >= container.clientHeight,
-			);
-		}, 150);
-	});
-
-	const scrollToTopButton = document.getElementById("scroll-to-top")!;
-	scrollToTopButton.addEventListener("click", () => {
-		scrollToTopButton.classList.remove("active");
-		container.scroll({ top: 0 });
-	});
 </script>

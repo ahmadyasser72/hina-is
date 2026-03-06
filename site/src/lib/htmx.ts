@@ -7,15 +7,8 @@ htmx.onLoad((node) => {
 	// auto-open dialog element and auto self-remove on close
 	if (node instanceof HTMLDialogElement) {
 		node.show();
-		node.addEventListener("toggle", ({ newState }) => {
-			if (newState === "closed") setTimeout(() => node.remove(), 300);
-		});
+		node.addEventListener("close", () => setTimeout(() => node.remove(), 300));
 	}
-
-	// data-scroll-here attribute
-	node
-		.querySelector<HTMLElement>("[data-scroll-here]")
-		?.scrollIntoView({ behavior: "smooth" });
 
 	// thumbhash image placeholder
 	node.querySelectorAll<HTMLImageElement>("[data-thumbhash]").forEach((img) => {
@@ -54,3 +47,24 @@ htmx.on("htmx:beforeSwap", (e) => {
 		event.detail.swapOverride = "beforeend";
 	}
 });
+
+{
+	const container = htmx.find("#container")!;
+	const scrollToTopButton = htmx.find("#scroll-to-top")!;
+
+	let timer: ReturnType<typeof setTimeout> | undefined = undefined;
+	htmx.on(container, "scroll", function (this: HTMLElement) {
+		clearTimeout(timer);
+		timer = setTimeout(() => {
+			scrollToTopButton.classList.toggle(
+				"active",
+				this.scrollTop >= this.clientHeight,
+			);
+		}, 150);
+	});
+
+	htmx.on(scrollToTopButton, "click", function (this: HTMLElement) {
+		this.classList.remove("active");
+		container.scroll({ top: 0 });
+	});
+}
