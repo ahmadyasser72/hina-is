@@ -3,8 +3,8 @@ declare global {
 		playCardAudio: (button: HTMLButtonElement, slug: string) => void;
 		playStampAudio: (button: HTMLButtonElement, slug: string) => void;
 
-		playEventBgm: (button: HTMLButtonElement, slug: string) => void;
-		stopEventBgm: () => void;
+		playEventBGM: (button: HTMLButtonElement, slug: string) => void;
+		stopEventBGM: () => void;
 
 		scrollKeepHistory: (targetId: string) => void;
 	}

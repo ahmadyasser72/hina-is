@@ -1,69 +1,75 @@
 import { AUDIO_FORMAT } from "~/lib/compressor/constants";
 
-const playAudio = (
-	button: HTMLButtonElement,
-	pathname: string,
-	handler: { afterPlay?: () => void; beforePlay?: () => void } = {},
-) => {
-	const audio = new Audio(pathname);
-
-	audio.addEventListener("ended", () => {
-		button.disabled = false;
-		handler.afterPlay?.();
-	});
-
-	button.disabled = true;
-	button.classList.toggle("htmx-request", true);
-	audio.addEventListener("canplaythrough", () => {
-		button.classList.toggle("htmx-request", false);
-		handler.beforePlay?.();
-		audio.play();
-	});
-};
-
-window.playStampAudio = (button, slug) =>
-	playAudio(button, `/assets/stamps/${slug}-voice.${AUDIO_FORMAT}`);
-
-window.playCardAudio = (button, slug) => {
-	const dropdown = button.closest<HTMLElement>(".dropdown")!;
-
-	playAudio(button, `/assets/cards/${slug}-voice.${AUDIO_FORMAT}`, {
-		beforePlay: () =>
-			dropdown.classList.replace("dropdown-close", "dropdown-open"),
-		afterPlay: () =>
-			dropdown.classList.replace("dropdown-open", "dropdown-close"),
-	});
-};
-
 {
-	let playButton: HTMLButtonElement | undefined;
-	let eventBgmAudio: HTMLAudioElement | undefined;
+	let playEventBGMButton: HTMLButtonElement | undefined;
+	let eventBGM: HTMLAudioElement | undefined;
 
-	window.playEventBgm = (button, slug) => {
-		if (playButton && eventBgmAudio) window.stopEventBgm();
+	window.playEventBGM = (button, slug) => {
+		if (playEventBGMButton && eventBGM) window.stopEventBGM();
 
-		playButton = button;
-		eventBgmAudio = new Audio(`/assets/events/${slug}-bgm.${AUDIO_FORMAT}`);
-		eventBgmAudio.loop = true;
-		eventBgmAudio.controls = false;
-		eventBgmAudio.disableRemotePlayback = true;
+		playEventBGMButton = button;
+		eventBGM = new Audio(`/assets/events/${slug}-bgm.${AUDIO_FORMAT}`);
+		eventBGM.loop = true;
+		eventBGM.controls = false;
+		eventBGM.disableRemotePlayback = true;
 
 		button.disabled = true;
 		button.classList.toggle("htmx-request", true);
-		eventBgmAudio.addEventListener("canplay", () => {
+		eventBGM.addEventListener("canplay", () => {
 			button.classList.toggle("htmx-request", false);
-			eventBgmAudio!.play();
+			eventBGM!.play();
 		});
 	};
 
-	window.stopEventBgm = () => {
-		if (playButton && eventBgmAudio) {
-			playButton.disabled = false;
-			eventBgmAudio.pause();
+	window.stopEventBGM = () => {
+		if (playEventBGMButton && eventBGM) {
+			playEventBGMButton.disabled = false;
+			eventBGM.pause();
 
-			playButton = undefined;
-			eventBgmAudio = undefined;
+			playEventBGMButton = undefined;
+			eventBGM = undefined;
 		}
+	};
+
+	const playAudio = (
+		button: HTMLButtonElement,
+		pathname: string,
+		handler: { afterPlay?: () => void; beforePlay?: () => void } = {},
+	) => {
+		const audio = new Audio(pathname);
+
+		audio.addEventListener("ended", () => {
+			button.disabled = false;
+			handler.afterPlay?.();
+
+			setTimeout(() => {
+				if (eventBGM) eventBGM.volume = 1;
+			}, 300);
+		});
+
+		button.disabled = true;
+		button.classList.toggle("htmx-request", true);
+		audio.addEventListener("canplaythrough", () => {
+			button.classList.toggle("htmx-request", false);
+			handler.beforePlay?.();
+
+			if (eventBGM) eventBGM.volume = 1 / 3;
+			audio.play();
+		});
+	};
+
+	window.playStampAudio = (button, slug) =>
+		playAudio(button, `/assets/stamps/${slug}-voice.${AUDIO_FORMAT}`);
+
+	window.playCardAudio = (button, slug) => {
+		const dropdown = button.closest<HTMLElement>(".dropdown")!;
+
+		playAudio(button, `/assets/cards/${slug}-voice.${AUDIO_FORMAT}`, {
+			beforePlay: () =>
+				dropdown.classList.replace("dropdown-close", "dropdown-open"),
+			afterPlay: () =>
+				dropdown.classList.replace("dropdown-open", "dropdown-close"),
+		});
 	};
 }
 
