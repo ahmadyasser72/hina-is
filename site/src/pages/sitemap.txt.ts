@@ -1,6 +1,6 @@
 import type { APIRoute } from "astro";
 
-import { pages } from "~/lib/metadata";
+import { pages } from "~/lib/page";
 
 export const GET: APIRoute = ({ url }) =>
 	new Response(

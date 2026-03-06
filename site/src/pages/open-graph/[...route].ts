@@ -5,8 +5,8 @@ import type {
 	InferGetStaticPropsType,
 } from "astro";
 
-import { pages } from "~/lib/metadata";
 import { createOgImage } from "~/lib/og-image";
+import { pages } from "~/lib/page";
 
 export const prerender = true;
 
