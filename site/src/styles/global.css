@@ -1,4 +1,5 @@
 @import "tailwindcss";
+
 @plugin "daisyui" {
 	themes:
 		lemonade --default,
@@ -7,6 +8,8 @@
 		rootscrollgutter,
 		properties /* https://github.com/saadeghi/daisyui/issues/3882 */;
 }
+
+@custom-variant dark (&:where([data-theme="coffee"], [data-theme="coffee"] *));
 
 @import "./bandori.css";
 
