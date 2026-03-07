@@ -9,7 +9,7 @@
 		properties /* https://github.com/saadeghi/daisyui/issues/3882 */;
 }
 
-@custom-variant dark (&:where([data-theme="coffee"], [data-theme="coffee"] *));
+@custom-variant dark (&:where(.dark, .dark *));
 
 @import "./bandori.css";
 

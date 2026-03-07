@@ -88,15 +88,16 @@ htmx.on("htmx:beforeSwap", (e) => {
 
 	const darkToggle = htmx.find(".theme-controller") as HTMLInputElement;
 	darkToggle.checked =
-		lastIsDark !== null ? lastIsDark === "true" : systemIsDark.matches;
+		lastIsDark === "true" || (!lastIsDark && systemIsDark.matches);
 
 	const setTheme = (isDark: boolean) => {
 		localStorage.setItem("is-dark", isDark ? "true" : "false");
-
-		document.documentElement.dataset.theme = isDark ? darkToggle.value : "";
+		document.documentElement.classList.toggle("dark", isDark);
 	};
 
-	htmx.on(darkToggle, "input", () => setTheme(darkToggle.checked));
+	htmx.on(darkToggle, "input", () => {
+		setTheme(darkToggle.checked);
+	});
 	htmx.on(systemIsDark, "change", () => {
 		darkToggle.checked = systemIsDark.matches;
 		setTheme(systemIsDark.matches);
