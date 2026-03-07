@@ -56,23 +56,23 @@ htmx.on("htmx:beforeSwap", (e) => {
 
 	let lastScrollTop = container.scrollTop;
 	let timer: ReturnType<typeof setTimeout> | undefined = undefined;
-	htmx.on(container, "scroll", function (this: HTMLElement) {
+	htmx.on(container, "scroll", () => {
 		clearTimeout(timer);
 		timer = setTimeout(() => {
-			const screenSize = this.clientHeight;
-			const scrolledEnough = this.scrollTop >= screenSize / 2;
-			const scrollingDown = this.scrollTop > lastScrollTop;
+			const screenSize = container.clientHeight;
+			const scrolledEnough = container.scrollTop >= screenSize / 2;
+			const scrollingDown = container.scrollTop > lastScrollTop;
 			const showScrollToTop = scrolledEnough && scrollingDown;
 
 			scrollToTopButton.classList.toggle("active", showScrollToTop);
 			header.classList.toggle("active", !showScrollToTop);
 
-			lastScrollTop = this.scrollTop;
+			lastScrollTop = container.scrollTop;
 		}, 150);
 	});
 
-	htmx.on(scrollToTopButton, "click", function (this: HTMLElement) {
-		this.classList.remove("active");
+	htmx.on(scrollToTopButton, "click", () => {
+		scrollToTopButton.classList.remove("active");
 		setTimeout(() => {
 			header.classList.add("active");
 		}, 150);
