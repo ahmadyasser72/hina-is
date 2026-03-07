@@ -83,19 +83,22 @@ htmx.on("htmx:beforeSwap", (e) => {
 
 // logic for persistent dark mode
 {
-	const IS_DARK = "is-dark";
-	const lastIsDark = localStorage.getItem(IS_DARK);
+	const lastIsDark = localStorage.getItem("is-dark");
 	const systemIsDark = window.matchMedia("(prefers-color-scheme: dark)");
 
-	const themeController = htmx.find(".theme-controller") as HTMLInputElement;
-	themeController.checked =
+	const darkToggle = htmx.find(".theme-controller") as HTMLInputElement;
+	darkToggle.checked =
 		lastIsDark !== null ? lastIsDark === "true" : systemIsDark.matches;
 
-	htmx.on(themeController, "input", () => {
-		localStorage.setItem(IS_DARK, themeController.checked ? "true" : "false");
-	});
+	const setTheme = (isDark: boolean) => {
+		localStorage.setItem("is-dark", isDark ? "true" : "false");
+
+		document.documentElement.dataset.theme = isDark ? darkToggle.value : "";
+	};
+
+	htmx.on(darkToggle, "input", () => setTheme(darkToggle.checked));
 	htmx.on(systemIsDark, "change", () => {
-		themeController.checked = systemIsDark.matches;
-		localStorage.setItem(IS_DARK, systemIsDark.matches ? "true" : "false");
+		darkToggle.checked = systemIsDark.matches;
+		setTheme(systemIsDark.matches);
 	});
 }
