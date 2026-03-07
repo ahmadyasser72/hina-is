@@ -13,12 +13,12 @@ const { event } = Astro.props;
 const { cards, stamp } = event;
 ---
 
-<div class="join" style={`anchor-name: --${event.slug}`}>
+<div class="flex gap-1" style={`anchor-name: --${event.slug}`}>
 	{
 		cards.length > 0 && (
 			<details class="dropdown dropdown-top z-10">
 				<summary
-					class="btn tooltip tooltip-right join-item btn-sm btn-circle btn-soft"
+					class="btn tooltip tooltip-right btn-sm btn-square btn-soft"
 					data-tip="Event bonus (cards)"
 				>
 					<iconify-icon class="size-4" icon="lucide:sparkle" width="none" />
@@ -46,7 +46,7 @@ const { cards, stamp } = event;
 
 	<details class="dropdown dropdown-top dropdown-end z-10">
 		<summary
-			class="btn tooltip tooltip-left join-item btn-sm btn-circle btn-soft"
+			class="btn tooltip tooltip-left btn-sm btn-square btn-soft"
 			data-tip="Event info"
 		>
 			<iconify-icon class="size-4" icon="lucide:ellipsis" width="none"

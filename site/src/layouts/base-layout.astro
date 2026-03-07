@@ -45,6 +45,12 @@ const image = new URL(`/open-graph/${route}.webp`, url.origin);
 		<meta name="apple-mobile-web-app-title" content="hina-is" />
 		<link href="/site.webmanifest" rel="manifest" />
 
+		<link href="https://fonts.bunny.net" rel="preconnect" />
+		<link
+			href="https://fonts.bunny.net/css?family=nunito-sans:300,400,400i,500"
+			rel="stylesheet"
+		/>
+
 		<meta name="viewport" content="width=device-width" />
 		<meta name="generator" content={Astro.generator} />
 
@@ -108,7 +114,7 @@ const image = new URL(`/open-graph/${route}.webp`, url.origin);
 		</div>
 
 		<button
-			class="btn btn-sm glass fixed right-2 z-90 text-black/67 max-md:bottom-2 md:top-4 md:right-1/2 md:translate-x-1/2"
+			class="btn btn-sm glass text-shadow-base-300 fixed right-2 z-90 text-shadow-md max-md:bottom-2 md:top-4 md:right-1/2 md:translate-x-1/2"
 			id="scroll-to-top"
 		>
 			Back to top
