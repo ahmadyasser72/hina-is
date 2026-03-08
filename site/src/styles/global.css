@@ -1,7 +1,7 @@
 @import "tailwindcss";
 
 @theme {
-  --font-sans: 'Nunito Sans', sans-serif;
+	--font-sans: "Nunito Sans", sans-serif;
 }
 
 @plugin "daisyui" {
@@ -13,7 +13,7 @@
 		properties /* https://github.com/saadeghi/daisyui/issues/3882 */;
 }
 
-@custom-variant dark (&:where(.dark, .dark *));
+@custom-variant dark (&:where([data-theme="coffee"], [data-theme="coffee"] *));
 
 @import "./bandori.css";
 

@@ -25,13 +25,7 @@ const image = new URL(`/open-graph/${route}.webp`, url.origin);
 <html lang="en">
 	<head>
 		<script is:inline>
-			const isDark = localStorage.getItem("is-dark");
-			document.documentElement.classList.toggle(
-				"dark",
-				isDark === "true" ||
-					(!isDark &&
-						window.matchMedia("(prefers-color-scheme: dark)").matches),
-			);
+			document.documentElement.dataset.theme = localStorage.theme ?? "";
 		</script>
 
 		<meta charset="utf-8" />
