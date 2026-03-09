@@ -334,7 +334,7 @@ export default function CharacterSorter({ characters }: CharacterSorterProps) {
 			class={`relative mx-auto flex-1 ${done.value ? "w-full max-w-4xl" : "max-sm:w-full"}`}
 		>
 			<div class="absolute inset-x-0 top-1.5 z-20 grid place-items-center">
-				<div class="join w-64 shadow-sm">
+				<div class="join w-64">
 					<button class="btn btn-xs btn-info join-item pointer-events-none flex-1">
 						{done.value
 							? `Sorted in ${sortCount.value}x`
@@ -350,7 +350,7 @@ export default function CharacterSorter({ characters }: CharacterSorterProps) {
 						onChange={() => (isTrained.value = !isTrained.value)}
 					/>
 					<label
-						class="btn btn-xs tooltip tooltip-bottom join-item peer-[&:not(:checked):not(:disabled)]:btn-neutral peer-checked:btn-accent flex-1 before:text-xs"
+						class="btn btn-xs tooltip tooltip-bottom join-item btn-neutral peer-checked:btn-accent flex-1 before:text-xs"
 						data-tip="Toggle card type"
 						for="card_type"
 					>
