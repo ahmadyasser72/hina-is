@@ -19,19 +19,16 @@ const randomEvent = [...events.values()][
 	}}
 	description={pages.index.description}
 >
-	<div class="absolute inset-0 flex items-center justify-center">
-		<div class="flex flex-col gap-2">
-			<div class="badge badge-accent badge-xl w-48 font-medium">hina-is</div>
+	<div class="absolute inset-0 grid place-items-center">
+		<div class="flex flex-col items-center">
+			<h2 class="badge badge-accent badge-xl w-48 font-medium">hina-is</h2>
 
-			<div class="mt-2 flex gap-1">
-				<a class="btn btn-sm flex-1 underline" href="/page/events">Event list</a
-				>
-				<a class="btn btn-sm flex-1 underline" href="/page/stamps">Stamp list</a
-				>
+			<div class="*:link-hover *:btn *:btn-sm mt-4 grid grid-cols-2 gap-1">
+				<a href="/page/events"> Event list </a>
+				<a href="/page/stamps"> Stamp list </a>
+				<a href="/page/birthday"> Birthday tracker </a>
+				<a href="/page/sorter"> Character sorter </a>
 			</div>
-
-			<a class="btn btn-sm underline" href="/page/birthday">Birthday tracker</a>
-			<a class="btn btn-sm underline" href="/page/sorter">Character sorter</a>
 		</div>
 	</div>
 </BaseLayout>
