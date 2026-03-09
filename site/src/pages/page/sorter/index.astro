@@ -1,10 +1,13 @@
 ---
 import * as data from "@hina-is/bestdori/data";
 
+import { deepEqual } from "fast-equals";
 import { shuffle } from "fast-shuffle";
 import { titleCase } from "text-case";
 
-import CharacterSorter from "~/components/preact/character-sorter";
+import CharacterSorter, {
+	CHARACTER_SORTER_STATE_KEY,
+} from "~/components/preact/character-sorter";
 import BaseLayout from "~/layouts/base-layout.astro";
 import { pages } from "~/lib/page";
 import { schema } from "./_params";
@@ -29,6 +32,14 @@ const characters = (() => {
 
 	return shuffle(results);
 })();
+
+if (Astro.request.headers.get("hx-request") === "true") {
+	const isDefault = deepEqual(params, schema.parse({}));
+
+	const replaceUrl = new URL(Astro.url);
+	replaceUrl.search = isDefault ? "" : Astro.url.search;
+	Astro.response.headers.set("hx-replace-url", replaceUrl.href);
+}
 ---
 
 <BaseLayout
@@ -36,19 +47,44 @@ const characters = (() => {
 	description={pages["page/sorter"].description}
 >
 	<div class="flex h-full flex-col items-center gap-4">
-		<h2 class="badge badge-accent badge-xl w-48 font-medium">
-			Character Sorter
-		</h2>
+		<div class="inline-flex gap-2">
+			<h2 class="badge badge-accent badge-xl w-48 font-medium">
+				Character Sorter
+			</h2>
+
+			<div class="tooltip tooltip-left" data-tip="Reset sorter">
+				<button
+					hx-get={Astro.url.pathname}
+					class="btn btn-sm btn-circle btn-error"
+					hx-confirm="This will clear all your current rankings and start from the beginning, confirm?"
+					hx-indicator="this"
+					hx-on--after-request={`event.detail.successful && localStorage.removeItem('${CHARACTER_SORTER_STATE_KEY}')`}
+					hx-select="#sorter"
+					hx-swap="outerHTML"
+					hx-target="#sorter"
+				>
+					<iconify-icon
+						class="htmx-indicator-replace size-4"
+						icon="lucide:rotate-ccw"
+						width="none"></iconify-icon>
+					<iconify-icon
+						class="htmx-indicator size-4"
+						icon="svg-spinners:90-ring-with-bg"
+						width="none"></iconify-icon>
+				</button>
+			</div>
+		</div>
 
 		{
 			characters ? (
 				<div class="contents" id="sorter">
-					<CharacterSorter {characters} client:load />
+					<CharacterSorter {characters} client:only="preact" />
 				</div>
 			) : (
 				<form
 					hx-get
 					class="flex flex-col gap-2 px-8"
+					id="sorter"
 					hx-disabled-elt="#select-band input, #start-sort"
 					hx-indicator="#start-sort"
 					hx-select="#sorter"

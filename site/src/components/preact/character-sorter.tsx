@@ -1,6 +1,9 @@
-import { computed, signal, useComputed, useSignal } from "@preact/signals";
+import { useComputed, useSignal, useSignalEffect } from "@preact/signals";
+import * as devalue from "devalue";
 
 import { IMAGE_FORMAT } from "~/lib/compressor/constants";
+
+export const CHARACTER_SORTER_STATE_KEY = "hina-is-sorter-state";
 
 type Character = Record<"name" | "slug" | "card", string>;
 type RankResult = { rank: number; character: Character };
@@ -18,15 +21,15 @@ interface SortState {
 	start: number;
 }
 
-const isTrained = signal(false);
-const cardType = computed(() => (isTrained.value ? "trained" : "normal"));
+const tieKey = (() => {
+	const collator = new Intl.Collator(undefined, {
+		numeric: true,
+		sensitivity: "base",
+	});
 
-const collator = new Intl.Collator(undefined, {
-	numeric: true,
-	sensitivity: "base",
-});
-const tieKey = (a: string, b: string) =>
-	collator.compare(a, b) < 0 ? `${a}|${b}` : `${b}|${a}`;
+	return (a: string, b: string) =>
+		collator.compare(a, b) < 0 ? `${a}|${b}` : `${b}|${a}`;
+})();
 
 const worstCaseComparisons = (n: number) => {
 	if (n <= 1) return 0;
@@ -112,15 +115,20 @@ const applyComparison = (state: SortState, result: CompareResult) => {
 interface CharacterDisplayProps {
 	character: Character;
 	side: "left" | "right";
+	cardType: string;
 }
 
-const CharacterDisplay = ({ character, side }: CharacterDisplayProps) => (
+const CharacterDisplay = ({
+	character,
+	side,
+	cardType,
+}: CharacterDisplayProps) => (
 	<div class="bg-character" data-character={character.slug}>
 		<img
 			class="w-full"
-			src={`/assets/cards/${character.card}-full-${cardType.value}.${IMAGE_FORMAT}`}
+			src={`/assets/cards/${character.card}-full-${cardType}.${IMAGE_FORMAT}`}
 			alt={`${character.name} card`}
-			key={`${character.slug}-${cardType.value}`}
+			key={`${character.slug}-${cardType}`}
 		/>
 
 		<div
@@ -128,9 +136,9 @@ const CharacterDisplay = ({ character, side }: CharacterDisplayProps) => (
 		>
 			<img
 				class="rounded-field bg-character-content/67 size-10"
-				src={`/assets/cards/${character.card}-icon-${cardType.value}.${IMAGE_FORMAT}`}
+				src={`/assets/cards/${character.card}-icon-${cardType}.${IMAGE_FORMAT}`}
 				alt={`${character.name} icon`}
-				key={`${character.slug}-icon-${cardType.value}`}
+				key={`${character.slug}-icon-${cardType}`}
 			/>
 
 			<div class="flex flex-col -space-y-0.5 text-xs font-medium">
@@ -150,6 +158,7 @@ interface SortCharacterProps {
 	onTie: () => void;
 	onUndo: () => void;
 	canUndo: boolean;
+	cardType: string;
 }
 
 const SortCharacter = ({
@@ -160,14 +169,15 @@ const SortCharacter = ({
 	onTie,
 	onUndo,
 	canUndo,
+	cardType,
 }: SortCharacterProps) => (
 	<>
 		<figure class="diff sm:rounded-box aspect-4/3 max-sm:w-full sm:h-80">
 			<div class="diff-item-1">
-				<CharacterDisplay character={a} side="left" />
+				<CharacterDisplay cardType={cardType} character={a} side="left" />
 			</div>
 			<div class="diff-item-2">
-				<CharacterDisplay character={b} side="right" />
+				<CharacterDisplay cardType={cardType} character={b} side="right" />
 			</div>
 
 			<div class="diff-resizer" key={`${a.slug}|${b.slug}`}></div>
@@ -229,22 +239,52 @@ interface CharacterSorterProps {
 }
 
 export default function CharacterSorter({ characters }: CharacterSorterProps) {
+	interface PersistedState {
+		isTrained: boolean;
+		sortCount: number;
+		history: SortState[];
+		sortState: SortState;
+	}
+
+	const persisted = ((): PersistedState | null => {
+		try {
+			const data = localStorage.getItem(CHARACTER_SORTER_STATE_KEY);
+			if (data) return devalue.parse(data);
+		} catch (e) {}
+
+		return null;
+	})();
+
+	const isTrained = useSignal(persisted?.isTrained ?? false);
+	const cardType = useComputed(() => (isTrained.value ? "trained" : "normal"));
+
 	const max = worstCaseComparisons(characters.length);
-	const sortCount = useSignal(0);
-	const history = useSignal<SortState[]>([]);
-	const sortState = useSignal(
-		initNextMerge({
-			result: [...characters],
-			left: [],
-			right: [],
-			merged: [],
-			ties: new Set(),
-			leftIdx: 0,
-			rightIdx: 0,
-			size: 1,
-			start: 0,
-		}),
+	const sortCount = useSignal(persisted?.sortCount ?? 0);
+	const history = useSignal<SortState[]>(persisted?.history ?? []);
+	const sortState = useSignal<SortState>(
+		persisted?.sortState ??
+			initNextMerge({
+				result: [...characters],
+				left: [],
+				right: [],
+				merged: [],
+				ties: new Set(),
+				leftIdx: 0,
+				rightIdx: 0,
+				size: 1,
+				start: 0,
+			}),
 	);
+
+	useSignalEffect(() => {
+		const data = devalue.stringify({
+			isTrained: isTrained.value,
+			sortCount: sortCount.value,
+			history: history.value,
+			sortState: sortState.value,
+		} satisfies PersistedState);
+		localStorage.setItem(CHARACTER_SORTER_STATE_KEY, data);
+	});
 
 	const done = useComputed(
 		() =>
@@ -327,14 +367,19 @@ export default function CharacterSorter({ characters }: CharacterSorterProps) {
 		sortCount.value--;
 	};
 
-	const pairValue = pair.value;
+	const reset = () => {
+		if (!confirm("Are you sure you want to reset this sorting session?"))
+			return;
+
+		while (history.value.length > 0) undo();
+	};
 
 	return (
 		<div
 			class={`relative mx-auto flex-1 ${done.value ? "w-full max-w-4xl" : "max-sm:w-full"}`}
 		>
 			<div class="absolute inset-x-0 top-1.5 z-20 grid place-items-center">
-				<div class="join w-64">
+				<div class="join w-48">
 					<button class="btn btn-xs btn-info join-item pointer-events-none flex-1">
 						{done.value
 							? `Sorted in ${sortCount.value}x`
@@ -397,9 +442,10 @@ export default function CharacterSorter({ characters }: CharacterSorterProps) {
 				</div>
 			) : (
 				<SortCharacter
-					a={pairValue!.a}
-					b={pairValue!.b}
+					a={pair.value!.a}
+					b={pair.value!.b}
 					canUndo={history.value.length > 0}
+					cardType={cardType.value}
 					onLeft={() => choose("left")}
 					onRight={() => choose("right")}
 					onTie={() => choose("tie")}

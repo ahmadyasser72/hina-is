@@ -41,6 +41,7 @@
         "astro": "5.18.0",
         "daisyui": "5.5.19",
         "dayjs": "1.11.19",
+        "devalue": "5.6.3",
         "fast-equals": "6.0.0",
         "fast-shuffle": "6.1.1",
         "htmx.org": "2.0.8",
