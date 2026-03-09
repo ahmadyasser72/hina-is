@@ -36,7 +36,7 @@ const { facets } = await filterEvents(params, events.list);
 						schema.shape.filter_band.def.innerType.options.map((value) => (
 							<input
 								hx-get="/page/events/filter"
-								class="join-item btn btn-sm checked:btn-accent"
+								class="join-item btn btn-sm btn-outline border-base-content checked:btn-accent"
 								name="filter_band"
 								type="radio"
 								{value}
@@ -60,7 +60,7 @@ const { facets } = await filterEvents(params, events.list);
 						schema.shape.filter_character.def.innerType.options.map((value) => (
 							<input
 								hx-get="/page/events/filter"
-								class="join-item btn btn-sm checked:btn-accent"
+								class="join-item btn btn-sm btn-outline border-base-content checked:btn-accent"
 								name="filter_character"
 								type="radio"
 								{value}
@@ -74,12 +74,12 @@ const { facets } = await filterEvents(params, events.list);
 		</form>
 
 		<div
-			class="bg-base-100 join sticky bottom-0 w-full px-4 py-2"
+			class="bg-base-100 join sticky bottom-0 w-full px-1 py-2"
 			id="filter-actions"
 		>
 			<button
 				hx-get="/page/events"
-				class="btn btn-primary join-item flex-1"
+				class="btn btn-neutral join-item flex-1"
 				hx-indicator="this"
 				hx-on--after-request="event.detail.successful && filter_modal.close()"
 				hx-select="#events"

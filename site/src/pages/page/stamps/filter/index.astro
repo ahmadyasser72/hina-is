@@ -42,12 +42,12 @@ const { facets } = await filterStamps(params, stamps);
 		</form>
 
 		<div
-			class="bg-base-100 join sticky bottom-0 w-full px-4 py-2"
+			class="bg-base-100 join sticky bottom-0 w-full px-1 py-2"
 			id="filter-actions"
 		>
 			<button
 				hx-get="/page/stamps"
-				class="btn btn-primary join-item flex-1"
+				class="btn btn-neutral join-item flex-1"
 				hx-indicator="this"
 				hx-on--after-request="event.detail.successful && filter_modal.close()"
 				hx-select="#stamps"
