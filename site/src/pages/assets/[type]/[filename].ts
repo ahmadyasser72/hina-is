@@ -82,21 +82,14 @@ export const getStaticPaths = (() => {
 		"attributes",
 		"bands",
 		"characters",
+		"cards",
 		"events",
 		"stamps",
 	] satisfies AssetType[];
 
-	return [
-		...assetTypes.flatMap((type) =>
-			resolveAssets(type, [...data[type].entries()]),
-		),
-		...resolveAssets(
-			"cards",
-			[...data.events.values()]
-				.flatMap(({ cards }) => cards)
-				.map(({ id, ...data }): [number, typeof data] => [id, data]),
-		),
-	];
+	return assetTypes.flatMap((type) =>
+		resolveAssets(type, [...data[type].entries()]),
+	);
 }) satisfies GetStaticPaths;
 
 type Props = InferGetStaticPropsType<typeof getStaticPaths>;

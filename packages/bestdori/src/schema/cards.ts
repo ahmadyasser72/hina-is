@@ -35,6 +35,7 @@ export const Cards = z
 		z.object({
 			prefix: z.string().apply(asRegionTuple),
 			releasedAt: z.string().apply(asRegionTuple),
+			rarity: CardRarity,
 		}),
 	)
 	.pipe(
@@ -42,7 +43,7 @@ export const Cards = z
 			async (cards) => {
 				const entries = await Promise.all(
 					Object.entries(cards)
-						.filter(([, { prefix }]) => !!prefix[0])
+						.filter(([, { prefix, rarity }]) => !!prefix[0] && rarity >= 4)
 						.map(
 							async ([id, { prefix, releasedAt }]) =>
 								[

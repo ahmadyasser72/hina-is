@@ -8,6 +8,7 @@ export const {
 	charactersBySlug,
 	cards,
 	cardsBySlug,
+	cardsByCharacter,
 	events,
 	stamps,
 	recentNews,

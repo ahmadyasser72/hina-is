@@ -1,0 +1,106 @@
+---
+import * as data from "@hina-is/bestdori/data";
+
+import { shuffle } from "fast-shuffle";
+import { titleCase } from "text-case";
+
+import CharacterSorter from "~/components/preact/character-sorter";
+import BaseLayout from "~/layouts/base-layout.astro";
+import { pages } from "~/lib/page";
+import { schema } from "./_params";
+
+const params = Astro.locals.parseQuery(schema);
+
+const characters = (() => {
+	if (!params.band) return;
+
+	const results = [...data.characters.values()]
+		.filter(({ band }) => params.band!.includes(band.slug))
+		.map(({ name, slug }) => {
+			const characterCards = [...data.cardsByCharacter.get(slug)!];
+
+			return {
+				name,
+				slug,
+				card: characterCards[Math.floor(Math.random() * characterCards.length)]
+					.slug,
+			};
+		});
+
+	return shuffle(results);
+})();
+---
+
+<BaseLayout
+	title={pages["page/sorter"].title}
+	description={pages["page/sorter"].description}
+>
+	<div class="flex h-full flex-col items-center gap-4">
+		<h2 class="badge badge-accent badge-xl w-48 font-medium">
+			Character Sorter
+		</h2>
+
+		{
+			characters ? (
+				<div class="contents" id="sorter">
+					<CharacterSorter {characters} client:only="preact" />
+				</div>
+			) : (
+				<form
+					hx-get
+					class="flex flex-col gap-2 px-8"
+					hx-select="#sorter"
+					hx-swap="outerHTML"
+				>
+					<fieldset class="fieldset border-base-300 rounded-box max-w-sm border p-4 pt-2">
+						<legend class="fieldset-legend">Bands</legend>
+
+						<div class="flex flex-wrap gap-1">
+							{[...data.bands.values()]
+								.map(({ slug }, idx) => ({
+									id: `band_${idx}`,
+									value: slug,
+									icon: `/assets/bands/${slug}.svg`,
+									label: data.bandsBySlug.get(slug)?.name ?? titleCase(slug),
+								}))
+								.map(({ id, value, label, icon }) => (
+									<div data-band={value}>
+										<input
+											class="peer hidden"
+											{id}
+											name="band"
+											type="checkbox"
+											{value}
+											checked={!params.band || params.band.includes(value)}
+										/>
+										<label
+											class="btn max-sm:btn-sm peer-[&:not(:checked):not(:disabled)]:btn-outline peer-checked:btn-band"
+											for={id}
+										>
+											{icon && (
+												<>
+													<img
+														class="htmx-indicator-replace size-6 sm:size-8"
+														src={icon}
+														alt={`${label} icon`}
+													/>
+													<iconify-icon
+														class="htmx-indicator size-6 sm:size-8"
+														icon="svg-spinners:90-ring-with-bg"
+														width="none"
+													/>
+												</>
+											)}
+											{label}
+										</label>
+									</div>
+								))}
+						</div>
+					</fieldset>
+
+					<button class="btn btn-primary w-full">Start sorting</button>
+				</form>
+			)
+		}
+	</div>
+</BaseLayout>

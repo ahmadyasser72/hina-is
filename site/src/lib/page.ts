@@ -26,4 +26,9 @@ export const pages = {
 		description:
 			"Keep track of upcoming character birthdays in BanG Dream! Girls Band Party!.",
 	},
+	"page/sorter": {
+		title: "Character Sorter",
+		description:
+			"Rank your favorite characters from BanG Dream! Girls Band Party!.",
+	},
 } satisfies Record<string, PageMetadata>;

@@ -262,6 +262,18 @@ const all = await (async () => {
 					.map((card) => [card.slug, card]),
 			);
 		},
+		get cardsByCharacter() {
+			const cards = [...all.cards.values()].filter(
+				({ trainingState }) => trainingState === "both",
+			);
+
+			return new Map(
+				[...all.characters.values()].map((character) => [
+					character.slug,
+					cards.filter((card) => card.character.slug === character.slug),
+				]),
+			);
+		},
 
 		get events() {
 			return new Map(

@@ -1,11 +1,13 @@
 // @ts-check
 import cloudflare from "@astrojs/cloudflare";
+import preact from "@astrojs/preact";
 import tailwindcss from "@tailwindcss/vite";
 import { defineConfig, envField } from "astro/config";
 
 // https://astro.build/config
 export default defineConfig({
 	adapter: cloudflare({ imageService: "passthrough" }),
+	integrations: [preact()],
 	output: "server",
 	build: { concurrency: 4 },
 

@@ -1,7 +1,7 @@
 import * as data from "./data";
 import type { MapValue } from "./data";
 
-export type AssetType = keyof typeof data;
+export type AssetType = Exclude<keyof typeof data, "cardsByCharacter">;
 export type DataForAsset<T extends AssetType> = MapValue<(typeof data)[T]>;
 
 const getRegionAsset = (pathname: string, releasedAt: { en: Date | null }) =>

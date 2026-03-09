@@ -35,18 +35,10 @@ export const GET: APIRoute = async () => {
 		});
 	}
 
-	const assetTypes = ["events", "stamps"] satisfies AssetType[];
-	const assets = [
-		...assetTypes.flatMap((type) =>
-			resolveAssets(type, [...data[type].entries()]),
-		),
-		...resolveAssets(
-			"cards",
-			[...data.events.values()]
-				.flatMap(({ cards }) => cards)
-				.map(({ id, ...data }): [number, typeof data] => [id, data]),
-		),
-	];
+	const assetTypes = ["cards", "events", "stamps"] satisfies AssetType[];
+	const assets = assetTypes.flatMap((type) =>
+		resolveAssets(type, [...data[type].entries()]),
+	);
 
 	const hashEntries = await Promise.all(
 		assets.map(async ({ filename, pathname }) => {
