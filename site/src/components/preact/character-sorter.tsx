@@ -1,5 +1,6 @@
 import { useComputed, useSignal, useSignalEffect } from "@preact/signals";
 import * as devalue from "devalue";
+import { useRef } from "preact/hooks";
 
 import { IMAGE_FORMAT } from "~/lib/compressor/constants";
 
@@ -367,19 +368,61 @@ export default function CharacterSorter({ characters }: CharacterSorterProps) {
 		sortCount.value--;
 	};
 
-	const reset = () => {
-		if (!confirm("Are you sure you want to reset this sorting session?"))
+	const outputRef = useRef<HTMLDivElement>(null);
+	const share = async () => {
+		if (!outputRef.current) return;
+		else if (!navigator.share || !navigator.canShare) {
+			alert("Web Share API is not supported in this browser.");
 			return;
+		}
 
-		while (history.value.length > 0) undo();
+		const { snapdom } = await import("@zumer/snapdom");
+
+		const styles = window.getComputedStyle(document.documentElement);
+		const blob = await snapdom.toBlob(outputRef.current, {
+			backgroundColor: styles.backgroundColor,
+			embedFonts: true,
+
+			scale: 1.67,
+			quality: 67,
+			type: "webp",
+		});
+
+		const file = new File([blob], "sort-result.webp", { type: blob.type });
+		const url = new URL("/page/sorter", window.location.origin).href;
+
+		const top = rankings.value
+			.filter((r) => r.rank === 1)
+			.map((r) => r.character.name)
+			.join(", ");
+		const alternatives = [
+			`My favorite is ${top}`,
+			`I love ${top}`,
+			`${top} is the best`,
+			`Team ${top}`,
+			`My heart belongs to ${top}`,
+		];
+
+		const text = alternatives[Math.floor(Math.random() * alternatives.length)];
+		const data = {
+			title: document.title,
+			text: `${text}! Rank your own favorites on hina-is.`,
+			url,
+		} satisfies ShareData;
+
+		const canShareImage = navigator.canShare({ files: [file] });
+		await navigator.share(canShareImage ? { ...data, files: [file] } : data);
 	};
 
 	return (
 		<div
-			class={`relative mx-auto flex-1 ${done.value ? "w-full max-w-4xl" : "max-sm:w-full"}`}
+			class={`relative mx-auto ${done.value ? "w-full max-w-4xl" : "max-sm:w-full"}`}
+			ref={outputRef}
 		>
-			<div class="absolute inset-x-0 top-1.5 z-20 grid place-items-center">
-				<div class="join w-48">
+			<div
+				class={`absolute inset-x-0 z-20 grid place-items-center ${done.value ? "top-4" : "top-1.5"}`}
+			>
+				<div class="join w-72">
 					<button class="btn btn-xs btn-info join-item pointer-events-none flex-1">
 						{done.value
 							? `Sorted in ${sortCount.value}x`
@@ -406,11 +449,24 @@ export default function CharacterSorter({ characters }: CharacterSorterProps) {
 						></iconify-icon>
 						{isTrained.value ? "Trained" : "Base"}
 					</label>
+
+					<button
+						class="btn btn-xs btn-secondary join-item flex-1"
+						disabled={!done.value}
+						onClick={share}
+					>
+						<iconify-icon
+							class="size-3"
+							icon="lucide:share"
+							width="none"
+						></iconify-icon>
+						Share
+					</button>
 				</div>
 			</div>
 
 			{done.value ? (
-				<div class="mt-16 px-6 sm:px-8">
+				<div class="px-8 pt-16 pb-4 max-sm:px-6">
 					<ol class="grid grid-cols-4 gap-x-2 gap-y-4 md:grid-cols-5">
 						{rankings.value.map(({ rank, character }) => (
 							<li
