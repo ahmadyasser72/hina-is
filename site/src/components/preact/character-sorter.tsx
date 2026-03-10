@@ -374,92 +374,98 @@ export default function CharacterSorter({ characters }: CharacterSorterProps) {
 		sortCount.value--;
 	};
 
-	const outputRef = useRef<HTMLDivElement>(null);
-	const capture = async () => {
-		if (!outputRef.current) return;
+	const filename = "sort-result.webp";
+	const isCapturing = useSignal<boolean>(false);
+	const output = useSignal<Blob>();
+	useSignalEffect(() => {
+		isTrained.value;
+		output.value = undefined;
+	});
 
-		const styles = window.getComputedStyle(document.documentElement);
-		return snapdom.toBlob(outputRef.current, {
-			backgroundColor: styles.backgroundColor,
-			embedFonts: true,
+	const resultElement = useRef<HTMLDivElement>(null);
+	const capture = async (event: Event) => {
+		if (!resultElement.current) return;
 
-			scale: 1.67,
-			quality: 67,
-			type: "webp",
+		event.preventDefault();
+		try {
+			if (output.value) return;
 
-			exclude: [".tooltip > [data-snapdom-pseudo]", ".dropdown"],
-			excludeMode: "remove",
-		});
+			isCapturing.value = true;
+			const styles = window.getComputedStyle(document.documentElement);
+			output.value = await snapdom.toBlob(resultElement.current, {
+				backgroundColor: styles.backgroundColor,
+				embedFonts: true,
+
+				scale: 1.67,
+				quality: 67,
+				type: "webp",
+
+				plugins: [
+					{
+						name: "remove-tooltips",
+						afterClone: ({ clone }) => {
+							const tooltips = clone!.querySelectorAll(
+								".tooltip > [data-snapdom-pseudo]",
+							);
+							tooltips.forEach((tooltip) => tooltip.remove());
+						},
+					},
+				],
+			});
+		} catch (error) {
+			console.error("Failed to capture results:", error);
+			alert("Failed to capture results.");
+		} finally {
+			isCapturing.value = false;
+			document.querySelector<HTMLElement>("#popover-capture")!.togglePopover();
+		}
 	};
 
-	const filename = "sort-result.webp";
-	const loading = useSignal<"save" | "share">();
+	const save = () => {
+		if (!output.value) return;
 
-	const save = async () => {
-		loading.value = "save";
-
-		try {
-			const blob = await capture();
-			if (!blob) return;
-
-			const url = URL.createObjectURL(blob);
-			const a = document.createElement("a");
-			a.href = url;
-			a.download = filename;
-			a.click();
-			URL.revokeObjectURL(url);
-		} catch (error) {
-			console.error("Failed to save results:", error);
-			alert("Failed to save results.");
-		} finally {
-			loading.value = undefined;
-		}
+		const url = URL.createObjectURL(output.value);
+		const a = document.createElement("a");
+		a.href = url;
+		a.download = filename;
+		a.click();
+		URL.revokeObjectURL(url);
 	};
 
 	const share = async () => {
-		loading.value = "share";
-
-		try {
-			if (!navigator.share || !navigator.canShare) {
-				alert("Sharing is not supported in this browser.");
-				return;
-			}
-
-			const blob = await capture();
-			if (!blob) return;
-
-			const file = new File([blob], filename, { type: blob.type });
-			const url = new URL("/page/sorter", window.location.origin).href;
-
-			const top = rankings.value
-				.filter(({ rank }) => rank === 1)
-				.map(({ character }) => character.name)
-				.join(", ");
-			const alternatives = [
-				`My favorite is ${top}`,
-				`I love ${top}`,
-				`${top} is the best`,
-				`Team ${top}`,
-				`My heart belongs to ${top}`,
-			];
-
-			const text =
-				alternatives[Math.floor(Math.random() * alternatives.length)];
-			const data = {
-				title: document.title,
-				text: `${text}! Rank your own favorites on hina-is.`,
-				url,
-			} satisfies ShareData;
-
-			const canShareImage = navigator.canShare({ files: [file] });
-			const payload = canShareImage ? { ...data, files: [file] } : data;
-			await navigator.share(payload);
-		} catch (error) {
-			console.error("Failed to share results:", error);
-			alert("Failed to share results.");
-		} finally {
-			loading.value = undefined;
+		if (!output.value) return;
+		else if (!navigator.share || !navigator.canShare) {
+			alert("Sharing is not supported in this browser.");
+			return;
 		}
+
+		const file = new File([output.value], filename, {
+			type: output.value.type,
+		});
+		const url = new URL("/page/sorter", window.location.origin).href;
+
+		const top = rankings.value
+			.filter(({ rank }) => rank === 1)
+			.map(({ character }) => character.name)
+			.join(", ");
+		const alternatives = [
+			`My favorite is ${top}`,
+			`I love ${top}`,
+			`${top} is the best`,
+			`Team ${top}`,
+			`My heart belongs to ${top}`,
+		];
+
+		const text = alternatives[Math.floor(Math.random() * alternatives.length)];
+		const data = {
+			title: document.title,
+			text: `${text}! Rank your own favorites on hina-is.`,
+			url,
+		} satisfies ShareData;
+
+		const canShareImage = navigator.canShare({ files: [file] });
+		const payload = canShareImage ? { ...data, files: [file] } : data;
+		await navigator.share(payload);
 	};
 
 	return (
@@ -468,7 +474,7 @@ export default function CharacterSorter({ characters }: CharacterSorterProps) {
 				"relative mx-auto",
 				done.value ? "w-full max-w-4xl" : "max-sm:w-full",
 			)}
-			ref={outputRef}
+			ref={resultElement}
 		>
 			<div
 				class={clsx(
@@ -506,7 +512,15 @@ export default function CharacterSorter({ characters }: CharacterSorterProps) {
 
 					{done.value && (
 						<button
-							class="btn btn-xs btn-secondary join-item flex-1"
+							class={clsx(
+								"btn btn-xs btn-secondary join-item flex-1",
+								isCapturing.value && "tooltip-open",
+								!output.value && "tooltip tooltip-bottom",
+							)}
+							data-tip={
+								isCapturing.value ? "Capturing..." : "Capture ranking results"
+							}
+							onClick={capture}
 							popoverTarget="popover-capture"
 							style="anchor-name: --anchor-capture"
 						>
@@ -522,57 +536,28 @@ export default function CharacterSorter({ characters }: CharacterSorterProps) {
 			</div>
 
 			<div
-				class={clsx(
-					"dropdown dropdown-end mt-1 overflow-hidden shadow-sm",
-					loading.value && "dropdown-open",
-				)}
+				class="dropdown dropdown-end mt-1 overflow-hidden"
 				id="popover-capture"
 				popover
 				style="position-anchor: --anchor-capture"
 			>
 				<div class="join join-vertical w-24">
 					<button class="btn btn-sm join-item btn-info" onClick={save}>
-						{loading.value === "save" ? (
-							<>
-								<iconify-icon
-									class="size-4"
-									icon="svg-spinners:90-ring-with-bg"
-									width="none"
-								></iconify-icon>
-								Saving...
-							</>
-						) : (
-							<>
-								<iconify-icon
-									class="size-4"
-									icon="lucide:save"
-									width="none"
-								></iconify-icon>
-								Save
-							</>
-						)}
+						<iconify-icon
+							class="size-4"
+							icon="lucide:save"
+							width="none"
+						></iconify-icon>
+						Save
 					</button>
 
 					<button class="btn btn-sm join-item btn-success" onClick={share}>
-						{loading.value === "share" ? (
-							<>
-								<iconify-icon
-									class="size-4"
-									icon="svg-spinners:90-ring-with-bg"
-									width="none"
-								></iconify-icon>
-								Sharing...
-							</>
-						) : (
-							<>
-								<iconify-icon
-									class="size-4"
-									icon="lucide:share"
-									width="none"
-								></iconify-icon>
-								Share
-							</>
-						)}
+						<iconify-icon
+							class="size-4"
+							icon="lucide:share"
+							width="none"
+						></iconify-icon>
+						Share
 					</button>
 				</div>
 			</div>
