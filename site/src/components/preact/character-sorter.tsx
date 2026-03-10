@@ -1,4 +1,5 @@
 import { useComputed, useSignal, useSignalEffect } from "@preact/signals";
+import { snapdom } from "@zumer/snapdom";
 import * as devalue from "devalue";
 import { useRef } from "preact/hooks";
 
@@ -375,8 +376,6 @@ export default function CharacterSorter({ characters }: CharacterSorterProps) {
 			alert("Web Share API is not supported in this browser.");
 			return;
 		}
-
-		const { snapdom } = await import("@zumer/snapdom");
 
 		const styles = window.getComputedStyle(document.documentElement);
 		const blob = await snapdom.toBlob(outputRef.current, {
