@@ -41,6 +41,36 @@ const worstCaseComparisons = (n: number) => {
 	return n * log2 - (1 << log2) + 1;
 };
 
+const getDsu = (slugs: string[], ties: Set<string>) => {
+	const parents = new Map<string, string>();
+	for (const slug of slugs) parents.set(slug, slug);
+
+	const find = (i: string): string => {
+		const p = parents.get(i);
+		if (p === i || p === undefined) return i;
+		const root = find(p);
+		parents.set(i, root);
+		return root;
+	};
+
+	const union = (i: string, j: string) => {
+		const rootI = find(i);
+		const rootJ = find(j);
+		if (rootI !== rootJ) {
+			parents.set(rootI, rootJ);
+			return true;
+		}
+		return false;
+	};
+
+	for (const tie of ties) {
+		const [a, b] = tie.split("|");
+		union(a, b);
+	}
+
+	return { find, union };
+};
+
 const initNextMerge = (state: SortState): SortState => {
 	const n = state.result.length;
 	while (state.size < n) {
@@ -265,13 +295,16 @@ export default function CharacterSorter({ characters }: CharacterSorterProps) {
 	const isTrained = useSignal(persisted?.isTrained ?? false);
 	const cardType = useComputed(() => (isTrained.value ? "trained" : "normal"));
 
-	const max = worstCaseComparisons(characters.length);
+	const items =
+		characters.length > 0 ? characters : (persisted?.sortState.result ?? []);
+	const max = worstCaseComparisons(items.length);
+
 	const sortCount = useSignal(persisted?.sortCount ?? 0);
 	const history = useSignal<SortState[]>(persisted?.history ?? []);
 	const sortState = useSignal<SortState>(
 		persisted?.sortState ??
 			initNextMerge({
-				result: [...characters],
+				result: [...items],
 				left: [],
 				right: [],
 				merged: [],
@@ -283,6 +316,22 @@ export default function CharacterSorter({ characters }: CharacterSorterProps) {
 			}),
 	);
 
+	const dsu = useComputed(() =>
+		getDsu(
+			items.map(({ slug }) => slug),
+			sortState.value.ties,
+		),
+	);
+
+	const numGroups = useComputed(() => {
+		const roots = new Set<string>();
+		for (const { slug } of items) {
+			roots.add(dsu.value.find(slug));
+		}
+
+		return roots.size;
+	});
+
 	useSignalEffect(() => {
 		const data = devalue.stringify({
 			isTrained: isTrained.value,
@@ -290,12 +339,15 @@ export default function CharacterSorter({ characters }: CharacterSorterProps) {
 			history: history.value,
 			sortState: sortState.value,
 		} satisfies PersistedState);
+
 		localStorage.setItem(CHARACTER_SORTER_STATE_KEY, data);
 	});
 
 	const done = useComputed(
 		() =>
-			sortState.value.left.length === 0 && sortState.value.right.length === 0,
+			(sortState.value.left.length === 0 &&
+				sortState.value.right.length === 0) ||
+			(items.length > 0 && numGroups.value === 1),
 	);
 	const progress = useComputed(() =>
 		max > 0 ? Math.min(100, Math.round((sortCount.value / max) * 100)) : 100,
@@ -313,28 +365,8 @@ export default function CharacterSorter({ characters }: CharacterSorterProps) {
 		if (!done.value) return [];
 
 		const results: RankResult[] = [];
-		const { result, ties } = sortState.value;
-
-		const parents = new Map<string, string>();
-		const find = (id: string): string => {
-			if (!parents.has(id)) parents.set(id, id);
-			const p = parents.get(id)!;
-			if (p === id) return id;
-			const root = find(p);
-			parents.set(id, root);
-			return root;
-		};
-
-		const union = (a: string, b: string) => {
-			const rootA = find(a);
-			const rootB = find(b);
-			if (rootA !== rootB) parents.set(rootA, rootB);
-		};
-
-		for (const tie of ties) {
-			const [a, b] = tie.split("|");
-			union(a, b);
-		}
+		const { result } = sortState.value;
+		const { find } = dsu.value;
 
 		let rank = 1;
 		for (let i = 0; i < result.length; i++) {
@@ -349,7 +381,7 @@ export default function CharacterSorter({ characters }: CharacterSorterProps) {
 	});
 
 	const choose = (result: CompareResult) => {
-		const state = sortState.value;
+		let state = sortState.value;
 		history.value = [
 			...history.value,
 			{
@@ -362,7 +394,23 @@ export default function CharacterSorter({ characters }: CharacterSorterProps) {
 			},
 		];
 
-		sortState.value = applyComparison({ ...state }, result);
+		state = applyComparison({ ...state }, result);
+
+		const { find } = getDsu(
+			items.map(({ slug }) => slug),
+			state.ties,
+		);
+
+		while (state.left.length > 0 && state.right.length > 0) {
+			const a = state.left[state.leftIdx];
+			const b = state.right[state.rightIdx];
+
+			if (a && b && find(a.slug) === find(b.slug))
+				state = applyComparison({ ...state }, "tie");
+			else break;
+		}
+
+		sortState.value = state;
 		sortCount.value++;
 	};
 
