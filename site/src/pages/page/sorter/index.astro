@@ -16,6 +16,7 @@ const params = Astro.locals.parseQuery(schema);
 
 const characters = (() => {
 	if (!params.band) return;
+	else if (params.continue) return [];
 
 	const results = [...data.characters.values()]
 		.filter(({ band }) => params.band!.includes(band.slug))
@@ -38,6 +39,7 @@ if (Astro.request.headers.get("hx-request") === "true") {
 
 	const replaceUrl = new URL(Astro.url);
 	replaceUrl.search = isDefault ? "" : Astro.url.search;
+	replaceUrl.searchParams.delete("continue");
 	Astro.response.headers.set("hx-replace-url", replaceUrl.href);
 }
 ---
@@ -81,15 +83,7 @@ if (Astro.request.headers.get("hx-request") === "true") {
 					<CharacterSorter {characters} client:only="preact" />
 				</div>
 			) : (
-				<form
-					hx-get
-					class="flex flex-col gap-2 px-8"
-					id="sorter"
-					hx-disabled-elt="#select-band input, #start-sort"
-					hx-indicator="#start-sort"
-					hx-select="#sorter"
-					hx-swap="outerHTML"
-				>
+				<form class="flex flex-col gap-2 px-8" id="sorter">
 					<fieldset
 						class="fieldset border-base-300 bg-base-200 rounded-box max-w-lg border p-4 pt-2"
 						id="select-band"
@@ -126,16 +120,71 @@ if (Astro.request.headers.get("hx-request") === "true") {
 						</div>
 					</fieldset>
 
-					<div class="w-full px-1">
-						<button class="btn btn-neutral w-full" id="start-sort">
-							<iconify-icon
-								class="htmx-indicator size-4"
-								icon="svg-spinners:90-ring-with-bg"
-								width="none"
-							/>
-							Start sorting
-						</button>
-					</div>
+					{params.continue === undefined ? (
+						<div
+							hx-get
+							hx-trigger="load"
+							class="w-full px-1"
+							hx-indicator="unset"
+							hx-select="#start-sort"
+							hx-swap="outerHTML"
+							hx-vals={`js:{ continue: "${CHARACTER_SORTER_STATE_KEY}" in localStorage }`}
+						>
+							<button class="btn btn-neutral btn-disabled w-full">
+								Loading...
+							</button>
+						</div>
+					) : (
+						<div
+							class="join w-full px-1"
+							id="start-sort"
+							hx-disabled-elt="#sorter input, #sorter button"
+							hx-include="#sorter input"
+							hx-select="#sorter"
+							hx-swap="outerHTML"
+							hx-target="#sorter"
+						>
+							<button
+								hx-get
+								class="btn btn-neutral join-item flex-1"
+								hx-indicator="this"
+							>
+								<iconify-icon
+									class="htmx-indicator-replace size-4"
+									icon="lucide:play"
+									width="none"
+								/>
+								<iconify-icon
+									class="htmx-indicator size-4"
+									icon="svg-spinners:90-ring-with-bg"
+									width="none"
+								/>
+								Start sorting
+							</button>
+
+							{params.continue && (
+								<button
+									hx-get
+									class="btn btn-warning join-item"
+									name="continue"
+									value="true"
+									hx-indicator="this"
+								>
+									<iconify-icon
+										class="htmx-indicator-replace size-4"
+										icon="lucide:redo"
+										width="none"
+									/>
+									<iconify-icon
+										class="htmx-indicator size-4"
+										icon="svg-spinners:90-ring-with-bg"
+										width="none"
+									/>
+									Continue
+								</button>
+							)}
+						</div>
+					)}
 				</form>
 			)
 		}
