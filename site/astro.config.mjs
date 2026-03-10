@@ -2,7 +2,7 @@
 import cloudflare from "@astrojs/cloudflare";
 import preact from "@astrojs/preact";
 import tailwindcss from "@tailwindcss/vite";
-import { defineConfig, envField } from "astro/config";
+import { defineConfig, envField, fontProviders } from "astro/config";
 
 // https://astro.build/config
 export default defineConfig({
@@ -37,6 +37,17 @@ export default defineConfig({
 				"node:path",
 			],
 		},
+	},
+
+	experimental: {
+		fonts: [
+			{
+				provider: fontProviders.fontsource(),
+				name: "Nunito Sans",
+				cssVariable: "--font-nunito-sans",
+				weights: ["400 600"],
+			},
+		],
 	},
 
 	devToolbar: { enabled: false },

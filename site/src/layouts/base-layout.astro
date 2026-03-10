@@ -1,11 +1,12 @@
 ---
+import { Font } from "astro:assets";
 import { GOATCOUNTER_ENDPOINT } from "astro:env/server";
 import type { JSX } from "astro/jsx-runtime";
 
-import "~/styles/global.css";
-
 import Footer from "~/components/footer.astro";
 import Header from "~/components/header.astro";
+
+import "~/styles/global.css";
 
 interface Props {
 	background?: JSX.ImgHTMLAttributes;
@@ -39,11 +40,7 @@ const image = new URL(`/open-graph/${route}.webp`, url.origin);
 		<meta name="apple-mobile-web-app-title" content="hina-is" />
 		<link href="/site.webmanifest" rel="manifest" />
 
-		<link href="https://fonts.bunny.net" rel="preconnect" />
-		<link
-			href="https://fonts.bunny.net/css?family=nunito-sans:300,400,400i,500"
-			rel="stylesheet"
-		/>
+		<Font cssVariable="--font-nunito-sans" preload />
 
 		<meta name="viewport" content="width=device-width" />
 		<meta name="generator" content={Astro.generator} />
