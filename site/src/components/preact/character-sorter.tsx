@@ -1,5 +1,6 @@
 import { useComputed, useSignal, useSignalEffect } from "@preact/signals";
 import { snapdom } from "@zumer/snapdom";
+import clsx from "clsx";
 import * as devalue from "devalue";
 import { useRef } from "preact/hooks";
 
@@ -134,7 +135,11 @@ const CharacterDisplay = ({
 		/>
 
 		<div
-			class={`rounded-field bg-character/80 text-character-content max-sm:btn-sm absolute bottom-1.5 flex items-center gap-2 px-4 py-1 text-sm ${side === "left" ? "left-1.5 pl-1" : "right-1.5 flex-row-reverse pr-1 text-end"}`}
+			class={clsx(
+				"rounded-field bg-character/80 text-character-content max-sm:btn-sm absolute bottom-1.5 flex items-center gap-2 px-4 py-1 text-sm",
+				side === "left" && "left-1.5 pl-1",
+				side === "right" && "right-1.5 flex-row-reverse pr-1 text-end",
+			)}
 		>
 			<img
 				class="rounded-field bg-character-content/67 size-10"
@@ -369,6 +374,7 @@ export default function CharacterSorter({ characters }: CharacterSorterProps) {
 		sortCount.value--;
 	};
 
+	const isSharing = useSignal(false);
 	const outputRef = useRef<HTMLDivElement>(null);
 	const share = async () => {
 		if (!outputRef.current) return;
@@ -377,51 +383,77 @@ export default function CharacterSorter({ characters }: CharacterSorterProps) {
 			return;
 		}
 
-		const styles = window.getComputedStyle(document.documentElement);
-		const blob = await snapdom.toBlob(outputRef.current, {
-			backgroundColor: styles.backgroundColor,
-			embedFonts: true,
+		isSharing.value = true;
+		try {
+			const styles = window.getComputedStyle(document.documentElement);
+			const blob = await snapdom.toBlob(outputRef.current, {
+				backgroundColor: styles.backgroundColor,
+				embedFonts: true,
 
-			scale: 1.67,
-			quality: 67,
-			type: "webp",
-		});
+				scale: 1.67,
+				quality: 67,
+				type: "webp",
 
-		const file = new File([blob], "sort-result.webp", { type: blob.type });
-		const url = new URL("/page/sorter", window.location.origin).href;
+				plugins: [
+					{
+						name: "clear-tooltips",
+						afterClone: (context) => {
+							const pseudos = context.clone!.querySelectorAll(
+								".tooltip > [data-snapdom-pseudo]",
+							);
+							pseudos.forEach((element) => element.remove());
+						},
+					},
+				],
+			});
 
-		const top = rankings.value
-			.filter((r) => r.rank === 1)
-			.map((r) => r.character.name)
-			.join(", ");
-		const alternatives = [
-			`My favorite is ${top}`,
-			`I love ${top}`,
-			`${top} is the best`,
-			`Team ${top}`,
-			`My heart belongs to ${top}`,
-		];
+			const file = new File([blob], "sort-result.webp", { type: blob.type });
+			const url = new URL("/page/sorter", window.location.origin).href;
 
-		const text = alternatives[Math.floor(Math.random() * alternatives.length)];
-		const data = {
-			title: document.title,
-			text: `${text}! Rank your own favorites on hina-is.`,
-			url,
-		} satisfies ShareData;
+			const top = rankings.value
+				.filter(({ rank }) => rank === 1)
+				.map(({ character }) => character.name)
+				.join(", ");
+			const alternatives = [
+				`My favorite is ${top}`,
+				`I love ${top}`,
+				`${top} is the best`,
+				`Team ${top}`,
+				`My heart belongs to ${top}`,
+			];
 
-		const canShareImage = navigator.canShare({ files: [file] });
-		await navigator.share(canShareImage ? { ...data, files: [file] } : data);
+			const text =
+				alternatives[Math.floor(Math.random() * alternatives.length)];
+			const data = {
+				title: document.title,
+				text: `${text}! Rank your own favorites on hina-is.`,
+				url,
+			} satisfies ShareData;
+
+			const canShareImage = navigator.canShare({ files: [file] });
+			const payload = canShareImage ? { ...data, files: [file] } : data;
+			await navigator.share(payload);
+		} catch (error) {
+		} finally {
+			isSharing.value = false;
+		}
 	};
 
 	return (
 		<div
-			class={`relative mx-auto ${done.value ? "w-full max-w-4xl" : "max-sm:w-full"}`}
+			class={clsx(
+				"relative mx-auto",
+				done.value ? "w-full max-w-4xl" : "max-sm:w-full",
+			)}
 			ref={outputRef}
 		>
 			<div
-				class={`absolute inset-x-0 z-20 grid place-items-center ${done.value ? "top-4" : "top-1.5"}`}
+				class={clsx(
+					"absolute inset-x-0 z-20 grid place-items-center",
+					done.value ? "top-4" : "top-1.5",
+				)}
 			>
-				<div class={`join ${done.value ? "w-72" : "w-64"}`}>
+				<div class={clsx("join", done.value ? "w-72" : "w-64")}>
 					<button class="btn btn-xs btn-info join-item pointer-events-none flex-1">
 						{done.value
 							? `Sorted in ${sortCount.value}x`
@@ -437,7 +469,7 @@ export default function CharacterSorter({ characters }: CharacterSorterProps) {
 						onChange={() => (isTrained.value = !isTrained.value)}
 					/>
 					<label
-						class="btn btn-xs tooltip tooltip-bottom join-item btn-neutral peer-checked:btn-accent flex-1 before:text-xs"
+						class="btn btn-xs tooltip tooltip-bottom join-item btn-neutral peer-checked:btn-accent flex-1"
 						data-tip="Toggle card type"
 						for="card_type"
 					>
@@ -451,7 +483,11 @@ export default function CharacterSorter({ characters }: CharacterSorterProps) {
 
 					{done.value && (
 						<button
-							class="btn btn-xs btn-secondary join-item flex-1"
+							class={clsx(
+								"btn btn-xs tooltip tooltip-bottom btn-secondary join-item flex-1",
+								isSharing.value && "tooltip-open",
+							)}
+							data-tip={isSharing.value ? "Processing..." : "Share results"}
 							onClick={share}
 						>
 							<iconify-icon
