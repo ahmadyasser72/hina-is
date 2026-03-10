@@ -368,6 +368,7 @@ export default function CharacterSorter({ characters }: CharacterSorterProps) {
 		sortCount.value--;
 	};
 
+	const loadingShare = useSignal(false);
 	const outputRef = useRef<HTMLDivElement>(null);
 	const share = async () => {
 		if (!outputRef.current) return;
@@ -376,42 +377,51 @@ export default function CharacterSorter({ characters }: CharacterSorterProps) {
 			return;
 		}
 
-		const { snapdom } = await import("@zumer/snapdom");
+		try {
+			loadingShare.value = true;
+			const { snapdom } = await import("@zumer/snapdom");
 
-		const styles = window.getComputedStyle(document.documentElement);
-		const blob = await snapdom.toBlob(outputRef.current, {
-			backgroundColor: styles.backgroundColor,
-			embedFonts: true,
+			const styles = window.getComputedStyle(document.documentElement);
+			const blob = await snapdom.toBlob(outputRef.current, {
+				backgroundColor: styles.backgroundColor,
+				embedFonts: true,
 
-			scale: 1.67,
-			quality: 67,
-			type: "webp",
-		});
+				scale: 1.67,
+				quality: 67,
+				type: "webp",
+			});
 
-		const file = new File([blob], "sort-result.webp", { type: blob.type });
-		const url = new URL("/page/sorter", window.location.origin).href;
+			const file = new File([blob], "sort-result.webp", { type: blob.type });
+			const url = new URL("/page/sorter", window.location.origin).href;
 
-		const top = rankings.value
-			.filter((r) => r.rank === 1)
-			.map((r) => r.character.name)
-			.join(", ");
-		const alternatives = [
-			`My favorite is ${top}`,
-			`I love ${top}`,
-			`${top} is the best`,
-			`Team ${top}`,
-			`My heart belongs to ${top}`,
-		];
+			const top = rankings.value
+				.filter((r) => r.rank === 1)
+				.map((r) => r.character.name)
+				.join(", ");
+			const alternatives = [
+				`My favorite is ${top}`,
+				`I love ${top}`,
+				`${top} is the best`,
+				`Team ${top}`,
+				`My heart belongs to ${top}`,
+			];
 
-		const text = alternatives[Math.floor(Math.random() * alternatives.length)];
-		const data = {
-			title: document.title,
-			text: `${text}! Rank your own favorites on hina-is.`,
-			url,
-		} satisfies ShareData;
+			const text =
+				alternatives[Math.floor(Math.random() * alternatives.length)];
+			const data = {
+				title: document.title,
+				text: `${text}! Rank your own favorites on hina-is.`,
+				url,
+			} satisfies ShareData;
 
-		const canShareImage = navigator.canShare({ files: [file] });
-		await navigator.share(canShareImage ? { ...data, files: [file] } : data);
+			const canShareImage = navigator.canShare({ files: [file] });
+			await navigator.share(canShareImage ? { ...data, files: [file] } : data);
+		} catch (error) {
+			console.error(error);
+			alert("Failed to share.");
+		} finally {
+			loadingShare.value = false;
+		}
 	};
 
 	return (
@@ -452,12 +462,16 @@ export default function CharacterSorter({ characters }: CharacterSorterProps) {
 
 					<button
 						class="btn btn-xs btn-secondary join-item flex-1"
-						disabled={!done.value}
+						disabled={loadingShare.value}
 						onClick={share}
 					>
 						<iconify-icon
 							class="size-3"
-							icon="lucide:share"
+							icon={
+								loadingShare.value
+									? "svg-spinners:90-ring-with-bg"
+									: "lucide:share"
+							}
 							width="none"
 						></iconify-icon>
 						Share
