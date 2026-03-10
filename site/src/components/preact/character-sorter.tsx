@@ -374,9 +374,10 @@ export default function CharacterSorter({ characters }: CharacterSorterProps) {
 		sortCount.value--;
 	};
 
+	const isDesktop = screen.orientation.type.startsWith("landscape");
 	const isSharing = useSignal(false);
 	const outputRef = useRef<HTMLDivElement>(null);
-	const share = async () => {
+	const saveOrShare = async () => {
 		if (!outputRef.current) return;
 		else if (!navigator.share || !navigator.canShare) {
 			alert("Web Share API is not supported in this browser.");
@@ -407,7 +408,19 @@ export default function CharacterSorter({ characters }: CharacterSorterProps) {
 				],
 			});
 
-			const file = new File([blob], "sort-result.webp", { type: blob.type });
+			const filename = "sort-result.webp";
+			if (isDesktop) {
+				const url = URL.createObjectURL(blob);
+				const a = document.createElement("a");
+				a.href = url;
+				a.download = filename;
+				a.click();
+				URL.revokeObjectURL(url);
+
+				return;
+			}
+
+			const file = new File([blob], filename, { type: blob.type });
 			const url = new URL("/page/sorter", window.location.origin).href;
 
 			const top = rankings.value
@@ -434,6 +447,8 @@ export default function CharacterSorter({ characters }: CharacterSorterProps) {
 			const payload = canShareImage ? { ...data, files: [file] } : data;
 			await navigator.share(payload);
 		} catch (error) {
+			console.error(error);
+			alert(`Failed to ${isDesktop ? "save" : "share"} results.`);
 		} finally {
 			isSharing.value = false;
 		}
@@ -487,15 +502,34 @@ export default function CharacterSorter({ characters }: CharacterSorterProps) {
 								"btn btn-xs tooltip tooltip-bottom btn-secondary join-item flex-1",
 								isSharing.value && "tooltip-open",
 							)}
-							data-tip={isSharing.value ? "Processing..." : "Share results"}
-							onClick={share}
+							data-tip={
+								isSharing.value
+									? "Processing..."
+									: isDesktop
+										? "Save results"
+										: "Share results"
+							}
+							onClick={saveOrShare}
 						>
-							<iconify-icon
-								class="size-3"
-								icon="lucide:share"
-								width="none"
-							></iconify-icon>
-							Share
+							{isDesktop ? (
+								<>
+									<iconify-icon
+										class="size-3"
+										icon="lucide:camera"
+										width="none"
+									></iconify-icon>
+									Save
+								</>
+							) : (
+								<>
+									<iconify-icon
+										class="size-3"
+										icon="lucide:share"
+										width="none"
+									></iconify-icon>
+									Share
+								</>
+							)}
 						</button>
 					)}
 				</div>
