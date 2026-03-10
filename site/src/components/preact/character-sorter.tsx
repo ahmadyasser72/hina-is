@@ -374,51 +374,59 @@ export default function CharacterSorter({ characters }: CharacterSorterProps) {
 		sortCount.value--;
 	};
 
-	const isDesktop = screen.orientation.type.startsWith("landscape");
-	const isSharing = useSignal(false);
 	const outputRef = useRef<HTMLDivElement>(null);
-	const saveOrShare = async () => {
+	const capture = async () => {
 		if (!outputRef.current) return;
-		else if (!navigator.share || !navigator.canShare) {
-			alert("Web Share API is not supported in this browser.");
-			return;
-		}
 
-		isSharing.value = true;
+		const styles = window.getComputedStyle(document.documentElement);
+		return snapdom.toBlob(outputRef.current, {
+			backgroundColor: styles.backgroundColor,
+			embedFonts: true,
+
+			scale: 1.67,
+			quality: 67,
+			type: "webp",
+
+			exclude: [".tooltip > [data-snapdom-pseudo]", ".dropdown"],
+			excludeMode: "remove",
+		});
+	};
+
+	const filename = "sort-result.webp";
+	const loading = useSignal<"save" | "share">();
+
+	const save = async () => {
+		loading.value = "save";
+
 		try {
-			const styles = window.getComputedStyle(document.documentElement);
-			const blob = await snapdom.toBlob(outputRef.current, {
-				backgroundColor: styles.backgroundColor,
-				embedFonts: true,
+			const blob = await capture();
+			if (!blob) return;
 
-				scale: 1.67,
-				quality: 67,
-				type: "webp",
+			const url = URL.createObjectURL(blob);
+			const a = document.createElement("a");
+			a.href = url;
+			a.download = filename;
+			a.click();
+			URL.revokeObjectURL(url);
+		} catch (error) {
+			console.error("Failed to save results:", error);
+			alert("Failed to save results.");
+		} finally {
+			loading.value = undefined;
+		}
+	};
 
-				plugins: [
-					{
-						name: "clear-tooltips",
-						afterClone: (context) => {
-							const pseudos = context.clone!.querySelectorAll(
-								".tooltip > [data-snapdom-pseudo]",
-							);
-							pseudos.forEach((element) => element.remove());
-						},
-					},
-				],
-			});
+	const share = async () => {
+		loading.value = "share";
 
-			const filename = "sort-result.webp";
-			if (isDesktop) {
-				const url = URL.createObjectURL(blob);
-				const a = document.createElement("a");
-				a.href = url;
-				a.download = filename;
-				a.click();
-				URL.revokeObjectURL(url);
-
+		try {
+			if (!navigator.share || !navigator.canShare) {
+				alert("Sharing is not supported in this browser.");
 				return;
 			}
+
+			const blob = await capture();
+			if (!blob) return;
 
 			const file = new File([blob], filename, { type: blob.type });
 			const url = new URL("/page/sorter", window.location.origin).href;
@@ -447,10 +455,10 @@ export default function CharacterSorter({ characters }: CharacterSorterProps) {
 			const payload = canShareImage ? { ...data, files: [file] } : data;
 			await navigator.share(payload);
 		} catch (error) {
-			console.error(error);
-			alert(`Failed to ${isDesktop ? "save" : "share"} results.`);
+			console.error("Failed to share results:", error);
+			alert("Failed to share results.");
 		} finally {
-			isSharing.value = false;
+			loading.value = undefined;
 		}
 	};
 
@@ -469,7 +477,7 @@ export default function CharacterSorter({ characters }: CharacterSorterProps) {
 				)}
 			>
 				<div class={clsx("join", done.value ? "w-72" : "w-64")}>
-					<button class="btn btn-xs btn-info join-item pointer-events-none flex-1">
+					<button class="btn btn-xs btn-primary join-item pointer-events-none flex-1">
 						{done.value
 							? `Sorted in ${sortCount.value}x`
 							: `Sort #${sortCount.value + 1} (${progress.value}%)`}
@@ -498,40 +506,74 @@ export default function CharacterSorter({ characters }: CharacterSorterProps) {
 
 					{done.value && (
 						<button
-							class={clsx(
-								"btn btn-xs tooltip tooltip-bottom btn-secondary join-item flex-1",
-								isSharing.value && "tooltip-open",
-							)}
-							data-tip={
-								isSharing.value
-									? "Processing..."
-									: isDesktop
-										? "Save results"
-										: "Share results"
-							}
-							onClick={saveOrShare}
+							class="btn btn-xs btn-secondary join-item flex-1"
+							popoverTarget="popover-capture"
+							style="anchor-name: --anchor-capture"
 						>
-							{isDesktop ? (
-								<>
-									<iconify-icon
-										class="size-3"
-										icon="lucide:camera"
-										width="none"
-									></iconify-icon>
-									Save
-								</>
-							) : (
-								<>
-									<iconify-icon
-										class="size-3"
-										icon="lucide:share"
-										width="none"
-									></iconify-icon>
-									Share
-								</>
-							)}
+							<iconify-icon
+								class="size-3"
+								icon="lucide:camera"
+								width="none"
+							></iconify-icon>
+							Capture
 						</button>
 					)}
+				</div>
+			</div>
+
+			<div
+				class={clsx(
+					"dropdown dropdown-end mt-1 overflow-hidden shadow-sm",
+					loading.value && "dropdown-open",
+				)}
+				id="popover-capture"
+				popover
+				style="position-anchor: --anchor-capture"
+			>
+				<div class="join join-vertical w-24">
+					<button class="btn btn-sm join-item btn-info" onClick={save}>
+						{loading.value === "save" ? (
+							<>
+								<iconify-icon
+									class="size-4"
+									icon="svg-spinners:90-ring-with-bg"
+									width="none"
+								></iconify-icon>
+								Saving...
+							</>
+						) : (
+							<>
+								<iconify-icon
+									class="size-4"
+									icon="lucide:save"
+									width="none"
+								></iconify-icon>
+								Save
+							</>
+						)}
+					</button>
+
+					<button class="btn btn-sm join-item btn-success" onClick={share}>
+						{loading.value === "share" ? (
+							<>
+								<iconify-icon
+									class="size-4"
+									icon="svg-spinners:90-ring-with-bg"
+									width="none"
+								></iconify-icon>
+								Sharing...
+							</>
+						) : (
+							<>
+								<iconify-icon
+									class="size-4"
+									icon="lucide:share"
+									width="none"
+								></iconify-icon>
+								Share
+							</>
+						)}
+					</button>
 				</div>
 			</div>
 
