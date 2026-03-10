@@ -432,7 +432,7 @@ export default function CharacterSorter({ characters }: CharacterSorterProps) {
 			<div
 				class={`absolute inset-x-0 z-20 grid place-items-center ${done.value ? "top-4" : "top-1.5"}`}
 			>
-				<div class="join w-72">
+				<div class={`join ${done.value ? "w-72" : "w-64"}`}>
 					<button class="btn btn-xs btn-info join-item pointer-events-none flex-1">
 						{done.value
 							? `Sorted in ${sortCount.value}x`
@@ -460,22 +460,24 @@ export default function CharacterSorter({ characters }: CharacterSorterProps) {
 						{isTrained.value ? "Trained" : "Base"}
 					</label>
 
-					<button
-						class="btn btn-xs btn-secondary join-item flex-1"
-						disabled={loadingShare.value}
-						onClick={share}
-					>
-						<iconify-icon
-							class="size-3"
-							icon={
-								loadingShare.value
-									? "svg-spinners:90-ring-with-bg"
-									: "lucide:share"
-							}
-							width="none"
-						></iconify-icon>
-						Share
-					</button>
+					{done.value && (
+						<button
+							class="btn btn-xs btn-secondary join-item flex-1"
+							disabled={loadingShare.value}
+							onClick={share}
+						>
+							<iconify-icon
+								class="size-3"
+								icon={
+									loadingShare.value
+										? "svg-spinners:90-ring-with-bg"
+										: "lucide:share"
+								}
+								width="none"
+							></iconify-icon>
+							Share
+						</button>
+					)}
 				</div>
 			</div>
 
