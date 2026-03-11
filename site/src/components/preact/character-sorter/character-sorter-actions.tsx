@@ -83,7 +83,7 @@ export const CharacterSorterActions = ({
 		const file = new File([output.value], filename, {
 			type: output.value.type,
 		});
-		const url = new URL("/page/sorter", window.location.origin).href;
+		const url = new URL("/page/character-sorter", window.location.origin).href;
 
 		const top = state.rankings
 			.filter(({ rank }) => rank === 1)
