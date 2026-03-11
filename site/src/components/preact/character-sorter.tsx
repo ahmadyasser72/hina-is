@@ -1,5 +1,4 @@
 import { useComputed, useSignal, useSignalEffect } from "@preact/signals";
-import { snapdom } from "@zumer/snapdom";
 import clsx from "clsx";
 import * as devalue from "devalue";
 import { useRef } from "preact/hooks";
@@ -439,6 +438,8 @@ export default function CharacterSorter({ characters }: CharacterSorterProps) {
 			if (output.value) return;
 
 			isCapturing.value = true;
+
+			const { snapdom } = await import("@zumer/snapdom");
 			const styles = window.getComputedStyle(document.documentElement);
 			output.value = await snapdom.toBlob(resultElement.current, {
 				backgroundColor: styles.backgroundColor,
