@@ -520,15 +520,15 @@ export default function CharacterSorter({ characters }: CharacterSorterProps) {
 	return (
 		<div
 			class={clsx(
-				"relative mx-auto",
-				done.value ? "w-full max-w-4xl" : "max-sm:w-full",
+				"relative mx-auto grid",
+				done.value ? "w-full max-w-4xl py-4" : "max-sm:w-full",
 			)}
 			ref={resultElement}
 		>
 			<div
 				class={clsx(
-					"absolute inset-x-0 z-20 grid place-items-center",
-					done.value ? "top-4" : "top-1.5",
+					"z-20 grid place-items-center",
+					!done.value && "absolute inset-x-0 top-1.5",
 				)}
 			>
 				<div class={clsx("join", done.value ? "w-72" : "w-64")}>
@@ -612,29 +612,29 @@ export default function CharacterSorter({ characters }: CharacterSorterProps) {
 			</div>
 
 			{done.value ? (
-				<div class="px-8 pt-16 pb-4 max-sm:px-6">
+				<div class="mt-6 px-8 max-sm:px-6">
 					<ol class="grid grid-cols-4 gap-x-2 gap-y-4 md:grid-cols-5">
 						{rankings.value.map(({ rank, character }) => (
 							<li
 								class="indicator indicator-center group w-full max-md:col-span-2 max-md:first:col-start-2"
 								key={character.slug}
 							>
-								<div class="badge badge-sm indicator-item md:group-nth-[-n+5]:badge-lg max-md:group-nth-[-n+3]:badge-lg badge-accent px-2">
+								<div class="badge badge-sm indicator-item group-nth-[-n+5]:badge-lg badge-accent px-2">
 									#{rank}
 								</div>
 
 								<div
-									class="bg-character rounded-box flex w-full items-center gap-2 p-2 px-4 group-nth-[-n+3]:flex-col group-nth-[-n+3]:justify-center group-nth-[-n+3]:pt-5 md:group-nth-[-n+5]:flex-col md:group-nth-[-n+5]:justify-center md:group-nth-[-n+5]:pt-5"
+									class="bg-character rounded-box flex w-full items-center gap-2 p-2 px-4 group-nth-[-n+5]:flex-col group-nth-[-n+5]:justify-center group-nth-[-n+5]:pt-5"
 									data-character={character.slug}
 								>
 									<img
-										class="rounded-field bg-character-content/67 size-10 group-nth-[-n+3]:size-24 md:group-nth-[-n+5]:size-24"
+										class="rounded-field bg-character-content/67 size-10 group-nth-[-n+5]:size-24"
 										src={`/assets/cards/${character.card}-icon-${cardType.value}.${IMAGE_FORMAT}`}
 										alt={`${character.name} icon`}
 										key={`${character.slug}-icon-${cardType.value}`}
 									/>
 
-									<span class="text-character-content text-xs font-medium group-nth-[-n+3]:text-center md:group-nth-[-n+5]:text-center">
+									<span class="text-character-content text-xs font-medium group-nth-[-n+5]:text-center">
 										{character.name}
 									</span>
 								</div>
