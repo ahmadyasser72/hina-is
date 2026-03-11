@@ -6,6 +6,7 @@ import { defineConfig, envField, fontProviders } from "astro/config";
 
 // https://astro.build/config
 export default defineConfig({
+	site: "https://hina-is.notsweet.workers.dev/",
 	adapter: cloudflare({ imageService: "passthrough" }),
 	integrations: [preact()],
 	output: "server",

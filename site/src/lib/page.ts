@@ -1,15 +1,13 @@
 interface PageMetadata {
 	title: string;
 	description: string;
-	ogTitle?: string;
 }
 
 export const pages = {
 	index: {
-		title: "Home",
+		title: "Homepage",
 		description:
 			"A fan site for BanG Dream! Girls Band Party!. Explore game events, stamps, and character birthdays.",
-		ogTitle: "hina-is",
 	},
 	"page/events": {
 		title: "Event Schedule",

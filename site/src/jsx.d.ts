@@ -1,9 +1,8 @@
-declare module "preact" {
-	namespace JSX {
+declare global {
+	namespace preact.JSX {
 		interface IntrinsicElements {
-			"iconify-icon": import("iconify-icon").IconifyIconProperties & {
-				class?: string;
-			};
+			"iconify-icon": preact.HTMLAttributes<HTMLElement> &
+				import("iconify-icon").IconifyIconProperties;
 		}
 	}
 }

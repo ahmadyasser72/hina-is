@@ -5,24 +5,18 @@ import type {
 	InferGetStaticPropsType,
 } from "astro";
 
-import { createOgImage } from "~/lib/og-image";
+import { createOgImage } from "~/components/preact/og-image";
 import { pages } from "~/lib/page";
 
 export const prerender = true;
 
-const icon = await Bun.file("./public/apple-touch-icon.png").arrayBuffer();
-
-export const GET: APIRoute<Props, Params> = ({ props }) =>
-	createOgImage({
-		title: "ogTitle" in props.page ? props.page.ogTitle : props.page.title,
-		description: props.page.description,
-		persistentImages: [{ src: "icon", data: icon }],
-	});
+export const GET: APIRoute<Props, Params> = ({ props, site }) =>
+	createOgImage(props.page.title, new URL(props.path, site));
 
 export const getStaticPaths = (() =>
 	Object.entries(pages).map(([route, page]) => ({
 		params: { route: `${route}.webp` },
-		props: { page },
+		props: { page, path: route },
 	}))) satisfies GetStaticPaths;
 
 type Props = InferGetStaticPropsType<typeof getStaticPaths>;
