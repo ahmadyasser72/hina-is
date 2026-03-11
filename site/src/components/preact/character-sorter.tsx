@@ -284,6 +284,9 @@ export default function CharacterSorter({ characters }: CharacterSorterProps) {
 
 	const persisted = ((): PersistedState | null => {
 		try {
+			// only restore if supplied with empty characters
+			if (characters.length > 0) return null;
+
 			const data = localStorage.getItem(CHARACTER_SORTER_STATE_KEY);
 			if (data) return devalue.parse(data);
 		} catch (e) {}
@@ -294,8 +297,7 @@ export default function CharacterSorter({ characters }: CharacterSorterProps) {
 	const isTrained = useSignal(persisted?.isTrained ?? false);
 	const cardType = useComputed(() => (isTrained.value ? "trained" : "normal"));
 
-	const items =
-		characters.length > 0 ? characters : (persisted?.sortState.result ?? []);
+	const items = persisted?.sortState.result ?? characters;
 	const max = worstCaseComparisons(items.length);
 
 	const sortCount = useSignal(persisted?.sortCount ?? 0);
