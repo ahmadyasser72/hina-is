@@ -1,7 +1,6 @@
 ---
 import * as data from "@hina-is/bestdori/data";
 
-import { deepEqual } from "fast-equals";
 import { shuffle } from "fast-shuffle";
 import { titleCase } from "text-case";
 
@@ -33,15 +32,6 @@ const characters = (() => {
 
 	return shuffle(results);
 })();
-
-if (Astro.request.headers.get("hx-request") === "true") {
-	const isDefault = deepEqual(params, schema.parse({}));
-
-	const replaceUrl = new URL(Astro.url);
-	replaceUrl.search = isDefault ? "" : Astro.url.search;
-	replaceUrl.searchParams.delete("continue");
-	Astro.response.headers.set("hx-replace-url", replaceUrl.href);
-}
 ---
 
 <BaseLayout
