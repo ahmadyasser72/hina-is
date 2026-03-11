@@ -431,7 +431,7 @@ export default function CharacterSorter({ characters }: CharacterSorterProps) {
 
 	const resultElement = useRef<HTMLDivElement>(null);
 	const capture = async (event: Event) => {
-		if (!resultElement.current) return;
+		if (!resultElement.current || isCapturing.value) return;
 
 		event.preventDefault();
 		try {
