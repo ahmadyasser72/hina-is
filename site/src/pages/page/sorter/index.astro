@@ -4,9 +4,8 @@ import * as data from "@hina-is/bestdori/data";
 import { shuffle } from "fast-shuffle";
 import { titleCase } from "text-case";
 
-import CharacterSorter, {
-	CHARACTER_SORTER_STATE_KEY,
-} from "~/components/preact/character-sorter";
+import { CharacterSorter } from "~/components/preact/character-sorter";
+import { CHARACTER_SORTER_STATE_KEY } from "~/components/preact/character-sorter/state";
 import BaseLayout from "~/layouts/base-layout.astro";
 import { pages } from "~/lib/page";
 import { schema } from "./_params";
