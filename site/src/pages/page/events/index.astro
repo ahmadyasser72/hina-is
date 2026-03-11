@@ -74,7 +74,6 @@ if (Astro.request.headers.get("hx-request") === "true" && page.current === 1) {
 					<button
 						hx-get="/page/events/filter"
 						class="btn btn-sm btn-circle btn-success"
-						hx-indicator="this"
 						hx-vals={JSON.stringify(params)}
 					>
 						<iconify-icon
@@ -99,7 +98,6 @@ if (Astro.request.headers.get("hx-request") === "true" && page.current === 1) {
 					<button
 						hx-get={Astro.url.pathname}
 						class="btn btn-sm btn-circle btn-success"
-						hx-indicator="this"
 						hx-select="#events"
 						hx-swap="outerHTML transition:true show:top"
 						hx-target="#events"

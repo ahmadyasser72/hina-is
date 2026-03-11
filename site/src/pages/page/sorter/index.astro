@@ -50,7 +50,6 @@ const characters = (() => {
 					hx-get={Astro.url.pathname}
 					class="btn btn-sm btn-circle btn-error"
 					hx-confirm="This will clear all your current rankings and start from the beginning, confirm?"
-					hx-indicator="this"
 					hx-on--after-request={`event.detail.successful && localStorage.removeItem('${CHARACTER_SORTER_STATE_KEY}')`}
 					hx-select="#sorter"
 					hx-swap="outerHTML"
@@ -131,7 +130,6 @@ const characters = (() => {
 							hx-get
 							hx-trigger="load"
 							class="w-full px-1"
-							hx-indicator="unset"
 							hx-select="#start-sort"
 							hx-swap="outerHTML"
 							hx-vals={`js:{ continue: "${CHARACTER_SORTER_STATE_KEY}" in localStorage }`}
@@ -150,11 +148,7 @@ const characters = (() => {
 							hx-swap="outerHTML"
 							hx-target="#sorter"
 						>
-							<button
-								hx-get
-								class="btn btn-neutral join-item flex-1"
-								hx-indicator="this"
-							>
+							<button hx-get class="btn btn-neutral join-item flex-1">
 								<iconify-icon
 									class="htmx-indicator-replace size-4"
 									icon="lucide:play"
@@ -174,7 +168,6 @@ const characters = (() => {
 									class="btn btn-warning join-item"
 									name="continue"
 									value="true"
-									hx-indicator="this"
 								>
 									<iconify-icon
 										class="htmx-indicator-replace size-4"

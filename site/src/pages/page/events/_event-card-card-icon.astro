@@ -62,11 +62,7 @@ const {
 		</div>
 	</div>
 
-	<button
-		hx-get={`/page/events/card/${card.slug}`}
-		class="cursor-pointer"
-		hx-indicator="this"
-	>
+	<button hx-get={`/page/events/card/${card.slug}`} class="cursor-pointer">
 		<figure
 			class="hover-gallery rounded-box bg-character/25 shadow-band hover:shadow-character htmx-indicator-replace size-12 shadow-md"
 		>

@@ -96,7 +96,7 @@ const image = new URL(`/open-graph/${route}.webp`, url.origin);
 			>
 				<Header />
 
-				<main class="flex-1 py-8" id="content" hx-indicator="#app-loader">
+				<main class="flex-1 py-8" id="content">
 					<slot />
 				</main>
 
@@ -113,16 +113,6 @@ const image = new URL(`/open-graph/${route}.webp`, url.origin);
 			<iconify-icon class="size-4" icon="lucide:chevrons-up" width="none"
 			></iconify-icon>
 		</button>
-
-		<div
-			class="htmx-indicator bg-base-100/50 fixed inset-0 z-20"
-			id="app-loader"
-		>
-			<iconify-icon
-				class="center absolute size-24"
-				icon="svg-spinners:bars-scale-fade"
-				width="none"></iconify-icon>
-		</div>
 
 		{
 			GOATCOUNTER_ENDPOINT && (

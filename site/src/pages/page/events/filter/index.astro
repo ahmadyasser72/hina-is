@@ -80,7 +80,6 @@ const { facets } = await filterEvents(params, events.list);
 			<button
 				hx-get="/page/events"
 				class="btn btn-neutral join-item flex-1"
-				hx-indicator="this"
 				hx-on--after-request="event.detail.successful && filter_modal.close()"
 				hx-select="#events"
 				hx-swap="outerHTML show:top"

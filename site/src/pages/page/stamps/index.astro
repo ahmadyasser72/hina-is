@@ -40,7 +40,6 @@ if (Astro.request.headers.get("hx-request") === "true" && page.current === 1) {
 				<button
 					hx-get="/page/stamps/filter"
 					class="btn btn-sm btn-circle btn-success"
-					hx-indicator="this"
 					hx-vals={JSON.stringify(params)}
 				>
 					<iconify-icon
