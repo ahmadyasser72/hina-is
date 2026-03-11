@@ -1,3 +1,4 @@
+import clsx from "clsx";
 import { useContext } from "preact/hooks";
 
 import { CharacterIcon } from "./character-icon";
@@ -27,8 +28,13 @@ export const RankingResult = () => {
 								character={character}
 							/>
 
-							<span class="text-character-content text-xs font-medium group-nth-[-n+5]:text-center">
-								{character.name}
+							<span
+								class={clsx(
+									"text-character-content font-medium group-nth-[-n+5]:text-center group-nth-[n+6]:whitespace-pre",
+									character.name.includes(" ") ? "text-xs" : "text-sm",
+								)}
+							>
+								{character.name.split(" ").join("\n")}
 							</span>
 						</div>
 					</li>
