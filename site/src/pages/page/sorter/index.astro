@@ -40,6 +40,8 @@ const characters = (() => {
 >
 	<div class="flex h-full flex-col items-center gap-4">
 		<div class="inline-flex gap-2">
+			<div class="size-8"></div>
+
 			<h2 class="badge badge-accent badge-xl w-48 font-medium">
 				Character Sorter
 			</h2>
@@ -70,7 +72,22 @@ const characters = (() => {
 		{
 			characters ? (
 				<div class="contents" id="sorter">
-					<CharacterSorter {characters} client:only="preact" />
+					<CharacterSorter {characters} client:only="preact">
+						<div
+							class="relative aspect-4/3 max-sm:w-full sm:h-80"
+							slot="fallback"
+						>
+							<iconify-icon
+								class="text-accent center bg-accent-content/80 absolute size-32 rounded-full"
+								icon="svg-spinners:90-ring-with-bg"
+								width="none"
+							/>
+
+							<span class="badge center badge-lg badge-accent absolute w-max font-medium">
+								loading sorter component...
+							</span>
+						</div>
+					</CharacterSorter>
 				</div>
 			) : (
 				<form class="flex flex-col gap-2 px-8" id="sorter">
