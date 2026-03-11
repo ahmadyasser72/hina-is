@@ -2,10 +2,12 @@ import type { APIRoute } from "astro";
 
 import { pages } from "~/lib/page";
 
-export const GET: APIRoute = ({ url }) =>
+export const prerender = true;
+
+export const GET: APIRoute = ({ site }) =>
 	new Response(
 		Object.keys(pages)
-			.map((path) => new URL(path === "index" ? "" : path, url.origin).href)
+			.map((path) => new URL(path === "index" ? "" : path, site).href)
 			.join("\n"),
 		{ headers: { "content-type": "text/plain" } },
 	);
