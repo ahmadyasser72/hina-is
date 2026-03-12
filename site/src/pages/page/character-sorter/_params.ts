@@ -6,5 +6,7 @@ export const schema = z
 	.object({
 		band: z.string().apply(alwaysArray),
 		continue: z.stringbool(),
+
+		slug: z.string(),
 	})
 	.partial();

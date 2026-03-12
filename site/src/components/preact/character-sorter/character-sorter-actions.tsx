@@ -1,6 +1,8 @@
-import { useSignal, useSignalEffect } from "@preact/signals";
+import { useSignalEffect } from "@preact/signals";
 import { useSignalRef } from "@preact/signals/utils";
+import { actions } from "astro:actions";
 import clsx from "clsx";
+import { useDeepSignal } from "deepsignal";
 import { useContext } from "preact/hooks";
 
 import { CharacterSorterState } from "./state";
@@ -15,99 +17,134 @@ export const CharacterSorterActions = ({
 	const state = useContext(CharacterSorterState)!;
 
 	const filename = "sort-result.webp";
-	const isCapturing = useSignal<boolean>(false);
-	const output = useSignal<Blob>();
-	useSignalEffect(() => {
-		state.cardType;
-		output.value = undefined;
+	const output = useDeepSignal({
+		blob: null as Blob | null,
+
+		loading: null as "capture" | "upload" | null,
+		get loadingText() {
+			if (output.loading === "capture") return "Capturing...";
+			else if (output.loading === "upload") return "Processing...";
+			else return null;
+		},
+
+		capture: async (event: Event) => {
+			if (!resultElement.current || output.loading) return;
+
+			event.preventDefault();
+			try {
+				if (output.blob) return;
+
+				output.loading = "capture";
+
+				const { snapdom } = await import("@zumer/snapdom");
+				const styles = window.getComputedStyle(document.documentElement);
+				output.blob = await snapdom.toBlob(resultElement.current, {
+					backgroundColor: styles.backgroundColor,
+					embedFonts: true,
+
+					scale: 1.67,
+					quality: 67,
+					type: "webp",
+
+					exclude: [".dropdown"],
+					excludeMode: "remove",
+					plugins: [
+						{
+							name: "remove-tooltips",
+							afterClone: ({ clone }) => {
+								const tooltips = clone!.querySelectorAll(
+									".tooltip > [data-snapdom-pseudo]",
+								);
+								tooltips.forEach((tooltip) => tooltip.remove());
+							},
+						},
+					],
+				});
+			} catch (error) {
+				console.error("Failed to capture results:", error);
+				alert("Failed to capture results.");
+			} finally {
+				output.loading = null;
+
+				await output.upload();
+				document
+					.querySelector<HTMLElement>("#popover-capture")!
+					.togglePopover();
+			}
+		},
+		upload: async () => {
+			if (state.slug || !output.blob) return;
+
+			try {
+				output.loading = "upload";
+
+				const data = await actions.characterSorter.createShareLink.orThrow({
+					done: state.done,
+					rankings: state.rankings,
+					step: state.step,
+				});
+
+				state.slug = data.slug;
+			} catch (error) {
+				console.error("Failed to process data:", error);
+				alert("Failed to process data.");
+			} finally {
+				output.loading = null;
+			}
+		},
+
+		save: () => {
+			if (!output.blob) return;
+
+			const url = URL.createObjectURL(output.blob);
+			const a = document.createElement("a");
+			a.href = url;
+			a.download = filename;
+			a.click();
+			URL.revokeObjectURL(url);
+		},
+		share: async () => {
+			if (!state.slug || !output.blob) return;
+			else if (!navigator.share || !navigator.canShare) {
+				alert("Sharing is not supported in this browser.");
+				return;
+			}
+
+			const { blob } = output;
+			const files = [new File([blob], filename, { type: blob.type })];
+
+			const top = state.rankings
+				.filter(({ rank }) => rank === 1)
+				.map(({ character }) => character.name)
+				.join(", ");
+			const alternatives = [
+				`My favorite is ${top}`,
+				`I love ${top}`,
+				`${top} is the best`,
+				`Team ${top}`,
+				`My heart belongs to ${top}`,
+			];
+
+			const text =
+				alternatives[Math.floor(Math.random() * alternatives.length)];
+			const data = {
+				title: document.title,
+				text: `${text}! Rank your own favorites on hina-is.`,
+				url: new URL(
+					`/page/character-sorter/${state.slug}`,
+					window.location.origin,
+				).href,
+			} satisfies ShareData;
+
+			const payload = navigator.canShare({ files }) ? { ...data, files } : data;
+			await navigator.share(payload);
+		},
 	});
 
-	const capture = async (event: Event) => {
-		if (!resultElement.current || isCapturing.value) return;
-
-		event.preventDefault();
-		try {
-			if (output.value) return;
-
-			isCapturing.value = true;
-
-			const { snapdom } = await import("@zumer/snapdom");
-			const styles = window.getComputedStyle(document.documentElement);
-			output.value = await snapdom.toBlob(resultElement.current, {
-				backgroundColor: styles.backgroundColor,
-				embedFonts: true,
-
-				scale: 1.67,
-				quality: 67,
-				type: "webp",
-
-				plugins: [
-					{
-						name: "remove-tooltips",
-						afterClone: ({ clone }) => {
-							const tooltips = clone!.querySelectorAll(
-								".tooltip > [data-snapdom-pseudo]",
-							);
-							tooltips.forEach((tooltip) => tooltip.remove());
-						},
-					},
-				],
-			});
-		} catch (error) {
-			console.error("Failed to capture results:", error);
-			alert("Failed to capture results.");
-		} finally {
-			isCapturing.value = false;
-			document.querySelector<HTMLElement>("#popover-capture")!.togglePopover();
-		}
-	};
-
-	const save = () => {
-		if (!output.value) return;
-
-		const url = URL.createObjectURL(output.value);
-		const a = document.createElement("a");
-		a.href = url;
-		a.download = filename;
-		a.click();
-		URL.revokeObjectURL(url);
-	};
-
-	const share = async () => {
-		if (!output.value) return;
-		else if (!navigator.share || !navigator.canShare) {
-			alert("Sharing is not supported in this browser.");
-			return;
-		}
-
-		const file = new File([output.value], filename, {
-			type: output.value.type,
-		});
-		const url = new URL("/page/character-sorter", window.location.origin).href;
-
-		const top = state.rankings
-			.filter(({ rank }) => rank === 1)
-			.map(({ character }) => character.name)
-			.join(", ");
-		const alternatives = [
-			`My favorite is ${top}`,
-			`I love ${top}`,
-			`${top} is the best`,
-			`Team ${top}`,
-			`My heart belongs to ${top}`,
-		];
-
-		const text = alternatives[Math.floor(Math.random() * alternatives.length)];
-		const data = {
-			title: document.title,
-			text: `${text}! Rank your own favorites on hina-is.`,
-			url,
-		} satisfies ShareData;
-
-		const canShareImage = navigator.canShare({ files: [file] });
-		const payload = canShareImage ? { ...data, files: [file] } : data;
-		await navigator.share(payload);
-	};
+	useSignalEffect(() => {
+		state.cardType;
+		output.blob = null;
+	});
 
 	return (
 		<>
@@ -133,7 +170,7 @@ export const CharacterSorterActions = ({
 						onChange={state.toggleCardType}
 					/>
 					<label
-						class="btn btn-xs tooltip tooltip-bottom join-item btn-neutral peer-checked:btn-accent flex-1 capitalize"
+						class="btn btn-xs tooltip tooltip-bottom join-item btn-neutral peer-checked:btn-accent flex-1"
 						data-tip="Toggle card type"
 						for="toggle_card_type"
 					>
@@ -146,20 +183,18 @@ export const CharacterSorterActions = ({
 							}
 							width="none"
 						></iconify-icon>
-						{state.cardType}
+						<span class="capitalize">{state.cardType}</span>
 					</label>
 
 					{state.done && (
 						<button
 							class={clsx(
 								"btn btn-xs btn-secondary join-item flex-1",
-								isCapturing.value && "tooltip-open",
-								!output.value && "tooltip tooltip-bottom",
+								output.loading && "tooltip-open",
+								(!output.blob || output.loading) && "tooltip tooltip-bottom",
 							)}
-							data-tip={
-								isCapturing.value ? "Capturing..." : "Capture ranking results"
-							}
-							onClick={capture}
+							data-tip={output.loadingText ?? "Capture ranking results"}
+							onClick={output.capture}
 							popoverTarget="popover-capture"
 							style="anchor-name: --anchor-capture"
 						>
@@ -175,13 +210,13 @@ export const CharacterSorterActions = ({
 			</div>
 
 			<div
-				class="dropdown dropdown-end mt-1 overflow-hidden"
+				class="dropdown dropdown-end mt-1 overflow-visible"
 				id="popover-capture"
 				popover
 				style="position-anchor: --anchor-capture"
 			>
-				<div class="join join-vertical w-24">
-					<button class="btn btn-sm join-item btn-info" onClick={save}>
+				<div class="join join-vertical bg-base-100 rounded-field w-24">
+					<button class="btn btn-sm join-item btn-info" onClick={output.save}>
 						<iconify-icon
 							class="size-4"
 							icon="lucide:save"
@@ -190,7 +225,10 @@ export const CharacterSorterActions = ({
 						Save
 					</button>
 
-					<button class="btn btn-sm join-item btn-success" onClick={share}>
+					<button
+						class="btn btn-sm join-item btn-success"
+						onClick={output.share}
+					>
 						<iconify-icon
 							class="size-4"
 							icon="lucide:share"

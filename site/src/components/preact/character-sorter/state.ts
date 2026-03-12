@@ -26,6 +26,13 @@ interface SortState {
 	start: number;
 }
 
+export interface ResultData {
+	slug: string;
+	step: number;
+	done: boolean;
+	rankings: RankResult[];
+}
+
 const tieKey = (() => {
 	const collator = new Intl.Collator(undefined, {
 		numeric: true,
@@ -147,8 +154,12 @@ const applyComparison = (state: SortState, result: CompareResult) => {
 	return state;
 };
 
-export const createState = (characters: Character[]) => {
+export const createState = (
+	characters: Character[],
+	override: ResultData | null,
+) => {
 	interface PersistedState {
+		slug: string | null;
 		cardType: CardType;
 		step: number;
 		history: SortState[];
@@ -156,13 +167,15 @@ export const createState = (characters: Character[]) => {
 	}
 
 	let persisted: PersistedState | null = null;
-	if (characters.length === 0) {
+	if (characters.length === 0 && !override) {
 		const data = localStorage.getItem(CHARACTER_SORTER_STATE_KEY);
 		if (data) persisted = devalue.parse(data);
 	}
 
 	const items = persisted?.current.result ?? characters;
 	const state = useDeepSignal({
+		slug: override?.slug ?? persisted?.slug ?? null,
+
 		cardType: persisted?.cardType ?? "normal",
 		toggleCardType: () => {
 			state.cardType = state.cardType === "normal" ? "trained" : "normal";
@@ -173,7 +186,7 @@ export const createState = (characters: Character[]) => {
 		get max() {
 			return worstCaseComparisons(items.length);
 		},
-		step: persisted?.step ?? 0,
+		step: override?.step ?? persisted?.step ?? 0,
 		get progress() {
 			if (state.max <= 0) return 100;
 
@@ -212,8 +225,10 @@ export const createState = (characters: Character[]) => {
 
 		get done() {
 			return (
-				(state.current.left.length === 0 && state.current.right.length === 0) ||
-				(state.items.length > 0 && state.numGroups === 1)
+				override?.done ??
+				((state.current.left.length === 0 &&
+					state.current.right.length === 0) ||
+					(state.items.length > 0 && state.numGroups === 1))
 			);
 		},
 		get pair() {
@@ -225,7 +240,8 @@ export const createState = (characters: Character[]) => {
 			};
 		},
 		get rankings() {
-			if (!state.done) return [];
+			if (override) return override.rankings;
+			else if (!state.done) return [];
 
 			const results: RankResult[] = [];
 			const { result } = state.current;
@@ -284,17 +300,26 @@ export const createState = (characters: Character[]) => {
 		},
 	});
 
-	useSignalEffect(() => {
-		const { cardType, step, history, current } = state;
-		const data = devalue.stringify({
-			cardType,
-			step,
-			history,
-			current,
-		} satisfies PersistedState);
+	if (!override) {
+		useSignalEffect(() => {
+			const { slug, cardType, step, history, current } = state;
+			const data = devalue.stringify({
+				slug,
+				cardType,
+				step,
+				history,
+				current,
+			} satisfies PersistedState);
 
-		localStorage.setItem(CHARACTER_SORTER_STATE_KEY, data);
-	});
+			localStorage.setItem(CHARACTER_SORTER_STATE_KEY, data);
+		});
+
+		useSignalEffect(() => {
+			if (state.slug) {
+				history.replaceState(null, "", `/page/character-sorter/${state.slug}`);
+			}
+		});
+	}
 
 	return state;
 };

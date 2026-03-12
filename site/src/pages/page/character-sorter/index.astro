@@ -5,7 +5,10 @@ import { shuffle } from "fast-shuffle";
 import { titleCase } from "text-case";
 
 import { CharacterSorter } from "~/components/preact/character-sorter";
-import { CHARACTER_SORTER_STATE_KEY } from "~/components/preact/character-sorter/state";
+import {
+	CHARACTER_SORTER_STATE_KEY,
+	type ResultData,
+} from "~/components/preact/character-sorter/state";
 import BaseLayout from "~/layouts/base-layout.astro";
 import { pages } from "~/lib/page";
 import { schema } from "./_params";
@@ -13,8 +16,8 @@ import { schema } from "./_params";
 const params = Astro.locals.parseQuery(schema);
 
 const characters = (() => {
-	if (!params.band) return;
-	else if (params.continue) return [];
+	if (!params.band && !params.slug) return;
+	else if (params.continue || params.slug) return [];
 
 	const results = [...data.characters.values()]
 		.filter(({ band }) => params.band!.includes(band.slug))
@@ -31,6 +34,10 @@ const characters = (() => {
 
 	return shuffle(results);
 })();
+
+const override = params.slug
+	? await Astro.locals.redis.get<ResultData>(`character-sorter:${params.slug}`)
+	: null;
 ---
 
 <BaseLayout
@@ -38,39 +45,54 @@ const characters = (() => {
 	description={pages["page/character-sorter"].description}
 >
 	<div class="flex h-full flex-col items-center gap-4">
-		<div class="inline-flex gap-2">
-			<div class="size-8"></div>
+		<div
+			class="inline-flex gap-2"
+			hx-replace-url="true"
+			hx-select="#sorter"
+			hx-swap="outerHTML"
+			hx-target="#sorter"
+		>
+			<button
+				hx-get="/page/character-sorter"
+				class="btn btn-sm btn-circle btn-error tooltip tooltip-right"
+				data-tip="Reset sorter"
+				hx-confirm="Start over?"
+				hx-on--before-request={`delete localStorage["${CHARACTER_SORTER_STATE_KEY}"]`}
+			>
+				<iconify-icon
+					class="htmx-indicator-replace size-4"
+					icon="lucide:rotate-ccw"
+					width="none"></iconify-icon>
+				<iconify-icon
+					class="htmx-indicator size-4"
+					icon="svg-spinners:90-ring-with-bg"
+					width="none"></iconify-icon>
+			</button>
 
 			<h2 class="badge badge-accent badge-xl w-48 font-medium">
 				Character Sorter
 			</h2>
 
-			<div class="tooltip tooltip-left" data-tip="Reset sorter">
-				<button
-					hx-get={Astro.url.pathname}
-					class="btn btn-sm btn-circle btn-error"
-					hx-confirm="This will clear all your current rankings and start from the beginning, confirm?"
-					hx-on--after-request={`event.detail.successful && localStorage.removeItem('${CHARACTER_SORTER_STATE_KEY}')`}
-					hx-select="#sorter"
-					hx-swap="outerHTML"
-					hx-target="#sorter"
-				>
-					<iconify-icon
-						class="htmx-indicator-replace size-4"
-						icon="lucide:rotate-ccw"
-						width="none"></iconify-icon>
-					<iconify-icon
-						class="htmx-indicator size-4"
-						icon="svg-spinners:90-ring-with-bg"
-						width="none"></iconify-icon>
-				</button>
-			</div>
+			<button
+				hx-get="/page/character-sorter"
+				class="btn btn-sm btn-circle btn-warning tooltip tooltip-left"
+				data-tip="Reload sorter"
+			>
+				<iconify-icon
+					class="htmx-indicator-replace size-4"
+					icon="lucide:refresh-ccw"
+					width="none"></iconify-icon>
+				<iconify-icon
+					class="htmx-indicator size-4"
+					icon="svg-spinners:90-ring-with-bg"
+					width="none"></iconify-icon>
+			</button>
 		</div>
 
 		{
 			characters ? (
 				<div class="contents" id="sorter">
-					<CharacterSorter {characters} client:only="preact">
+					<CharacterSorter {characters} client:only="preact" {override}>
 						<div
 							class="relative aspect-4/3 max-sm:w-full sm:h-80"
 							slot="fallback"
@@ -165,7 +187,7 @@ const characters = (() => {
 							{params.continue && (
 								<button
 									hx-get
-									class="btn btn-warning join-item"
+									class="btn btn-info join-item"
 									name="continue"
 									value="true"
 								>

@@ -4,14 +4,23 @@ import clsx from "clsx";
 import { CharacterCompare } from "./character-compare";
 import { CharacterSorterActions } from "./character-sorter-actions";
 import { RankingResult } from "./ranking-result";
-import { CharacterSorterState, createState, type Character } from "./state";
+import {
+	CharacterSorterState,
+	createState,
+	type Character,
+	type ResultData,
+} from "./state";
 
 interface CharacterSorterProps {
 	characters: Character[];
+	override: ResultData | null;
 }
 
-export const CharacterSorter = ({ characters }: CharacterSorterProps) => {
-	const state = createState(characters);
+export const CharacterSorter = ({
+	characters,
+	override,
+}: CharacterSorterProps) => {
+	const state = createState(characters, override);
 	const resultElement = useSignalRef<HTMLDivElement | null>(null);
 
 	return (
