@@ -67,13 +67,14 @@ export const CharacterSorterActions = ({
 				output.loading = null;
 
 				await output.upload();
-				document
-					.querySelector<HTMLElement>("#popover-capture")!
-					.togglePopover();
+
+				const { target } = event as Event & { target: HTMLButtonElement };
+				const popover = target.popoverTargetElement as HTMLElement;
+				popover.togglePopover();
 			}
 		},
 		upload: async () => {
-			if (state.slug || !output.blob) return;
+			if (state.slug || !output.blob || output.loading) return;
 
 			try {
 				output.loading = "upload";
