@@ -28,9 +28,9 @@ export const CharacterSorterActions = ({
 		},
 
 		capture: async (event: Event) => {
+			event.preventDefault();
 			if (!resultElement.current || output.loading) return;
 
-			event.preventDefault();
 			try {
 				if (output.blob) return;
 
