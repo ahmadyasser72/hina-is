@@ -1,7 +1,16 @@
+import { exec } from "node:child_process";
+
 import { capitalCase } from "text-case";
 import type z from "zod";
 
 import type { EventType } from "./schema/constants";
+
+export const getGitRootPath = () =>
+	new Promise<string>((resolve, reject) => {
+		exec("git rev-parse --show-toplevel", (error, stdout) =>
+			error ? reject(error) : resolve(stdout.trim()),
+		);
+	});
 
 export const toArray = <T>(it: T | T[]) => (Array.isArray(it) ? it : [it]);
 export const unwrap = <T>({ jp, en }: { jp: T; en: T | null }) => (en ?? jp)!;

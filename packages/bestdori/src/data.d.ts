@@ -1,4 +1,4 @@
-import type { Data } from "./get-data";
+import type { Data } from "@scripts/generate-data";
 
 export const {
 	attributes,

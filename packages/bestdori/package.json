@@ -11,8 +11,8 @@
 		"./utilities": "./src/utilities.js"
 	},
 	"scripts": {
-		"update": "bun src/get-data.ts",
-		"styles": "bun src/generate-styles.ts"
+		"generate-data": "bun scripts/generate-data.ts",
+		"generate-styles": "bun scripts/generate-styles.ts"
 	},
 	"devDependencies": {
 		"@types/bun": "1.3.10",

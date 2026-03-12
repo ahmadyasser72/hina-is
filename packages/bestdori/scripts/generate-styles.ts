@@ -1,6 +1,13 @@
+import { join } from "node:path";
+
 import { colord } from "colord";
 
-import { attributes, bands, characters } from "./data";
+import { attributes, bands, characters } from "~/data";
+import { getGitRootPath } from "~/utilities";
+
+console.time("everything");
+
+console.time("generating CSS rules");
 
 const rules: string[] = [];
 const groups = [
@@ -19,7 +26,7 @@ for (const { data, name } of groups) {
 		rules.push(`
 ${selector},
 ${selector} & {
-  --${name}: ${color};
+	--${name}: ${color.toLowerCase()};
 	--${name}-content: ${content};
 }
 `);
@@ -65,4 +72,14 @@ for (const { name } of groups) {
 `);
 }
 
-console.log(rules.map((rule) => rule.trim()).join("\n\n"));
+console.timeEnd("generating CSS rules");
+
+const styles = rules.map((rule) => rule.trim()).join("\n\n");
+const gitRoot = await getGitRootPath();
+const target = join(gitRoot, "site/src/styles/bandori.css");
+
+console.time(`writing styles to ${target}`);
+await Bun.write(target, styles + "\n");
+console.timeEnd(`writing styles to ${target}`);
+
+console.timeEnd("everything");

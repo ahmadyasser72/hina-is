@@ -10,96 +10,52 @@ Browse and filter through different categories of BanG Dream! game data and asse
 
 ## Tech stack
 
-| Thing         | Tool                                                                                                                         |
-| ------------- | ---------------------------------------------------------------------------------------------------------------------------- |
-| Framework     | [Astro](https://astro.build) (server output)                                                                                 |
-| Styling       | [Tailwind CSS v4](https://tailwindcss.com) + [daisyUI](https://daisyui.com)                                                  |
-| Filtering     | [Orama](https://orama.com)                                                                                                   |
-| Runtime       | [Cloudflare Workers](https://workers.cloudflare.com/) via `@astrojs/cloudflare`                                              |
-| Dates         | [Day.js](https://day.js.org)                                                                                                 |
-| Icons         | [Iconify](https://iconify.design) ([Lucide](https://lucide.dev), [SVG Spinners](https://github.com/n3r4zzurr0/svg-spinners)) |
-| Interactivity | [htmx](https://htmx.org)                                                                                                     |
-
-## Prerequisites
-
-- [Bun](https://bun.sh)
+| Category      | Tools                                                                                                     |
+| ------------- | --------------------------------------------------------------------------------------------------------- |
+| Framework     | [Astro](https://astro.build) + [Cloudflare Workers](https://workers.cloudflare.com/)                      |
+| Styling       | [Tailwind CSS](https://tailwindcss.com) + [daisyUI](https://daisyui.com)                                  |
+| UI & Logic    | [Preact](https://preactjs.com) (Signals), [htmx](https://htmx.org), and [Iconify](https://iconify.design) |
+| Data & Search | [Orama](https://orama.com) + [Upstash Redis](https://upstash.com)                                         |
+| Utilities     | [Day.js](https://day.js.org), [Zod](https://zod.dev), and various helpers                                 |
 
 ## Setup
 
-### 1. Install dependencies (from repo root)
+Refer to the [root README](../README.md#setup) for general prerequisites, installation steps, and environment variable configuration.
 
-```sh
-bun install
-```
-
-### 2. Configure environment variables
-
-Create a `.env` file inside this directory:
-
-```sh
-# site/.env
-
-# Optional: GoatCounter analytics endpoint
-GOATCOUNTER_ENDPOINT=https://yoursite.goatcounter.com/count
-```
-
-| Variable               | Required | Description                                                    |
-| ---------------------- | -------- | -------------------------------------------------------------- |
-| `GOATCOUNTER_ENDPOINT` | No       | GoatCounter analytics URL. If omitted, analytics are disabled. |
-
-### 3. Fetch data and start the dev server
-
-Game data must be fetched before running the site. From the **repo root**:
-
-```sh
-bun update-data      # fetches the latest data from Bestdori
-cd site
-bun dev              # starts the Astro dev server at http://localhost:4321
-```
-
-Or do both steps with:
-
-```sh
-bun build-site       # fetches data + builds for production
-```
+> [!NOTE]
+> The `.env` file in this directory is symlinked from the repo root.
 
 ## Commands
 
 Run from inside the `site/` directory:
 
-| Command       | Description                                       |
-| ------------- | ------------------------------------------------- |
-| `bun dev`     | Start local dev server at `http://localhost:4321` |
-| `bun build`   | Build the site for production to `./dist/`        |
-| `bun preview` | Preview the production build locally              |
-| `bun check`   | Run Astro type checking                           |
+| Command           | Description                                       |
+| ----------------- | ------------------------------------------------- |
+| `bun run dev`     | Start local dev server at `http://localhost:4321` |
+| `bun run build`   | Build the site for production to `./dist/`        |
+| `bun run preview` | Preview the production build locally              |
+| `bun run check`   | Run Astro type checking                           |
 
 ## Project structure
 
 ```
 site/
 ├── src/
-│   ├── layouts/          # Base page layouts
-│   ├── lib/              # Shared utilities
-│   ├── pages/
-│   │   ├── index.astro          # Home page
-│   │   └── page/                # Dynamic content pages and views
-│   └── styles/                  # Global styling (CSS/Tailwind)
-├── public/               # Static assets
-├── astro.config.mjs      # Astro configuration
-└── wrangler.jsonc        # Cloudflare Workers configuration
+│   ├── actions/          # App logic
+│   ├── components/       # Reusable components
+│   ├── layouts/          # Page layouts
+│   ├── lib/              # Helper functions
+│   ├── middleware.ts     # Global logic
+│   ├── pages/            # Site content
+│   └── styles/           # Site styling
+├── public/               # Assets
+├── astro.config.mjs      # Project configuration
+└── wrangler.jsonc        # Deployment configuration
 ```
 
 ## Deployment
 
-Deployment is handled automatically by GitHub Actions — see the [root README](../README.md#deployment-cloudflare-workers-via-github-actions) for the full setup guide including required GitHub secrets.
-
-To deploy manually (requires `wrangler` and Cloudflare credentials):
-
-```sh
-bun build            # build first
-bun wrangler deploy  # deploy to Cloudflare Workers
-```
+Refer to the [root README](../README.md#deployment-cloudflare-workers-via-github-actions) for deployment instructions.
 
 ## License
 

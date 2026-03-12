@@ -8,8 +8,8 @@
 		"site"
 	],
 	"scripts": {
-		"update-data": "bun --filter=@hina-is/bestdori run update",
-		"build-site": "bun update-data && bun --filter=@hina-is/site run build",
+		"prebuild": "bun run --filter=@hina-is/bestdori --sequential generate-data generate-styles",
+		"build": "bun run --filter=@hina-is/site build",
 		"format": "prettier . --write"
 	},
 	"devDependencies": {

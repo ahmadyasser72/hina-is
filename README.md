@@ -43,16 +43,18 @@ Copy the example env file and fill in the values:
 cp .env.example .env
 ```
 
-| Variable               | Required | Description                                                                                                                |
-| ---------------------- | -------- | -------------------------------------------------------------------------------------------------------------------------- |
-| `GOATCOUNTER_ENDPOINT` | No       | URL to your [GoatCounter](https://www.goatcounter.com/) analytics endpoint (e.g. `https://yoursite.goatcounter.com/count`) |
+| Variable                   | Required | Description                                                                                                                |
+| -------------------------- | -------- | -------------------------------------------------------------------------------------------------------------------------- |
+| `GOATCOUNTER_ENDPOINT`     | No       | URL to your [GoatCounter](https://www.goatcounter.com/) analytics endpoint (e.g. `https://yoursite.goatcounter.com/count`) |
+| `UPSTASH_REDIS_REST_URL`   | Yes      | REST URL for your [Upstash Redis](https://upstash.com/redis) database (used for sharing character sorter results)          |
+| `UPSTASH_REDIS_REST_TOKEN` | Yes      | REST token for your Upstash Redis database                                                                                 |
 
 ### 3. Run locally
 
 ```sh
 # Fetch data from Bestdori and start the dev server
-bun update-data
-cd site && bun dev
+bun prebuild
+cd site && bun run dev
 ```
 
 The site will be available at `http://localhost:4321`.
@@ -61,11 +63,11 @@ The site will be available at `http://localhost:4321`.
 
 Run these from the **repo root**:
 
-| Command           | Description                                      |
-| ----------------- | ------------------------------------------------ |
-| `bun update-data` | Fetches the latest data from Bestdori            |
-| `bun build-site`  | Fetches data then builds the site for production |
-| `bun format`      | Formats all files with Prettier                  |
+| Command        | Description                                      |
+| -------------- | ------------------------------------------------ |
+| `bun prebuild` | Fetches the latest data from Bestdori            |
+| `bun build`    | Fetches data then builds the site for production |
+| `bun format`   | Formats all files with Prettier                  |
 
 ## Deployment (Cloudflare Workers via GitHub Actions)
 
@@ -77,10 +79,12 @@ Go to your repository → **Settings → Secrets and variables → Actions** and
 
 #### Secrets
 
-| Name                    | Description                                                            |
-| ----------------------- | ---------------------------------------------------------------------- |
-| `CLOUDFLARE_API_TOKEN`  | A Cloudflare API token with **Workers Scripts: Edit** permission       |
-| `CLOUDFLARE_ACCOUNT_ID` | Your Cloudflare account ID (found in the Cloudflare dashboard sidebar) |
+| Name                       | Description                                                            |
+| -------------------------- | ---------------------------------------------------------------------- |
+| `CLOUDFLARE_API_TOKEN`     | A Cloudflare API token with **Workers Scripts: Edit** permission       |
+| `CLOUDFLARE_ACCOUNT_ID`    | Your Cloudflare account ID (found in the Cloudflare dashboard sidebar) |
+| `UPSTASH_REDIS_REST_URL`   | Your Upstash Redis REST URL                                            |
+| `UPSTASH_REDIS_REST_TOKEN` | Your Upstash Redis REST token                                          |
 
 #### Variables
 

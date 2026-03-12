@@ -5,17 +5,17 @@ import * as devalue from "devalue";
 import slug from "slug";
 import type { z } from "zod";
 
-import { bestdoriJSON } from ".";
-import { Bands } from "./schema/bands";
-import { Cards } from "./schema/cards";
-import { Characters } from "./schema/characters";
-import { CardAttribute } from "./schema/constants";
-import { Events } from "./schema/events";
-import { StampImages, StampVoices } from "./schema/extras/stamps";
-import { RecentNews } from "./schema/recent-news";
-import { Skills } from "./schema/skills";
-import { Stamps } from "./schema/stamps";
-import { unwrap } from "./utilities";
+import { bestdoriJSON } from "~/index";
+import { Bands } from "~/schema/bands";
+import { Cards } from "~/schema/cards";
+import { Characters } from "~/schema/characters";
+import { CardAttribute } from "~/schema/constants";
+import { Events } from "~/schema/events";
+import { StampImages, StampVoices } from "~/schema/extras/stamps";
+import { RecentNews } from "~/schema/recent-news";
+import { Skills } from "~/schema/skills";
+import { Stamps } from "~/schema/stamps";
+import { getGitRootPath, unwrap } from "~/utilities";
 
 console.time("everything");
 
@@ -49,7 +49,7 @@ const get = async <K extends keyof typeof SCHEMAS>(
 ): Promise<z.infer<(typeof SCHEMAS)[K]>> => {
 	const json = await time(
 		`get ${key} (${pathname})`,
-		bestdoriJSON(pathname, false),
+		bestdoriJSON(pathname, true),
 	);
 
 	return time(`get ${key} entries`, SCHEMAS[key].parseAsync(json) as never);
@@ -406,7 +406,11 @@ const lines = await Promise.all(
 
 await time(
 	"write data.js",
-	writeFile(path.join(import.meta.dirname, "data.js"), lines.join(";")),
+	(async () => {
+		const gitRoot = await getGitRootPath();
+		const target = path.join(gitRoot, "packages/bestdori/src/data.js");
+		await writeFile(target, lines.join(";"));
+	})(),
 );
 
 console.timeEnd("everything");

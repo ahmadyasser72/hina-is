@@ -1,31 +1,27 @@
 # @hina-is/bestdori
 
-This package is responsible for fetching, caching, validating, and exporting game data from [Bestdori](https://bestdori.com) — the community API for BanG Dream!.
+Internal package for gathering and processing game data.
 
-It is an internal workspace package consumed by the `@hina-is/site` package at build time. You do **not** run this on a server; it runs once during the build to produce a static `data.js` file.
+This package pre-processes data at build time for the website. It is an internal workspace package and is not intended to be run on a server.
 
 ## How it works
 
-1. **Fetch** — Pulls various game data and assets from the Bestdori API
-2. **Cache** — Saves responses locally so they don't need to be re-fetched on every build
-3. **Validate** — Checks the data matches the expected shape
-4. **Transform** — Normalizes and links related data together
-5. **Write** — Saves everything to a single file that the site imports at build time
+- **Data gathering**: Pulls information and assets from external sources
+- **Local caching**: Saves data locally to speed up builds
+- **Data processing**: Normalizes and structures data for the site
+- **Static exports**: Generates files consumed by the site at build time
 
-## Scripts
+## Commands
 
-Run from this directory **or** from the repo root using `bun --filter`:
+Run from this directory:
 
-| Command          | What it does                                                 |
-| ---------------- | ------------------------------------------------------------ |
-| `bun run update` | Fetches fresh data from Bestdori and rewrites `src/data.js`  |
-| `bun run styles` | Generates CSS utility classes from band/attribute color data |
+| Command                   | Description                               |
+| ------------------------- | ----------------------------------------- |
+| `bun run generate-data`   | Refresh local data from external sources  |
+| `bun run generate-styles` | Generate style definitions from game data |
 
-From the **repo root** you can also use:
-
-```sh
-bun update-data
-```
+> [!TIP]
+> You can also run `bun prebuild` from the repository root.
 
 ## Exports
 

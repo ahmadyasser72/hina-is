@@ -1,15 +1,9 @@
-import { exec } from "node:child_process";
 import { exists, mkdir } from "node:fs/promises";
 import path from "node:path";
 
 import { limitFunction } from "p-limit";
 
-const getGitRootPath = () =>
-	new Promise<string>((resolve, reject) => {
-		exec("git rev-parse --show-toplevel", (error, stdout) =>
-			error ? reject(error) : resolve(stdout.trim()),
-		);
-	});
+import { getGitRootPath } from "./utilities";
 
 const CACHE_DIRNAME = ".bestdori-cache";
 export const BASE_CACHE_DIR = await (async () => {
