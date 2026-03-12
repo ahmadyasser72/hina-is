@@ -1,8 +1,4 @@
 import { Redis } from "@upstash/redis";
-import {
-	UPSTASH_REDIS_REST_TOKEN,
-	UPSTASH_REDIS_REST_URL,
-} from "astro:env/server";
 import { defineMiddleware } from "astro:middleware";
 import z from "zod";
 
@@ -15,8 +11,8 @@ export const onRequest = defineMiddleware(
 		if (isPrerendered) return next();
 
 		locals.redis = new Redis({
-			url: UPSTASH_REDIS_REST_URL,
-			token: UPSTASH_REDIS_REST_TOKEN,
+			url: process.env.UPSTASH_REDIS_REST_URL,
+			token: process.env.UPSTASH_REDIS_REST_TOKEN,
 		});
 
 		const cookieTimezone = cookies.get("timezone")?.value;
