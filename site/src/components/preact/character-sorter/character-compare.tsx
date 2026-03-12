@@ -1,3 +1,5 @@
+import { useSignalEffect } from "@preact/signals";
+import { useSignalRef } from "@preact/signals/utils";
 import clsx from "clsx";
 import { useContext } from "preact/hooks";
 
@@ -48,9 +50,46 @@ export const CharacterCompare = () => {
 	const { pair, choose, undo, canUndo } = useContext(CharacterSorterState)!;
 	const { left, right } = pair!;
 
+	const containerElement = useSignalRef<HTMLElement | null>(null);
+	const resizerElement = useSignalRef<HTMLDivElement | null>(null);
+	useSignalEffect(() => {
+		if (!containerElement.current || !resizerElement.current) return;
+
+		let lastScrollX = 0;
+		const container = containerElement.current;
+		const resizer = resizerElement.current;
+		const handleSwipe = (event: TouchEvent) => {
+			lastScrollX = event.changedTouches[0].clientX;
+
+			const handleTouchMove = (event: TouchEvent) => {
+				const newScrollX = event.changedTouches[0].clientX;
+				const delta = (newScrollX - lastScrollX) * 2;
+				lastScrollX = newScrollX;
+
+				resizer.style.width = `${resizer.clientWidth + delta}px`;
+			};
+
+			const target = event.target as HTMLElement;
+			target.addEventListener("touchmove", handleTouchMove, { passive: true });
+			target.addEventListener(
+				"touchend",
+				() => target.removeEventListener("touchmove", handleTouchMove),
+				{ once: true },
+			);
+		};
+
+		container.addEventListener("touchstart", handleSwipe, { passive: true });
+		return () => {
+			container!.removeEventListener("touchstart", handleSwipe);
+		};
+	});
+
 	return (
 		<>
-			<figure class="diff sm:rounded-box aspect-4/3 max-sm:w-full sm:h-80">
+			<figure
+				class="diff sm:rounded-box aspect-4/3 max-sm:w-full sm:h-80"
+				ref={containerElement}
+			>
 				<div class="diff-item-1">
 					<CharacterCompareImage character={left} side="left" />
 				</div>
@@ -58,7 +97,11 @@ export const CharacterCompare = () => {
 					<CharacterCompareImage character={right} side="right" />
 				</div>
 
-				<div class="diff-resizer" key={`${left.slug}|${right.slug}`}></div>
+				<div
+					class="diff-resizer"
+					key={`${left.slug}|${right.slug}`}
+					ref={resizerElement}
+				></div>
 			</figure>
 
 			<div class="mt-2 flex items-center justify-between max-sm:mx-2">
