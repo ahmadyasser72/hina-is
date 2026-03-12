@@ -34,7 +34,6 @@ if (Astro.request.headers.get("hx-request") === "true" && page.current === 1) {
 ---
 
 <BaseLayout
-	title={pages["page/events"].title}
 	background={events.available.length > 0
 		? {
 				...Astro.locals.useThumbhash(`${events.available[0].slug}-background`),
@@ -42,7 +41,7 @@ if (Astro.request.headers.get("hx-request") === "true" && page.current === 1) {
 				alt: `${events.available[0].name} background`,
 			}
 		: undefined}
-	description={pages["page/events"].description}
+	metadata={pages["/page/events"]}
 >
 	<div class="flex flex-col gap-8">
 		<div class="flex flex-col items-center gap-4" id="available-events">

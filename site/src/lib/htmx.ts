@@ -51,6 +51,7 @@ htmx.on("htmx:beforeSwap", (e) => {
 // logic for show/hide header and scroll-to-top
 {
 	const header = htmx.find("#header")!;
+	const headerMenu = htmx.find("#header-menu")!;
 	const container = htmx.find("#container")!;
 	const scrollToTopButton = htmx.find("#scroll-to-top")!;
 
@@ -58,6 +59,8 @@ htmx.on("htmx:beforeSwap", (e) => {
 	let timer: ReturnType<typeof setTimeout> | undefined = undefined;
 	htmx.on(container, "scroll", () => {
 		clearTimeout(timer);
+		if (headerMenu.matches(":popover-open")) return;
+
 		timer = setTimeout(() => {
 			const screenSize = container.clientHeight;
 			const scrolledEnough = container.scrollTop >= screenSize / 2;

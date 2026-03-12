@@ -1,9 +1,36 @@
+---
+import NavigationMenu from "./navigation-menu.astro";
+---
+
 <header
 	class="active bg-base-200/67 border-base-content/5 sticky top-0 z-100 border-b backdrop-blur-sm"
 	id="header"
 >
 	<div class="navbar container mx-auto">
-		<div class="navbar-start">
+		<div class="md:navbar-start">
+			<label class="btn btn-ghost btn-square md:hidden" for="drawer-menu">
+				<iconify-icon class="size-6" icon="lucide:menu" width="none"
+				></iconify-icon>
+			</label>
+
+			<button
+				class="btn btn-ghost btn-square max-md:hidden"
+				popovertarget="header-menu"
+				style="anchor-name: --anchor-header-menu"
+			>
+				<iconify-icon class="size-6" icon="lucide:menu" width="none"
+				></iconify-icon>
+			</button>
+
+			<NavigationMenu
+				class="dropdown rounded-box bg-base-200/80 mt-2 w-max shadow-sm max-md:hidden"
+				id="header-menu"
+				popover
+				style="position-anchor: --anchor-header-menu"
+			/>
+		</div>
+
+		<div class="max-md:navbar-start navbar-center">
 			<a class="btn btn-ghost text-base font-medium" href="/">hina-is ♥</a>
 		</div>
 

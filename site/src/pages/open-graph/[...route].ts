@@ -6,17 +6,17 @@ import type {
 } from "astro";
 
 import { createOgImage } from "~/components/preact/og-image";
-import { pages } from "~/lib/page";
+import { pageList } from "~/lib/page";
 
 export const prerender = true;
 
 export const GET: APIRoute<Props, Params> = ({ props, site }) =>
-	createOgImage(props.page.title, new URL(props.path, site));
+	createOgImage(props.page.title, new URL(props.page.path, site));
 
 export const getStaticPaths = (() =>
-	Object.entries(pages).map(([route, page]) => ({
-		params: { route: `${route}.webp` },
-		props: { page, path: route },
+	pageList.map((page) => ({
+		params: { route: `${page.path.replaceAll("/", "_")}.webp` },
+		props: { page },
 	}))) satisfies GetStaticPaths;
 
 type Props = InferGetStaticPropsType<typeof getStaticPaths>;

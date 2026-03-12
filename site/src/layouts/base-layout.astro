@@ -5,21 +5,21 @@ import type { JSX } from "astro/jsx-runtime";
 
 import Footer from "~/components/footer.astro";
 import Header from "~/components/header.astro";
+import NavigationMenu from "~/components/navigation-menu.astro";
+import type { PageMetadata } from "~/lib/page";
 
 import "~/styles/global.css";
 
 interface Props {
 	background?: JSX.ImgHTMLAttributes;
-	description: string;
-	title: string;
+	metadata: PageMetadata;
 }
 
-const { background, description, title } = Astro.props;
+const { background, metadata } = Astro.props;
 
-const fullTitle = `Hina is ♥ ${title}`;
+const fullTitle = `Hina is ♥ ${metadata.title}`;
 const url = new URL(Astro.url.pathname, Astro.url.origin);
-const route =
-	Astro.routePattern === "/" ? "index" : Astro.routePattern.slice(1);
+const route = metadata.path.replaceAll("/", "_");
 const image = new URL(`/open-graph/${route}.webp`, url.origin);
 ---
 
@@ -46,18 +46,18 @@ const image = new URL(`/open-graph/${route}.webp`, url.origin);
 		<meta name="generator" content={Astro.generator} />
 
 		<title>{fullTitle}</title>
-		<meta name="description" content={description} />
+		<meta name="description" content={metadata.description} />
 
 		<meta content="hina-is" property="og:site_name" />
 		<meta content="website" property="og:type" />
 		<meta content={url} property="og:url" />
 		<meta content={fullTitle} property="og:title" />
-		<meta content={description} property="og:description" />
+		<meta content={metadata.description} property="og:description" />
 		<meta content={image} property="og:image" />
 
 		<meta name="twitter:card" content="summary_large_image" />
 		<meta name="twitter:title" content={fullTitle} />
-		<meta name="twitter:description" content={description} />
+		<meta name="twitter:description" content={metadata.description} />
 		<meta name="twitter:image" content={image} />
 
 		<meta
@@ -78,29 +78,41 @@ const image = new URL(`/open-graph/${route}.webp`, url.origin);
 			)
 		}
 
-		<div class="flex h-screen flex-col">
-			{
-				background && (
-					<div class="fixed inset-0 -z-10" id="background-image">
-						<img
-							class="container mx-auto size-full object-cover brightness-67 select-none dark:brightness-33"
-							{...background}
-						/>
-					</div>
-				)
-			}
+		<div class="drawer">
+			<input class="drawer-toggle" id="drawer-menu" type="checkbox" />
+			<div class="drawer-content flex h-screen flex-col">
+				{
+					background && (
+						<div class="fixed inset-0 -z-10" id="background-image">
+							<img
+								class="container mx-auto size-full object-cover brightness-67 select-none dark:brightness-33"
+								{...background}
+							/>
+						</div>
+					)
+				}
 
-			<div
-				class="relative flex flex-1 flex-col scroll-smooth *:container *:mx-auto *:shadow-sm"
-				id="container"
-			>
-				<Header />
+				<div
+					class="relative flex flex-1 flex-col scroll-smooth *:container *:mx-auto *:shadow-sm"
+					id="container"
+				>
+					<Header />
 
-				<main class="flex-1 py-8" id="content">
-					<slot />
-				</main>
+					<main class="flex-1 py-8" id="content">
+						<slot />
+					</main>
 
-				<Footer />
+					<Footer />
+				</div>
+			</div>
+
+			<div class="drawer-side z-100 md:hidden">
+				<label
+					class="drawer-overlay"
+					for="drawer-menu"
+					aria-label="close sidebar"></label>
+
+				<NavigationMenu class="bg-base-200 min-h-full w-64" />
 			</div>
 		</div>
 

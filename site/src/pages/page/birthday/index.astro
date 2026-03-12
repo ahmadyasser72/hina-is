@@ -11,10 +11,7 @@ const characters = getCharacters();
 const { filtered } = await filterCharacters(params, characters);
 ---
 
-<BaseLayout
-	title={pages["page/birthday"].title}
-	description={pages["page/birthday"].description}
->
+<BaseLayout metadata={pages["/page/birthday"]}>
 	<div class="flex flex-col items-center gap-4">
 		<div class="badge badge-accent badge-xl w-48 font-medium">
 			Birthday Tracker

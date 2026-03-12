@@ -42,10 +42,7 @@ const override = params.slug
 if (params.slug && !override) return Astro.redirect("/page/character-sorter");
 ---
 
-<BaseLayout
-	title={pages["page/character-sorter"].title}
-	description={pages["page/character-sorter"].description}
->
+<BaseLayout metadata={pages["/page/character-sorter"]}>
 	<div class="flex h-full flex-col items-center gap-4">
 		<div
 			class="inline-flex gap-2"

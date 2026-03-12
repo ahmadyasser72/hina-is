@@ -11,13 +11,12 @@ const randomEvent = [...events.values()][
 ---
 
 <BaseLayout
-	title={pages.index.title}
 	background={{
 		...Astro.locals.useThumbhash(`${randomEvent.slug}-background`),
 		src: `/assets/events/${randomEvent.slug}-background.${IMAGE_FORMAT}`,
 		alt: `${randomEvent.name} background`,
 	}}
-	description={pages.index.description}
+	metadata={pages["/"]}
 >
 	<div class="absolute inset-0 grid place-items-center">
 		<div class="flex flex-col items-center">

@@ -1,0 +1,27 @@
+---
+import type { JSX } from "astro/jsx-runtime";
+
+import { pageList } from "~/lib/page";
+
+type Props = JSX.HTMLAttributes;
+
+const { class: className, ...props } = Astro.props;
+---
+
+<ul class:list={["menu", className]} {...props}>
+	{
+		pageList
+			.map((page) => ({ ...page, active: Astro.url.pathname === page.path }))
+			.map(({ active, path, title }) => (
+				<li>
+					{active ? (
+						<a class="menu-active" role="link" aria-disabled="true">
+							{title}
+						</a>
+					) : (
+						<a href={path}>{title}</a>
+					)}
+				</li>
+			))
+	}
+</ul>
