@@ -82,15 +82,17 @@ export const CharacterCompare = () => {
 			);
 		};
 
+		let expanding: ReturnType<typeof setTimeout>;
 		const handleSideClick = (event: PointerEvent) => {
-			if (event.target === resizer || resizer.style.transition) return;
+			if (event.target === resizer) return;
 
 			const expandTo =
 				event.layerX > container.clientWidth / 2 ? minScrollX : maxScrollX;
 
+			clearTimeout(expanding);
 			resizer.style.transition = "width 0.3s cubic-bezier(1, 0.25, 0.25, 1)";
 			resizer.style.width = `${expandTo}px`;
-			setTimeout(() => (resizer.style.transition = ""), 500);
+			expanding = setTimeout(() => (resizer.style.transition = ""), 500);
 		};
 
 		container.addEventListener("touchstart", handleSwipe, { passive: true });
