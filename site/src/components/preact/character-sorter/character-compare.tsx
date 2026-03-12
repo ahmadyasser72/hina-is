@@ -58,6 +58,10 @@ export const CharacterCompare = () => {
 		let lastScrollX = 0;
 		const container = containerElement.current;
 		const resizer = resizerElement.current;
+		const resizerStyle = getComputedStyle(resizer);
+		const minScrollX = parseInt(resizerStyle.minWidth);
+		const maxScrollX = parseInt(resizerStyle.maxWidth);
+
 		const handleSwipe = (event: TouchEvent) => {
 			lastScrollX = event.changedTouches[0].clientX;
 
@@ -78,16 +82,29 @@ export const CharacterCompare = () => {
 			);
 		};
 
+		const handleSideClick = (event: PointerEvent) => {
+			if (event.target === resizer || resizer.style.transition) return;
+
+			const expandTo =
+				event.layerX > container.clientWidth / 2 ? minScrollX : maxScrollX;
+
+			resizer.style.transition = "width 0.3s cubic-bezier(1, 0.25, 0.25, 1)";
+			resizer.style.width = `${expandTo}px`;
+			setTimeout(() => (resizer.style.transition = ""), 500);
+		};
+
 		container.addEventListener("touchstart", handleSwipe, { passive: true });
+		container.addEventListener("click", handleSideClick);
 		return () => {
 			container!.removeEventListener("touchstart", handleSwipe);
+			container!.removeEventListener("click", handleSideClick);
 		};
 	});
 
 	return (
 		<>
 			<figure
-				class="diff sm:rounded-box aspect-4/3 max-sm:w-full sm:h-80"
+				class="diff sm:rounded-box aspect-4/3 cursor-pointer max-sm:w-full sm:h-80"
 				ref={containerElement}
 			>
 				<div class="diff-item-1">
