@@ -15,7 +15,7 @@ const to = dayjs(endAt[region]).tz();
 ---
 
 <div class="inline-flex w-68 items-center">
-	<span class="flex-1 font-medium uppercase">{region}</span>
+	<span class="flex-1 font-medium">{region}</span>
 
 	<span class="badge dark:badge-primary dark:badge-soft inline-flex">
 		<div
@@ -41,8 +41,8 @@ const to = dayjs(endAt[region]).tz();
 			? "Predicted date, might be inaccurate"
 			: formatDuration(from, to)}
 	>
-		<span class="font-medium uppercase underline decoration-dotted">
-			{predicted ? "??" : `${Math.round(to.diff(from, "days", true))}d`}
+		<span class="font-medium underline decoration-dotted">
+			{predicted ? "??" : `${Math.round(to.diff(from, "days", true))}D`}
 		</span>
 	</div>
 </div>

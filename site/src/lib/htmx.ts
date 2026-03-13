@@ -1,3 +1,4 @@
+import { debounce } from "es-toolkit";
 import htmx from "htmx.org";
 import { thumbHashToDataURL } from "thumbhash";
 
@@ -56,12 +57,12 @@ htmx.on("htmx:beforeSwap", (e) => {
 	const scrollToTopButton = htmx.find("#scroll-to-top")!;
 
 	let lastScrollTop = container.scrollTop;
-	let timer: ReturnType<typeof setTimeout> | undefined = undefined;
-	htmx.on(container, "scroll", () => {
-		clearTimeout(timer);
-		if (headerMenu.matches(":popover-open")) return;
+	htmx.on(
+		container,
+		"scroll",
+		debounce(() => {
+			if (headerMenu.matches(":popover-open")) return;
 
-		timer = setTimeout(() => {
 			const screenSize = container.clientHeight;
 			const scrolledEnough = container.scrollTop >= screenSize / 2;
 			const scrollingDown = container.scrollTop > lastScrollTop;
@@ -71,8 +72,8 @@ htmx.on("htmx:beforeSwap", (e) => {
 			header.classList.toggle("active", !showScrollToTop);
 
 			lastScrollTop = container.scrollTop;
-		}, 150);
-	});
+		}, 150),
+	);
 
 	htmx.on(scrollToTopButton, "click", () => {
 		scrollToTopButton.classList.remove("active");

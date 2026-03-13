@@ -1,4 +1,4 @@
-import { deepEqual } from "fast-equals";
+import { isEqual } from "es-toolkit";
 import z from "zod";
 
 import { bestdoriJSON } from "..";
@@ -71,9 +71,9 @@ export const Events = z
 									await bestdoriJSON<z.input<typeof Event>>(
 										`/api/events/${id}.json`,
 										(latest) =>
-											deepEqual(eventName, latest.eventName) &&
-											deepEqual(startAt, latest.startAt) &&
-											deepEqual(endAt, latest.endAt),
+											isEqual(eventName, latest.eventName) &&
+											isEqual(startAt, latest.startAt) &&
+											isEqual(endAt, latest.endAt),
 									),
 								] as const,
 						),

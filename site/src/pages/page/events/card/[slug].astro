@@ -62,12 +62,12 @@ const {
 
 				<div
 					class="tooltip tooltip-bottom tooltip-attribute"
-					data-tip={attribute.name.toUpperCase()}
+					data-tip={attribute.name}
 				>
 					<img
 						class="size-12"
 						src={`/assets/attributes/${attribute.name}.svg`}
-						alt=`${attribute.name.toUpperCase()} icon`
+						alt=`${attribute.name} icon`
 					/>
 				</div>
 
@@ -118,7 +118,7 @@ const {
 						{card.skill.multiplier}
 					</button>
 					<button class="badge bg-attribute badge-lg text-white">
-						{card.type.toUpperCase()} &starf;{card.rarity}
+						{card.type} &starf;{card.rarity}
 					</button>
 				</div>
 			</div>

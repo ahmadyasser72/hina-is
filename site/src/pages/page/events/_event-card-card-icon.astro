@@ -36,15 +36,15 @@ const {
 			<div
 				class="btn join-item btn-xs bg-attribute border border-white text-white"
 			>
-				{card.type.toUpperCase()} &starf;{card.rarity}
+				{card.type} &starf;{card.rarity}
 			</div>
 		</div>
 
 		<div class="inline-flex items-center justify-center gap-1">
 			<img
 				class="size-8"
-				src={`/assets/attributes/${attribute.name}.svg`}
-				alt=`${attribute.name.toUpperCase()} icon`
+				src={`/assets/attributes/${attribute.slug}.svg`}
+				alt=`${attribute.name} icon`
 				loading="lazy"
 			/>
 			<img

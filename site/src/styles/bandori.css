@@ -22,8 +22,8 @@
 	--attribute-content: #fff;
 }
 
-[data-band="1-poppinparty"],
-[data-band="1-poppinparty"] & {
+[data-band="1-poppin-party"],
+[data-band="1-poppin-party"] & {
 	--band: #ff3377;
 	--band-content: #fff;
 }
@@ -40,8 +40,8 @@
 	--band-content: #000;
 }
 
-[data-band="4-pastelpalettes"],
-[data-band="4-pastelpalettes"] & {
+[data-band="4-pastel-palettes"],
+[data-band="4-pastel-palettes"] & {
 	--band: #33ddaa;
 	--band-content: #fff;
 }
@@ -64,8 +64,8 @@
 	--band-content: #fff;
 }
 
-[data-band="45-mygo"],
-[data-band="45-mygo"] & {
+[data-band="45-my-go"],
+[data-band="45-my-go"] & {
 	--band: #2273a5;
 	--band-content: #fff;
 }

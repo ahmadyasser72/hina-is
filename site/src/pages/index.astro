@@ -1,13 +1,13 @@
 ---
 import { events } from "@hina-is/bestdori/data";
 
+import { sample } from "es-toolkit";
+
 import BaseLayout from "~/layouts/base-layout.astro";
 import { IMAGE_FORMAT } from "~/lib/compressor/constants";
 import { pages } from "~/lib/page";
 
-const randomEvent = [...events.values()][
-	Math.floor(Math.random() * events.size)
-];
+const randomEvent = sample([...events.values()]);
 ---
 
 <BaseLayout

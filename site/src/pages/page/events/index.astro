@@ -1,6 +1,5 @@
 ---
-import { deepEqual } from "fast-equals";
-import { titleCase } from "text-case";
+import { isEqual, upperFirst } from "es-toolkit";
 
 import BaseLayout from "~/layouts/base-layout.astro";
 import { IMAGE_FORMAT } from "~/lib/compressor/constants";
@@ -24,7 +23,7 @@ const page = paginate({
 });
 
 if (Astro.request.headers.get("hx-request") === "true" && page.current === 1) {
-	const isDefault = deepEqual(params, schema.parse({}));
+	const isDefault = isEqual(params, schema.parse({}));
 
 	const replaceUrl = new URL(Astro.url);
 	replaceUrl.search = isDefault ? "" : Astro.url.search;
@@ -87,7 +86,7 @@ if (Astro.request.headers.get("hx-request") === "true" && page.current === 1) {
 				</div>
 
 				<h2 class="badge badge-accent badge-xl w-48 font-medium">
-					{titleCase(params.list)} events
+					{upperFirst(params.list)} events
 				</h2>
 
 				<div

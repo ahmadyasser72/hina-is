@@ -3,7 +3,7 @@ import { join } from "node:path";
 import { colord } from "colord";
 
 import { attributes, bands, characters } from "~/data";
-import { getGitRootPath } from "~/utilities";
+import { GIT_ROOT_PATH } from "~/utilities";
 
 console.time("everything");
 
@@ -72,14 +72,14 @@ for (const { name } of groups) {
 `);
 }
 
+const styles = rules.map((rule) => rule.trim()).join("\n\n");
 console.timeEnd("generating CSS rules");
 
-const styles = rules.map((rule) => rule.trim()).join("\n\n");
-const gitRoot = await getGitRootPath();
-const target = join(gitRoot, "site/src/styles/bandori.css");
-
-console.time(`writing styles to ${target}`);
-await Bun.write(target, styles + "\n");
-console.timeEnd(`writing styles to ${target}`);
+console.time(`writing styles`);
+await Bun.write(
+	join(GIT_ROOT_PATH, "site/src/styles/bandori.css"),
+	styles + "\n",
+);
+console.timeEnd(`writing styles`);
 
 console.timeEnd("everything");

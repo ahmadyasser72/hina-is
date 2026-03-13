@@ -1,29 +1,18 @@
-import { exists, mkdir } from "node:fs/promises";
 import path from "node:path";
 
-import { limitFunction } from "p-limit";
+import { limitAsync } from "es-toolkit";
 
-import { getGitRootPath } from "./utilities";
+import { createDirectoryIfNotExists, GIT_ROOT_PATH } from "./utilities";
 
-const CACHE_DIRNAME = ".bestdori-cache";
-export const BASE_CACHE_DIR = await (async () => {
-	const gitRoot = await getGitRootPath();
-	const baseDir = path.join(gitRoot, CACHE_DIRNAME);
+export const BASE_CACHE_DIR = await createDirectoryIfNotExists(
+	path.join(GIT_ROOT_PATH, ".bestdori-cache"),
+);
 
-	const baseDirExists = await exists(baseDir);
-	if (!baseDirExists) await mkdir(baseDir);
-	return baseDir;
-})();
+const CACHE_DIR = await createDirectoryIfNotExists(
+	path.join(BASE_CACHE_DIR, "responses"),
+);
 
-const CACHE_DIR = await (async () => {
-	const cacheDir = path.join(BASE_CACHE_DIR, "responses");
-
-	const cacheDirExists = await exists(cacheDir);
-	if (!cacheDirExists) await mkdir(cacheDir);
-	return cacheDir;
-})();
-
-const fetch = limitFunction(globalThis.fetch, { concurrency: 4 });
+const fetch = limitAsync(globalThis.fetch, 4);
 
 export const bestdori = async <T = never>(
 	pathname: string,

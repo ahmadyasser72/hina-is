@@ -1,9 +1,9 @@
 import type { APIContext } from "astro";
+import { rgbaToThumbHash } from "thumbhash";
 
 export const generateThumbhash = async (
 	buffer: Buffer<ArrayBuffer>,
 ): Promise<string> => {
-	const { rgbaToThumbHash } = await import("thumbhash");
 	const { default: sharp } = await import("sharp");
 
 	const image = sharp(buffer).resize(100, 100, { fit: "inside" });

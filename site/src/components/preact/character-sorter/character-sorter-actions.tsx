@@ -3,6 +3,7 @@ import { useSignalRef } from "@preact/signals/utils";
 import { actions } from "astro:actions";
 import clsx from "clsx";
 import { useDeepSignal } from "deepsignal";
+import { sample } from "es-toolkit";
 import { useContext } from "preact/hooks";
 
 import { CharacterSorterState } from "./state";
@@ -118,7 +119,7 @@ export const CharacterSorterActions = ({
 				.filter(({ rank }) => rank === 1)
 				.map(({ character }) => character.name)
 				.join(", ");
-			const alternatives = [
+			const choices = [
 				`My favorite is ${top}`,
 				`I love ${top}`,
 				`${top} is the best`,
@@ -126,8 +127,7 @@ export const CharacterSorterActions = ({
 				`My heart belongs to ${top}`,
 			];
 
-			const text =
-				alternatives[Math.floor(Math.random() * alternatives.length)];
+			const text = sample(choices);
 			const data = {
 				title: document.title,
 				text: `${text}! Rank your own favorites on hina-is.`,

@@ -1,5 +1,5 @@
 ---
-import { titleCase } from "text-case";
+import { upperFirst } from "es-toolkit";
 
 import type { filterStamps } from "../_list";
 
@@ -18,7 +18,7 @@ const values = facets[name];
 <fieldset
 	class="fieldset border-base-300 bg-base-200 rounded-box w-full border p-4 pt-2"
 >
-	<legend class="fieldset-legend">{titleCase(name)}</legend>
+	<legend class="fieldset-legend">{upperFirst(name)}</legend>
 
 	<slot />
 

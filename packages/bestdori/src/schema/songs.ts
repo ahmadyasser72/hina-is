@@ -1,4 +1,4 @@
-import { deepEqual } from "fast-equals";
+import { isEqual } from "es-toolkit";
 import z from "zod";
 
 import { bestdoriJSON } from "..";
@@ -86,9 +86,9 @@ export const Songs = z
 											);
 
 											return (
-												deepEqual(musicTitle, latest.musicTitle) &&
-												deepEqual(publishedAt, latest.publishedAt) &&
-												deepEqual(difficulty, latestDifficulty)
+												isEqual(musicTitle, latest.musicTitle) &&
+												isEqual(publishedAt, latest.publishedAt) &&
+												isEqual(difficulty, latestDifficulty)
 											);
 										},
 									),

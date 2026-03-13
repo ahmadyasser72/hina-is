@@ -79,7 +79,7 @@ export const filterEvents = async (
 
 				return {
 					id: event.id.toString(),
-					attribute: event.attribute.name,
+					attribute: event.attribute.slug,
 					event_type: event.type,
 					band,
 					character,
@@ -175,7 +175,7 @@ export const filterEvents = async (
 			attribute: getFacets(
 				"attribute",
 				(id) => `/assets/attributes/${id}.svg`,
-				(id) => id.toUpperCase(),
+				(id) => data.attributes.get(id as never)!.name,
 			),
 			event_type: getFacets("event_type", undefined, (type) =>
 				formatEventType(type as never),

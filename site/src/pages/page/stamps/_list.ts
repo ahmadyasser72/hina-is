@@ -3,7 +3,6 @@ import type { Bandori } from "@hina-is/bestdori/data";
 import * as data from "@hina-is/bestdori/data";
 
 import { create, insertMultiple, search } from "@orama/orama";
-import { titleCase } from "text-case";
 import type z from "zod";
 
 import { IMAGE_FORMAT } from "~/lib/compressor/constants";
@@ -103,7 +102,8 @@ export const filterStamps = async (
 			band: getFacets(
 				"band",
 				(slug) => (slug === UNKNOWN ? undefined : `/assets/bands/${slug}.svg`),
-				(slug) => data.bandsBySlug.get(slug)?.name ?? titleCase(slug),
+				(slug) =>
+					slug === UNKNOWN ? "Unknown" : data.bandsBySlug.get(slug)!.name,
 			),
 			character: getFacets(
 				"character",
@@ -111,7 +111,8 @@ export const filterStamps = async (
 					slug === UNKNOWN
 						? undefined
 						: `/assets/characters/${slug}.${IMAGE_FORMAT}`,
-				(slug) => data.charactersBySlug.get(slug)?.name ?? titleCase(slug),
+				(slug) =>
+					slug === UNKNOWN ? "Unknown" : data.charactersBySlug.get(slug)!.name,
 			),
 		},
 	};

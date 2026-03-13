@@ -13,6 +13,13 @@ declare global {
 		entries<K extends string, V>(o: Record<K, V>): [K, V][];
 		fromEntries<K extends string, V>(e: [K, V][]): Record<K, V>;
 	}
+
+	namespace preact.JSX {
+		interface IntrinsicElements {
+			"iconify-icon": preact.HTMLAttributes<HTMLElement> &
+				import("iconify-icon").IconifyIconProperties;
+		}
+	}
 }
 
 export {};

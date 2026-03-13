@@ -1,4 +1,4 @@
-import { deepEqual } from "fast-equals";
+import { isEqual } from "es-toolkit";
 import z from "zod";
 
 import { bestdoriJSON } from "..";
@@ -99,8 +99,8 @@ export const Gachas = z
 									await bestdoriJSON<z.input<typeof Gacha>>(
 										`/api/gacha/${id}.json`,
 										(latest) =>
-											deepEqual(gachaName, latest.gachaName) &&
-											deepEqual(publishedAt, latest.publishedAt),
+											isEqual(gachaName, latest.gachaName) &&
+											isEqual(publishedAt, latest.publishedAt),
 									),
 								] as const,
 						),

@@ -1,5 +1,5 @@
 ---
-import { deepEqual } from "fast-equals";
+import { isEqual } from "es-toolkit";
 
 import BaseLayout from "~/layouts/base-layout.astro";
 import { IMAGE_FORMAT } from "~/lib/compressor/constants";
@@ -21,7 +21,7 @@ const page = paginate({
 });
 
 if (Astro.request.headers.get("hx-request") === "true" && page.current === 1) {
-	const isDefault = deepEqual(params, schema.parse({}));
+	const isDefault = isEqual(params, schema.parse({}));
 
 	const replaceUrl = new URL(Astro.url);
 	replaceUrl.search = isDefault ? "" : Astro.url.search;

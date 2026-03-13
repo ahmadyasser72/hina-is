@@ -54,12 +54,12 @@ const progress = (() => {
 					<div
 						class="tooltip tooltip-attribute"
 						data-attribute={attribute.slug}
-						data-tip={attribute.name.toUpperCase()}
+						data-tip={attribute.name}
 					>
 						<img
 							class="size-5"
-							src={`/assets/attributes/${attribute.name}.svg`}
-							alt=`${attribute.name.toUpperCase()} icon`
+							src={`/assets/attributes/${attribute.slug}.svg`}
+							alt=`${attribute.name} icon`
 							loading="lazy"
 						/>
 					</div>

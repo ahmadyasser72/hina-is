@@ -1,6 +1,7 @@
 import { useSignalEffect } from "@preact/signals";
 import { useDeepSignal, type DeepSignal } from "deepsignal";
 import * as devalue from "devalue";
+import { pick } from "es-toolkit";
 import { createContext } from "preact";
 
 export const CHARACTER_SORTER_STATE_KEY = "hina-is-sorter-state";
@@ -302,14 +303,15 @@ export const createState = (
 
 	if (!override) {
 		useSignalEffect(() => {
-			const { slug, cardType, step, history, current } = state;
-			const data = devalue.stringify({
-				slug,
-				cardType,
-				step,
-				history,
-				current,
-			} satisfies PersistedState);
+			const data = devalue.stringify(
+				pick(state, [
+					"slug",
+					"cardType",
+					"step",
+					"history",
+					"current",
+				]) satisfies PersistedState,
+			);
 
 			localStorage.setItem(CHARACTER_SORTER_STATE_KEY, data);
 		});

@@ -1,8 +1,7 @@
 ---
 import * as data from "@hina-is/bestdori/data";
 
-import { shuffle } from "fast-shuffle";
-import { titleCase } from "text-case";
+import { sample, shuffle } from "es-toolkit";
 
 import { CharacterSorter } from "~/components/preact/character-sorter";
 import {
@@ -22,14 +21,9 @@ const characters = (() => {
 	const results = [...data.characters.values()]
 		.filter(({ band }) => params.band!.includes(band.slug))
 		.map(({ name, slug }) => {
-			const characterCards = [...data.cardsByCharacter.get(slug)!];
+			const randomCard = sample([...data.cardsByCharacter.get(slug)!]);
 
-			return {
-				name,
-				slug,
-				card: characterCards[Math.floor(Math.random() * characterCards.length)]
-					.slug,
-			};
+			return { name, slug, card: randomCard.slug };
 		});
 
 	return shuffle(results);
@@ -122,7 +116,7 @@ if (params.slug && !override) return Astro.redirect("/page/character-sorter");
 									id: `band_${idx}`,
 									value: slug,
 									icon: `/assets/bands/${slug}.svg`,
-									label: data.bandsBySlug.get(slug)?.name ?? titleCase(slug),
+									label: data.bandsBySlug.get(slug)!.name,
 								}))
 								.map(({ id, value, label, icon }) => (
 									<div data-band={value}>

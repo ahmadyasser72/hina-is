@@ -2,7 +2,7 @@ import { writeFile } from "node:fs/promises";
 import path from "node:path";
 
 import * as devalue from "devalue";
-import slug from "slug";
+import { kebabCase } from "es-toolkit";
 import type { z } from "zod";
 
 import { bestdoriJSON } from "~/index";
@@ -15,11 +15,12 @@ import { StampImages, StampVoices } from "~/schema/extras/stamps";
 import { RecentNews } from "~/schema/recent-news";
 import { Skills } from "~/schema/skills";
 import { Stamps } from "~/schema/stamps";
-import { getGitRootPath, unwrap } from "~/utilities";
+import { GIT_ROOT_PATH, unwrap } from "~/utilities";
 
 console.time("everything");
 
-const getSlug = (id: string | number, string = "") => slug(`${id} ${string}`);
+const getSlug = (id: string | number, string = "") =>
+	kebabCase(`${id} ${string}`);
 
 const time = async <T>(
 	message: string,
@@ -109,9 +110,9 @@ const all = await (async () => {
 			};
 
 			return new Map(
-				CardAttribute.options.map((name) => [
-					name,
-					{ name, color: colors[name], slug: name },
+				CardAttribute.options.map((slug) => [
+					slug,
+					{ name: slug.toUpperCase(), color: colors[slug], slug },
 				]),
 			);
 		},
@@ -177,6 +178,7 @@ const all = await (async () => {
 						id,
 						{
 							characterId,
+							type,
 							name,
 							gachaText,
 							attribute,
@@ -194,6 +196,7 @@ const all = await (async () => {
 							get attribute() {
 								return all.attributes.get(attribute)!;
 							},
+							type: type.toUpperCase(),
 							...entry,
 
 							name: unwrap(name),
@@ -243,7 +246,7 @@ const all = await (async () => {
 									return "no-trained" as const;
 								} else if (
 									stat.training.levelLimit === 0 ||
-									entry.type === "others"
+									type === "others"
 								) {
 									return "only-trained" as const;
 								} else {
@@ -406,11 +409,10 @@ const lines = await Promise.all(
 
 await time(
 	"write data.js",
-	(async () => {
-		const gitRoot = await getGitRootPath();
-		const target = path.join(gitRoot, "packages/bestdori/src/data.js");
-		await writeFile(target, lines.join(";"));
-	})(),
+	writeFile(
+		path.join(GIT_ROOT_PATH, "packages/bestdori/src/data.js"),
+		lines.join(";"),
+	),
 );
 
 console.timeEnd("everything");
