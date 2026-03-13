@@ -8,7 +8,9 @@
 		"site"
 	],
 	"scripts": {
-		"prebuild": "bun run --filter=@hina-is/bestdori --sequential generate-data generate-styles",
+		"check": "bun run --workspaces --parallel check",
+		"check:format": "prettier . --check",
+		"prebuild": "bun run check && bun run --filter=@hina-is/bestdori --sequential generate-data generate-styles",
 		"build": "bun run --filter=@hina-is/site build",
 		"format": "prettier . --write"
 	},

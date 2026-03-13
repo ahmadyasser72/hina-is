@@ -1,5 +1,5 @@
 import { useSignalEffect } from "@preact/signals";
-import { useDeepSignal } from "deepsignal";
+import { useDeepSignal, type DeepSignal } from "deepsignal";
 import * as devalue from "devalue";
 import { createContext } from "preact";
 
@@ -321,7 +321,10 @@ export const createState = (
 		});
 	}
 
-	return state;
+	// required to avoid:
+	// error ts(2527): The inferred type of 'createState' references an inaccessible 'unique symbol' type. A type annotation is necessary.
+	type UnwrapDeepSignal<T> = T extends DeepSignal<infer V> ? V : never;
+	return state as UnwrapDeepSignal<typeof state>;
 };
 
 export type State = ReturnType<typeof createState>;

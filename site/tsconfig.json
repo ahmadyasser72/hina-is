@@ -1,5 +1,5 @@
 {
-	"extends": "astro/tsconfigs/strict",
+	"extends": ["astro/tsconfigs/strict", "../tsconfig.base.json"],
 	"include": [".astro/types.d.ts", "**/*"],
 	"exclude": ["dist", "public"],
 	"compilerOptions": {
@@ -7,12 +7,11 @@
 		"jsx": "react-jsx",
 		"jsxImportSource": "preact",
 		"paths": {
-			"~/*": ["./src/*"],
+			"~/*": ["src/*"],
 			"react": ["node_modules/preact/compat"],
 			"react-dom": ["node_modules/preact/compat"]
-		},
+		}
+	},
 
-		"noUnusedLocals": true,
-		"noUnusedParameters": true
-	}
+	"references": [{ "path": "../packages/bestdori" }]
 }

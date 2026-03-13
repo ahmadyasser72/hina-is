@@ -11,6 +11,7 @@
 		"./utilities": "./src/utilities.js"
 	},
 	"scripts": {
+		"check": "tsc --noEmit",
 		"generate-data": "bun scripts/generate-data.ts",
 		"generate-styles": "bun scripts/generate-styles.ts"
 	},
