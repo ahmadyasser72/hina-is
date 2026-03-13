@@ -15,8 +15,7 @@ export const getAsset = <T extends AssetType>(
 
 	switch (type) {
 		case "attributes": {
-			const { name } = entry as DataForAsset<"attributes">;
-			return { [slug]: `/res/icon/${name}.svg` };
+			return { [slug]: `/res/icon/${slug}.svg` };
 		}
 
 		case "bands": {
