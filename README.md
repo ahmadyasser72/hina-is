@@ -54,7 +54,7 @@ cp .env.example .env
 ```sh
 # Fetch data from Bestdori and start the dev server
 bun prebuild
-cd site && bun run dev
+bun dev
 ```
 
 The site will be available at `http://localhost:4321`.
@@ -63,11 +63,14 @@ The site will be available at `http://localhost:4321`.
 
 Run these from the **repo root**:
 
-| Command        | Description                                      |
-| -------------- | ------------------------------------------------ |
-| `bun prebuild` | Fetches the latest data from Bestdori            |
-| `bun build`    | Fetches data then builds the site for production |
-| `bun format`   | Formats all files with Prettier                  |
+| Command                | Description                                           |
+| ---------------------- | ----------------------------------------------------- |
+| `bun dev`              | Starts the development server                         |
+| `bun prebuild`         | Runs checks and fetches the latest data from Bestdori |
+| `bun build`            | Builds the site for production                        |
+| `bun run check`        | Runs type checks across all workspaces                |
+| `bun run check:format` | Verifies code formatting                              |
+| `bun format`           | Formats all files with Prettier                       |
 
 ## Deployment (Cloudflare Workers via GitHub Actions)
 
