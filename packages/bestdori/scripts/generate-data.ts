@@ -6,7 +6,7 @@ import { deburr, groupBy } from "es-toolkit";
 import { findValue } from "es-toolkit/map";
 import type { z } from "zod";
 
-import { bestdoriJSON } from "~/index";
+import { bestdoriJSON, GIT_ROOT_PATH } from "~/index";
 import { Bands } from "~/schema/bands";
 import { Cards } from "~/schema/cards";
 import { Characters } from "~/schema/characters";
@@ -16,7 +16,7 @@ import { StampImages, StampVoices } from "~/schema/extras/stamps";
 import { RecentNews } from "~/schema/recent-news";
 import { Skills } from "~/schema/skills";
 import { Stamps } from "~/schema/stamps";
-import { GIT_ROOT_PATH, unwrap } from "~/utilities";
+import { unwrap } from "~/utilities";
 
 console.time("everything");
 

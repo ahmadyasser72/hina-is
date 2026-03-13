@@ -1,8 +1,17 @@
+import { exec } from "node:child_process";
+import { mkdir } from "node:fs/promises";
 import path from "node:path";
 
 import { limitAsync } from "es-toolkit";
 
-import { createDirectoryIfNotExists, GIT_ROOT_PATH } from "./utilities";
+export const createDirectoryIfNotExists = async (path: string) =>
+	mkdir(path, { recursive: true }).then(() => path);
+
+export const GIT_ROOT_PATH = await new Promise<string>((resolve, reject) => {
+	exec("git rev-parse --show-toplevel", (error, stdout) =>
+		error ? reject(error) : resolve(stdout.trim()),
+	);
+});
 
 export const BASE_CACHE_DIR = await createDirectoryIfNotExists(
 	path.join(GIT_ROOT_PATH, ".bestdori-cache"),

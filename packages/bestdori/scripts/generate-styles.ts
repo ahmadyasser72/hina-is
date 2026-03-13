@@ -3,7 +3,7 @@ import { join } from "node:path";
 import { colord } from "colord";
 
 import { attributes, bands, characters } from "~/data";
-import { GIT_ROOT_PATH } from "~/utilities";
+import { GIT_ROOT_PATH } from "~/index";
 
 console.time("everything");
 

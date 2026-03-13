@@ -1,19 +1,7 @@
-import { exec } from "node:child_process";
-import { mkdir } from "node:fs/promises";
-
 import { startCase } from "es-toolkit";
 import type z from "zod";
 
 import type { EventType } from "./schema/constants";
-
-export const createDirectoryIfNotExists = async (path: string) =>
-	mkdir(path, { recursive: true }).then(() => path);
-
-export const GIT_ROOT_PATH = await new Promise<string>((resolve, reject) => {
-	exec("git rev-parse --show-toplevel", (error, stdout) =>
-		error ? reject(error) : resolve(stdout.trim()),
-	);
-});
 
 export const toArray = <T>(it: T | T[]) => (Array.isArray(it) ? it : [it]);
 export const unwrap = <T>({ jp, en }: { jp: T; en: T | null }) => (en ?? jp)!;
