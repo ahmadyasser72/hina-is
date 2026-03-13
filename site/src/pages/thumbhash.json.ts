@@ -12,12 +12,9 @@ import { generateThumbhash } from "~/lib/thumbhash";
 
 export const prerender = true;
 
-const resolveAssets = (
-	type: AssetType,
-	entries: [number | string, DataForAsset<AssetType>][],
-) => {
-	return entries.flatMap(([id, entry]) => {
-		const assets = Object.entries(getAsset(type, { id, ...entry }));
+const resolveAssets = (type: AssetType, entries: DataForAsset<AssetType>[]) => {
+	return entries.flatMap((entry) => {
+		const assets = Object.entries(getAsset(type, entry));
 
 		return assets
 			.map(([filename, pathname]) => ({
@@ -37,7 +34,7 @@ export const GET: APIRoute = async () => {
 
 	const assetTypes = ["cards", "events", "stamps"] satisfies AssetType[];
 	const assets = assetTypes.flatMap((type) =>
-		resolveAssets(type, [...data[type].entries()]),
+		resolveAssets(type, [...data[type].values()]),
 	);
 
 	const hashEntries = await Promise.all(

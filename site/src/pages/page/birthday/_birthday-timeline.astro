@@ -25,7 +25,7 @@ const birthdayList = characters
 		const untilNextBirthday = nextBirthday.diff(now);
 
 		return {
-			id: entry.slug.split("-").slice(1).join("-"),
+			headingId: entry.slug.split("-").slice(1).join("-"),
 			nextBirthday,
 			untilNextBirthday,
 			...entry,
@@ -38,10 +38,10 @@ const birthdayList = characters
 	class="timeline timeline-snap-icon max-md:timeline-compact timeline-vertical mx-8"
 >
 	{
-		birthdayList.map(({ id, ...character }, idx) => (
+		birthdayList.map(({ headingId, ...character }, idx) => (
 			<li
 				class="group"
-				{id}
+				id={headingId}
 				data-band={character.band.slug}
 				data-character={character.slug}
 			>
@@ -75,7 +75,7 @@ const birthdayList = characters
 
 					<button
 						class="inline-flex cursor-pointer items-center gap-2 group-odd:md:flex-row-reverse"
-						onclick={`scrollKeepHistory('${id}')`}
+						onclick={`scrollKeepHistory('${headingId}')`}
 					>
 						<img
 							class="size-8"

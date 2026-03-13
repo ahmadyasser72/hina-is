@@ -1,11 +1,11 @@
 ---
-import { cardsBySlug } from "@hina-is/bestdori/data";
+import { cards } from "@hina-is/bestdori/data";
 
 import { IMAGE_FORMAT } from "~/lib/compressor/constants";
 
 export const partial = true;
 
-const card = cardsBySlug.get(Astro.params.slug ?? "");
+const card = cards.get(Astro.params.slug ?? "");
 if (!card) return new Response(null, { status: 404 });
 
 const {
@@ -66,7 +66,7 @@ const {
 				>
 					<img
 						class="size-12"
-						src={`/assets/attributes/${attribute.name}.svg`}
+						src={`/assets/attributes/${attribute.slug}.svg`}
 						alt=`${attribute.name} icon`
 					/>
 				</div>

@@ -9,7 +9,7 @@ const getRegionAsset = (pathname: string, releasedAt: { en: Date | null }) =>
 
 export const getAsset = <T extends AssetType>(
 	type: T,
-	entry: DataForAsset<T> & { id: string | number },
+	entry: DataForAsset<T>,
 ): Record<string, string | { path: string; invalidate: boolean }> => {
 	const { id, slug } = entry;
 

@@ -49,7 +49,7 @@ export const filterStamps = async (
 	const selectedBands = new Set(params.band);
 	const selectedCharacterBands = new Set(
 		params.character?.map((slug) =>
-			slug === UNKNOWN ? UNKNOWN : data.charactersBySlug.get(slug)!.band.slug,
+			slug === UNKNOWN ? UNKNOWN : data.characters.get(slug)!.band.slug,
 		),
 	);
 
@@ -62,9 +62,7 @@ export const filterStamps = async (
 		character: Object.entries(characterFacet!.character.values).filter(
 			([slug, count]) =>
 				selectedBands.size > 0
-					? selectedBands.has(
-							data.charactersBySlug.get(slug)?.band.slug ?? UNKNOWN,
-						)
+					? selectedBands.has(data.characters.get(slug)?.band.slug ?? UNKNOWN)
 					: count > 0,
 		),
 	} satisfies Record<keyof typeof params, [string, number][]>;
@@ -102,8 +100,7 @@ export const filterStamps = async (
 			band: getFacets(
 				"band",
 				(slug) => (slug === UNKNOWN ? undefined : `/assets/bands/${slug}.svg`),
-				(slug) =>
-					slug === UNKNOWN ? "Unknown" : data.bandsBySlug.get(slug)!.name,
+				(slug) => (slug === UNKNOWN ? "Unknown" : data.bands.get(slug)!.name),
 			),
 			character: getFacets(
 				"character",
@@ -112,11 +109,10 @@ export const filterStamps = async (
 						? undefined
 						: `/assets/characters/${slug}.${IMAGE_FORMAT}`,
 				(slug) =>
-					slug === UNKNOWN ? "Unknown" : data.charactersBySlug.get(slug)!.name,
+					slug === UNKNOWN ? "Unknown" : data.characters.get(slug)!.name,
 			),
 		},
 	};
 };
 
-export const getStamps = () =>
-	[...data.stamps.entries()].map(([id, entry]) => ({ id, ...entry }));
+export const getStamps = () => [...data.stamps.values()];

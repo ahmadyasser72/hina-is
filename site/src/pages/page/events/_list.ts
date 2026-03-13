@@ -57,17 +57,13 @@ export const filterEvents = async (
 						break;
 
 					case "event-focus":
-						band = event.cards
-							.map(({ character }) => character.band.slug)
-							.slice(0, 1);
-						character = event.cards
-							.map(({ character }) => character.slug)
-							.slice(0, 1);
+						band = [event.cards[0].character.band.slug];
+						character = [event.cards[0].character.slug];
 						break;
 
 					case "event-stamp":
-						band = [event.stamp.character.band.slug];
-						character = [event.stamp.character.slug];
+						band = [event.stamp.character!.band.slug];
+						character = [event.stamp.character!.slug];
 						break;
 
 					case "event-bonus":
@@ -123,7 +119,7 @@ export const filterEvents = async (
 
 	const selectedBands = new Set(params.band);
 	const selectedCharacterBands = new Set(
-		params.character?.map((slug) => data.charactersBySlug.get(slug)!.band.slug),
+		params.character?.map((slug) => data.characters.get(slug)!.band.slug),
 	);
 
 	const facets = {
@@ -137,7 +133,7 @@ export const filterEvents = async (
 		character: Object.entries(main.facets!.character.values).filter(
 			([slug, count]) =>
 				selectedBands.size > 0
-					? selectedBands.has(data.charactersBySlug.get(slug)!.band.slug)
+					? selectedBands.has(data.characters.get(slug)!.band.slug)
 					: count > 0,
 		),
 	} satisfies Record<keyof typeof params, [string, number][]>;
@@ -183,48 +179,47 @@ export const filterEvents = async (
 			band: getFacets(
 				"band",
 				(slug) => `/assets/bands/${slug}.svg`,
-				(slug) => data.bandsBySlug.get(slug)!.name,
+				(slug) => data.bands.get(slug)!.name,
 			),
 			character: getFacets(
 				"character",
 				(slug) => `/assets/characters/${slug}.${IMAGE_FORMAT}`,
-				(slug) => data.charactersBySlug.get(slug)!.name,
+				(slug) => data.characters.get(slug)!.name,
 			),
 		},
 	};
 };
 
 export const getEvents = ({ list }: z.infer<typeof schema>) => {
-	const available = [] as number[];
-	const past = [] as number[];
-	const future = [] as number[];
+	const available = [] as Bandori.Event[];
+	const past = [] as Bandori.Event[];
+	const future = [] as Bandori.Event[];
 
 	const now = dayjs();
 	let lastEndAt: dayjs.Dayjs;
-	for (const [id, { startAt, endAt }] of [...data.events.entries()]) {
+	for (const event of [...data.events.values()]) {
+		const { startAt, endAt } = event;
 		if (!startAt.en || !endAt.en) {
-			future.push(id);
+			future.push(event);
 			continue;
 		} else if (
 			now.isBefore(startAt.en) ||
 			now.isBetween(startAt.en, endAt.en)
 		) {
-			available.push(id);
+			available.push(event);
 		} else {
-			past.push(id);
+			past.push(event);
 		}
 
 		lastEndAt = dayjs(endAt.en);
 	}
 
 	return {
-		available: available.map((id) => ({ id, ...data.events.get(id)! })),
+		available,
 		list:
 			list === "past"
-				? past.reverse().map((id) => ({ id, ...data.events.get(id)! }))
-				: future.map((id) => {
-						const { startAt, endAt, ...event } = data.events.get(id)!;
-
+				? past.reverse()
+				: future.map(({ startAt, endAt, ...event }) => {
 						const eventDuration = dayjs(endAt.jp).diff(startAt.jp);
 						const startAtEn = lastEndAt
 							.utc()
@@ -235,7 +230,6 @@ export const getEvents = ({ list }: z.infer<typeof schema>) => {
 						lastEndAt = endAtEn;
 
 						return {
-							id,
 							startAt: { ...startAt, en: startAtEn.toDate() },
 							endAt: { ...endAt, en: endAtEn.toDate() },
 							...event,

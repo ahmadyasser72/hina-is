@@ -3,11 +3,8 @@ import type { Data } from "@scripts/generate-data";
 export const {
 	attributes,
 	bands,
-	bandsBySlug,
 	characters,
-	charactersBySlug,
 	cards,
-	cardsBySlug,
 	cardsByCharacter,
 	events,
 	stamps,

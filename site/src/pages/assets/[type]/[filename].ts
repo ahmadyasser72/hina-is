@@ -54,10 +54,10 @@ export const GET: APIRoute<Props, Params> = async ({ props, params }) => {
 export const getStaticPaths = (() => {
 	const resolveAssets = (
 		type: AssetType,
-		entries: [number | string, DataForAsset<AssetType>][],
+		entries: DataForAsset<AssetType>[],
 	) => {
-		return entries.flatMap(([id, entry]) => {
-			const assets = Object.entries(getAsset(type, { id, ...entry }));
+		return entries.flatMap((entry) => {
+			const assets = Object.entries(getAsset(type, entry));
 
 			return assets.map(([filename, pathname]) => {
 				const path = typeof pathname === "object" ? pathname.path : pathname;
@@ -88,7 +88,7 @@ export const getStaticPaths = (() => {
 	] satisfies AssetType[];
 
 	return assetTypes.flatMap((type) =>
-		resolveAssets(type, [...data[type].entries()]),
+		resolveAssets(type, [...data[type].values()]),
 	);
 }) satisfies GetStaticPaths;
 
