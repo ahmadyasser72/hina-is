@@ -38,19 +38,10 @@
 	@apply scroll-mt-20;
 }
 
-#header,
-#footer {
-	@apply transition-transform duration-150;
-}
-
-#header {
-	@apply md:-translate-y-14;
-}
-
 #scroll-to-top {
-	@apply translate-y-12 transition-transform duration-300 md:-translate-y-12;
-}
+	@apply translate-y-12 transition-transform duration-300 md:-translate-y-28;
 
-:is(#header, #scroll-to-top).active {
-	@apply translate-y-0;
+	&.show {
+		@apply translate-y-0;
+	}
 }

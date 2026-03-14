@@ -51,8 +51,6 @@ htmx.on("htmx:beforeSwap", (e) => {
 
 // logic for show/hide header and scroll-to-top
 {
-	const header = htmx.find("#header")!;
-	const headerMenu = htmx.find("#header-menu")!;
 	const container = htmx.find("#container")!;
 	const scrollToTopButton = htmx.find("#scroll-to-top")!;
 
@@ -61,15 +59,13 @@ htmx.on("htmx:beforeSwap", (e) => {
 		container,
 		"scroll",
 		debounce(() => {
-			if (headerMenu.matches(":popover-open")) return;
-
 			const screenSize = container.clientHeight;
 			const scrolledEnough = container.scrollTop >= screenSize / 2;
 			const scrollingDown = container.scrollTop > lastScrollTop;
-			const showScrollToTop = scrolledEnough && scrollingDown;
-
-			scrollToTopButton.classList.toggle("active", showScrollToTop);
-			header.classList.toggle("active", !showScrollToTop);
+			scrollToTopButton.classList.toggle(
+				"show",
+				scrolledEnough && scrollingDown,
+			);
 
 			lastScrollTop = container.scrollTop;
 		}, 150),
@@ -77,9 +73,6 @@ htmx.on("htmx:beforeSwap", (e) => {
 
 	htmx.on(scrollToTopButton, "click", () => {
 		scrollToTopButton.classList.remove("active");
-		setTimeout(() => {
-			header.classList.add("active");
-		}, 150);
 
 		container.scroll({ top: 0 });
 	});
