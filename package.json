@@ -9,11 +9,11 @@
 	],
 	"scripts": {
 		"check": "bun-workspaces run check",
-		"check:format": "prettier . --check",
 		"dev": "bun-workspaces run dev @hina-is/site",
 		"prebuild": "bun check && bun-workspaces run generate @hina-is/bestdori",
 		"build": "bun-workspaces run build @hina-is/site",
-		"format": "prettier . --write"
+		"format": "prettier . --write",
+		"format:check": "prettier . --check"
 	},
 	"devDependencies": {
 		"@ianvs/prettier-plugin-sort-imports": "4.7.1",

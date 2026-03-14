@@ -69,7 +69,7 @@ Run these from the **repo root**:
 | `bun prebuild`         | Runs checks and fetches the latest data from Bestdori |
 | `bun build`            | Builds the site for production                        |
 | `bun run check`        | Runs type checks across all workspaces                |
-| `bun run check:format` | Verifies code formatting                              |
+| `bun run format:check` | Verifies code formatting                              |
 | `bun format`           | Formats all files with Prettier                       |
 
 ## Deployment (Cloudflare Workers via GitHub Actions)
