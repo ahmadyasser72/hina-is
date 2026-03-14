@@ -1,9 +1,10 @@
+import { IMAGE_FORMAT } from "@hina-is/bestdori/constants";
+
 import { useSignalEffect } from "@preact/signals";
 import { useSignalRef } from "@preact/signals/utils";
 import clsx from "clsx";
 import { useContext } from "preact/hooks";
 
-import { IMAGE_FORMAT } from "~/lib/compressor/constants";
 import { CharacterIcon } from "./character-icon";
 import { CharacterSorterState, type Character } from "./state";
 

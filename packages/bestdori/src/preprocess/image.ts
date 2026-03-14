@@ -1,16 +1,17 @@
 import path from "node:path";
 
-import { CACHE_DIR } from "./config";
-import { IMAGE_FORMAT, MAX_IMAGE_WIDTH } from "./constants";
+import { CACHE_DIR } from "..";
+import { IMAGE_FORMAT, IMAGE_FORMAT_MIME, MAX_IMAGE_WIDTH } from "./constants";
 
 export const compressImage = async (
-	cacheName: string,
+	name: string,
 	buffer: Buffer<ArrayBuffer>,
-	recompress: boolean,
 ): Promise<Response> => {
-	const outputFile = Bun.file(path.join(CACHE_DIR, cacheName));
+	const outputFile = Bun.file(
+		path.join(CACHE_DIR, [name, IMAGE_FORMAT].join(".")),
+	);
 
-	const alreadyCompressed = !recompress && (await outputFile.exists());
+	const alreadyCompressed = await outputFile.exists();
 	if (alreadyCompressed) return new Response(await outputFile.arrayBuffer());
 
 	const { default: sharp } = await import("sharp");
@@ -20,11 +21,14 @@ export const compressImage = async (
 			withoutEnlargement: true,
 			kernel: "mks2021",
 		})
-		[IMAGE_FORMAT]({ quality: 67, effort: 4 })
+		[IMAGE_FORMAT]({ quality: 67, effort: 6 })
 		.toBuffer();
 	outputFile.write(compressed);
 
 	return new Response(compressed as Buffer<ArrayBuffer>, {
-		headers: { "content-type": "image/avif" },
+		headers: {
+			"content-type": IMAGE_FORMAT_MIME,
+			"content-length": compressed.byteLength.toString(),
+		},
 	});
 };

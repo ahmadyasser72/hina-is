@@ -3,6 +3,7 @@ import {
 	BANDS,
 	CHARACTERS,
 	EVENT_TYPES,
+	IMAGE_FORMAT,
 } from "@hina-is/bestdori/constants";
 import * as data from "@hina-is/bestdori/data";
 import { type Bandori } from "@hina-is/bestdori/data";
@@ -11,7 +12,6 @@ import { formatEventType, toArray } from "@hina-is/bestdori/utilities";
 import { create, insertMultiple, search } from "@orama/orama";
 import type z from "zod";
 
-import { IMAGE_FORMAT } from "~/lib/compressor/constants";
 import { dayjs } from "~/lib/date";
 import type { schema } from "./_params";
 

@@ -20,16 +20,9 @@ jobs:
       - name: Cache bestdori responses
         uses: actions/cache@v5
         with:
-          path: .bestdori-cache/responses
-          key: bestdori-response-${{ github.run_id }}
-          restore-keys: bestdori-response-
-
-      - name: Cache compressed assets
-        uses: actions/cache@v5
-        with:
-          path: .bestdori-cache/compressed
-          key: compressed-${{ hashFiles('site/src/lib/compressor/*.ts') }}-${{ github.run_id }}
-          restore-keys: compressed-${{ hashFiles('site/src/lib/compressor/*.ts') }}-
+          path: .bestdori-cache
+          key: bestdori-${{ github.run_id }}
+          restore-keys: bestdori-
 
       - name: Build site
         run: bun run build

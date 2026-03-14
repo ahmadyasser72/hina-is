@@ -1,11 +1,11 @@
-import { createHash } from "node:crypto";
-import { extname } from "node:path";
+import * as path from "node:path";
 import { bestdori } from "@hina-is/bestdori";
 import {
 	getAsset,
 	type AssetType,
 	type DataForAsset,
 } from "@hina-is/bestdori/assets";
+import { AUDIO_FORMAT, IMAGE_FORMAT } from "@hina-is/bestdori/constants";
 import * as data from "@hina-is/bestdori/data";
 
 import type {
@@ -15,40 +15,15 @@ import type {
 	InferGetStaticPropsType,
 } from "astro";
 
-import { compressAudio } from "~/lib/compressor/audio";
-import { AUDIO_FORMAT, IMAGE_FORMAT } from "~/lib/compressor/constants";
-import { compressImage } from "~/lib/compressor/image";
-
 export const prerender = true;
 
-export const GET: APIRoute<Props, Params> = async ({ props, params }) => {
-	let pathname: string;
-	let invalidateCache = false;
-	if (typeof props.pathname === "object") {
-		const { path, invalidate } = props.pathname;
-		pathname = path;
-		invalidateCache = invalidate;
-	} else {
-		pathname = props.pathname;
-	}
+export const GET: APIRoute<Props, Params> = async ({ props }) => {
+	const { path, ignoreCache } =
+		typeof props.pathname === "object"
+			? props.pathname
+			: { path: props.pathname, ignoreCache: false };
 
-	const response = await bestdori(pathname, !invalidateCache);
-	if (props.kind === "raw") return response;
-
-	const cacheName =
-		[
-			params.type,
-			createHash("md5").update(response.url).digest("hex").slice(0, 10),
-		].join("__") + extname(params.filename);
-
-	const buffer = Buffer.from(await response.arrayBuffer());
-	switch (props.kind) {
-		case "audio":
-			return compressAudio(cacheName, buffer);
-
-		case "image":
-			return compressImage(cacheName, buffer, invalidateCache);
-	}
+	return bestdori(path, !ignoreCache);
 };
 
 export const getStaticPaths = (() => {
@@ -59,20 +34,22 @@ export const getStaticPaths = (() => {
 		return entries.flatMap((entry) => {
 			const assets = Object.entries(getAsset(type, entry));
 
-			return assets.map(([filename, pathname]) => {
-				const path = typeof pathname === "object" ? pathname.path : pathname;
+			return assets.map(([filename, detail]) => {
+				const pathname = typeof detail === "object" ? detail.path : detail;
 
-				let kind: "audio" | "image" | "raw" = "raw";
-				if (path.endsWith("mp3")) kind = "audio";
-				else if (path.endsWith("png")) kind = "image";
+				let kind: "audio" | "image" | "other";
+				if (pathname.endsWith("mp3")) kind = "audio";
+				else if (pathname.endsWith("png")) kind = "image";
+				else kind = "other";
 
-				let format = extname(path).slice(1);
+				let format: string;
 				if (kind === "audio") format = AUDIO_FORMAT;
 				else if (kind === "image") format = IMAGE_FORMAT;
+				else format = path.extname(pathname).slice(1);
 
 				return {
-					params: { type, filename: `${filename}.${format}` },
-					props: { kind, pathname },
+					params: { type, filename: [filename, format].join(".") },
+					props: { pathname },
 				};
 			});
 		});

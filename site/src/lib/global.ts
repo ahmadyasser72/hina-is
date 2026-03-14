@@ -1,4 +1,4 @@
-import { AUDIO_FORMAT } from "~/lib/compressor/constants";
+import { AUDIO_FORMAT } from "@hina-is/bestdori/constants";
 
 {
 	let playEventBGMButton: HTMLButtonElement | undefined;

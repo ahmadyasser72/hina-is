@@ -10,7 +10,7 @@ const getRegionAsset = (pathname: string, releasedAt: { en: Date | null }) =>
 export const getAsset = <T extends AssetType>(
 	type: T,
 	entry: DataForAsset<T>,
-): Record<string, string | { path: string; invalidate: boolean }> => {
+): Record<string, string | { path: string; ignoreCache: boolean }> => {
 	const { id, slug } = entry;
 
 	switch (type) {
@@ -113,7 +113,7 @@ export const getAsset = <T extends AssetType>(
 			return {
 				[`${slug}-image`]: {
 					path: `/assets/${region}/stamp/01_rip/${id}.png`,
-					invalidate: isLatestStamp,
+					ignoreCache: isLatestStamp,
 				},
 				...(voiced && {
 					[`${slug}-voice`]: `/assets/${region}/sound/voice_stamp_rip/${id}.mp3`,

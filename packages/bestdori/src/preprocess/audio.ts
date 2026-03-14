@@ -1,13 +1,15 @@
 import path from "node:path";
 
-import { CACHE_DIR } from "./config";
-import { AUDIO_BITRATE, AUDIO_FORMAT } from "./constants";
+import { CACHE_DIR } from "..";
+import { AUDIO_BITRATE, AUDIO_FORMAT, AUDIO_FORMAT_MIME } from "./constants";
 
 export const compressAudio = async (
-	cacheName: string,
+	name: string,
 	buffer: Buffer<ArrayBuffer>,
 ): Promise<Response> => {
-	const outputFile = Bun.file(path.join(CACHE_DIR, cacheName));
+	const outputFile = Bun.file(
+		path.join(CACHE_DIR, [name, AUDIO_FORMAT].join(".")),
+	);
 
 	const alreadyCompressed = await outputFile.exists();
 	if (alreadyCompressed) return new Response(await outputFile.arrayBuffer());
@@ -29,13 +31,15 @@ export const compressAudio = async (
 	);
 
 	const exitCode = await ffmpeg.exited;
-	if (exitCode !== 0)
-		throw new Error(`failed to compress audio (${cacheName})`);
+	if (exitCode !== 0) throw new Error(`failed to compress audio (${name})`);
 
 	const compressed = await new Response(ffmpeg.stdout).arrayBuffer();
 	await outputFile.write(compressed);
 
 	return new Response(compressed, {
-		headers: { "content-type": "audio/ogg" },
+		headers: {
+			"content-type": AUDIO_FORMAT_MIME,
+			"content-length": compressed.byteLength.toString(),
+		},
 	});
 };

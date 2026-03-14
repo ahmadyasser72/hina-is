@@ -1,11 +1,10 @@
-import { BANDS, CHARACTERS } from "@hina-is/bestdori/constants";
+import { BANDS, CHARACTERS, IMAGE_FORMAT } from "@hina-is/bestdori/constants";
 import type { Bandori } from "@hina-is/bestdori/data";
 import * as data from "@hina-is/bestdori/data";
 
 import { create, insertMultiple, search } from "@orama/orama";
 import type z from "zod";
 
-import { IMAGE_FORMAT } from "~/lib/compressor/constants";
 import type { schema } from "./_params";
 
 const UNKNOWN = "unknown";

@@ -1,8 +1,16 @@
 import { exec } from "node:child_process";
+import { createHash } from "node:crypto";
 import { mkdir } from "node:fs/promises";
 import path from "node:path";
 
 import { limitAsync } from "es-toolkit";
+
+import { compressAudio } from "./preprocess/audio";
+import {
+	AUDIO_FORMAT_ORIGINAL,
+	IMAGE_FORMAT_ORIGINAL,
+} from "./preprocess/constants";
+import { compressImage } from "./preprocess/image";
 
 export const createDirectoryIfNotExists = async (path: string) =>
 	mkdir(path, { recursive: true }).then(() => path);
@@ -13,12 +21,8 @@ export const GIT_ROOT_PATH = await new Promise<string>((resolve, reject) => {
 	);
 });
 
-export const BASE_CACHE_DIR = await createDirectoryIfNotExists(
+export const CACHE_DIR = await createDirectoryIfNotExists(
 	path.join(GIT_ROOT_PATH, ".bestdori-cache"),
-);
-
-const CACHE_DIR = await createDirectoryIfNotExists(
-	path.join(BASE_CACHE_DIR, "responses"),
 );
 
 const fetch = limitAsync(globalThis.fetch, 4);
@@ -29,35 +33,61 @@ export const bestdori = async <T = never>(
 ): Promise<Response> => {
 	const url = new URL(pathname, "https://bestdori.com");
 
-	const outputFile = Bun.file(
-		path.join(CACHE_DIR, pathname.replaceAll("/", "_")),
-	);
-	const alreadyCached = await outputFile.exists();
+	const cacheName = pathname.slice(1).replaceAll("/", "_");
+	const cacheFile = Bun.file(path.join(CACHE_DIR, cacheName));
+
+	let response: Response;
+	const alreadyCached = await cacheFile.exists();
 	if (
 		alreadyCached &&
 		(skipFetch === true ||
-			(typeof skipFetch === "function" && skipFetch(await outputFile.json())))
+			(typeof skipFetch === "function" && skipFetch(await cacheFile.json())))
 	) {
-		const response = new Response(outputFile);
-		Object.defineProperty(response, "url", { value: url.href });
-		return response;
+		response = new Response(cacheFile, {
+			headers: {
+				"content-type": cacheFile.type,
+				"content-length": cacheFile.size.toString(),
+			},
+		});
+	} else {
+		response = await fetch(url);
+		const isHTML = response.headers.get("content-type") === "text/html";
+		if (!response.ok || isHTML) {
+			if (pathname.startsWith("/assets/en/"))
+				return bestdori(pathname.replace("en", "jp"), skipFetch);
+			else if (pathname.startsWith("/assets/jp"))
+				return bestdori(pathname.replace("jp", "cn"), skipFetch);
+
+			throw new Error(`request to ${url.href} failed`);
+		}
 	}
 
-	const response = await fetch(url);
-	const isHTML = response.headers.get("content-type") === "text/html";
-	if (!response.ok || isHTML) {
-		if (pathname.startsWith("/assets/en/"))
-			return bestdori(pathname.replace("en", "jp"), skipFetch);
-		else if (pathname.startsWith("/assets/jp"))
-			return bestdori(pathname.replace("jp", "cn"), skipFetch);
+	const data = await response.arrayBuffer();
+	await cacheFile.write(data);
 
-		throw new Error(`request to ${url.href} failed`);
+	let preprocess: typeof compressAudio | typeof compressImage;
+	const extension = path.extname(pathname).slice(1);
+	if (extension === AUDIO_FORMAT_ORIGINAL) preprocess = compressAudio;
+	else if (extension === IMAGE_FORMAT_ORIGINAL) preprocess = compressImage;
+	else {
+		return new Response(data, {
+			headers: {
+				"content-type": response.headers.get("content-type")!,
+				"content-length": data.byteLength.toString(),
+			},
+		});
 	}
 
-	const data = await response.clone().arrayBuffer();
-	await outputFile.write(data);
+	const hash = createHash("sha512")
+		.update(url.href)
+		.update(Buffer.from(data))
+		.digest("hex")
+		.slice(0, 6);
 
-	return response;
+	return preprocess(
+		[path.basename(cacheName), hash].join("."),
+		Buffer.from(data),
+	);
 };
 
 export const bestdoriJSON = <T = unknown>(
