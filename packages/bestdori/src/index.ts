@@ -114,7 +114,7 @@ export const bestdori = async <T = never>(
 		.slice(0, 6);
 
 	return preprocess(
-		[path.basename(cacheName), hash].join("."),
+		[cacheName.replace(path.extname(cacheName), ""), hash].join("."),
 		Buffer.from(data),
 	);
 };
