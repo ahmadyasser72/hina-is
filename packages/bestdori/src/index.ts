@@ -3,7 +3,7 @@ import { createHash } from "node:crypto";
 import { mkdir } from "node:fs/promises";
 import path from "node:path";
 
-import { limitAsync } from "es-toolkit";
+import { limitAsync, retry } from "es-toolkit";
 
 import { compressAudio } from "./preprocess/audio";
 import {
@@ -25,23 +25,62 @@ export const CACHE_DIR = await createDirectoryIfNotExists(
 	path.join(GIT_ROOT_PATH, ".bestdori-cache"),
 );
 
-const fetch = limitAsync(globalThis.fetch, 4);
+type BestdoriErrorKind = "rate-limit" | "not-found";
+class BestdoriError extends Error {
+	kind: BestdoriErrorKind;
+
+	constructor(kind: BestdoriErrorKind, response: Response) {
+		super(
+			`error fetching bestdori: ${new URL(response.url).pathname} -> ${kind} (${response.status} ${response.statusText})`,
+		);
+		this.kind = kind;
+	}
+}
+
+const fetchBestdori: (
+	pathname: string,
+	isFallback?: boolean,
+) => Promise<Response> = limitAsync(async (pathname, isFallback = false) => {
+	const url = new URL(pathname, "https://bestdori.com");
+	return retry(
+		async () => {
+			const response = await fetch(url);
+			if (!response.ok) throw new BestdoriError("rate-limit", response);
+
+			const isHTML = response.headers.get("content-type") === "text/html";
+			if (!isHTML) return response;
+
+			const pathname = url.pathname;
+			if (!isFallback && pathname.startsWith("/assets/en/"))
+				return fetchBestdori(pathname.replace("en", "jp"), true);
+			else if (!isFallback && pathname.startsWith("/assets/jp"))
+				return fetchBestdori(pathname.replace("jp", "en"), true);
+
+			throw new BestdoriError("not-found", response);
+		},
+		{
+			retries: 4,
+			delay: (attempts) => 2 ** (Math.max(attempts, 2) + Math.random()) * 1000,
+			shouldRetry: (error) =>
+				error instanceof BestdoriError && error.kind === "rate-limit",
+		},
+	);
+}, 4);
 
 export const bestdori = async <T = never>(
 	pathname: string,
-	skipFetch: ((cached: T) => boolean) | boolean,
+	useCachedIf: ((cached: T) => boolean) | boolean,
 ): Promise<Response> => {
-	const url = new URL(pathname, "https://bestdori.com");
-
 	const cacheName = pathname.slice(1).replaceAll("/", "_");
 	const cacheFile = Bun.file(path.join(CACHE_DIR, cacheName));
 
 	let response: Response;
-	const alreadyCached = await cacheFile.exists();
+	const cacheAvailable = await cacheFile.exists();
 	if (
-		alreadyCached &&
-		(skipFetch === true ||
-			(typeof skipFetch === "function" && skipFetch(await cacheFile.json())))
+		cacheAvailable &&
+		(useCachedIf === true ||
+			(typeof useCachedIf === "function" &&
+				useCachedIf(await cacheFile.json())))
 	) {
 		response = new Response(cacheFile, {
 			headers: {
@@ -50,16 +89,7 @@ export const bestdori = async <T = never>(
 			},
 		});
 	} else {
-		response = await fetch(url);
-		const isHTML = response.headers.get("content-type") === "text/html";
-		if (!response.ok || isHTML) {
-			if (pathname.startsWith("/assets/en/"))
-				return bestdori(pathname.replace("en", "jp"), skipFetch);
-			else if (pathname.startsWith("/assets/jp"))
-				return bestdori(pathname.replace("jp", "cn"), skipFetch);
-
-			throw new Error(`request to ${url.href} failed`);
-		}
+		response = await fetchBestdori(pathname);
 	}
 
 	const data = await response.arrayBuffer();
@@ -79,7 +109,6 @@ export const bestdori = async <T = never>(
 	}
 
 	const hash = createHash("sha512")
-		.update(url.href)
 		.update(Buffer.from(data))
 		.digest("hex")
 		.slice(0, 6);
