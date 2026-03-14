@@ -34,6 +34,10 @@
 	scrollbar-gutter: stable;
 }
 
+#content * {
+	@apply scroll-mt-20;
+}
+
 #header,
 #footer {
 	@apply transition-transform duration-150;
