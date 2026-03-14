@@ -12,7 +12,14 @@ export const compressImage = async (
 	);
 
 	const alreadyCompressed = await outputFile.exists();
-	if (alreadyCompressed) return new Response(await outputFile.arrayBuffer());
+	if (alreadyCompressed) {
+		return new Response(outputFile, {
+			headers: {
+				"content-type": IMAGE_FORMAT_MIME,
+				"content-length": outputFile.size.toString(),
+			},
+		});
+	}
 
 	const { default: sharp } = await import("sharp");
 	const compressed = await sharp(buffer)

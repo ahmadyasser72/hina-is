@@ -12,7 +12,14 @@ export const compressAudio = async (
 	);
 
 	const alreadyCompressed = await outputFile.exists();
-	if (alreadyCompressed) return new Response(await outputFile.arrayBuffer());
+	if (alreadyCompressed) {
+		return new Response(outputFile, {
+			headers: {
+				"content-type": AUDIO_FORMAT_MIME,
+				"content-length": outputFile.size.toString(),
+			},
+		});
+	}
 
 	const ffmpeg = Bun.spawn(
 		[
