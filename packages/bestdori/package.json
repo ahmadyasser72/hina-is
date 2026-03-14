@@ -12,6 +12,7 @@
 	},
 	"scripts": {
 		"check": "tsc --noEmit",
+		"generate": "bun --sequential generate-data generate-styles",
 		"generate-data": "bun scripts/generate-data.ts",
 		"generate-styles": "bun scripts/generate-styles.ts"
 	},

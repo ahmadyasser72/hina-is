@@ -8,16 +8,17 @@
 		"site"
 	],
 	"scripts": {
-		"check": "bun run --workspaces --parallel check",
+		"check": "bun-workspaces run check",
 		"check:format": "prettier . --check",
-		"dev": "bun run --filter=@hina-is/site dev",
-		"prebuild": "bun run check && bun run --filter=@hina-is/bestdori --sequential generate-data generate-styles",
-		"build": "bun run --filter=@hina-is/site build",
+		"dev": "bun-workspaces run dev @hina-is/site",
+		"prebuild": "bun check && bun-workspaces run generate @hina-is/bestdori",
+		"build": "bun-workspaces run build @hina-is/site",
 		"format": "prettier . --write"
 	},
 	"devDependencies": {
 		"@ianvs/prettier-plugin-sort-imports": "4.7.1",
 		"@xeonlink/prettier-plugin-organize-attributes": "1.1.0",
+		"bun-workspaces": "1.0.0",
 		"prettier": "3.8.1",
 		"prettier-plugin-astro": "0.14.1",
 		"prettier-plugin-tailwindcss": "0.7.2"
