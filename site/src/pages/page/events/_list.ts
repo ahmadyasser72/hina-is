@@ -1,15 +1,10 @@
-import {
-	ATTRIBUTES,
-	BANDS,
-	CHARACTERS,
-	EVENT_TYPES,
-	IMAGE_FORMAT,
-} from "@hina-is/bestdori/constants";
+import { IMAGE_FORMAT } from "@hina-is/bestdori/constants";
 import * as data from "@hina-is/bestdori/data";
 import { type Bandori } from "@hina-is/bestdori/data";
 import { formatEventType, toArray } from "@hina-is/bestdori/utilities";
 
 import { create, insertMultiple, search } from "@orama/orama";
+import { uniq } from "es-toolkit";
 import type z from "zod";
 
 import { dayjs } from "~/lib/date";
@@ -87,14 +82,22 @@ export const filterEvents = async (
 	})();
 
 	const baseFilter = {
-		band: params.band ? { containsAll: params.band } : { containsAny: BANDS },
+		band: params.band
+			? { containsAll: params.band }
+			: { containsAny: [...data.bands.keys()] },
 		character: params.character
 			? { containsAll: params.character }
-			: { containsAny: CHARACTERS },
+			: { containsAny: [...data.characters.keys()] },
 	};
 	const filter = {
-		attribute: { attribute: { in: params.attribute ?? ATTRIBUTES } },
-		event_type: { event_type: { in: params.event_type ?? EVENT_TYPES } },
+		attribute: {
+			attribute: { in: params.attribute ?? [...data.attributes.keys()] },
+		},
+		event_type: {
+			event_type: {
+				in: params.event_type ?? uniq(events.map(({ type }) => type)),
+			},
+		},
 	};
 
 	const limit = events.length;

@@ -1,4 +1,4 @@
-import { BANDS, CHARACTERS, IMAGE_FORMAT } from "@hina-is/bestdori/constants";
+import { IMAGE_FORMAT } from "@hina-is/bestdori/constants";
 import type { Bandori } from "@hina-is/bestdori/data";
 import * as data from "@hina-is/bestdori/data";
 
@@ -31,9 +31,11 @@ export const filterStamps = async (
 	})();
 
 	const filter = {
-		band: { band: { in: params.band ?? [...BANDS, UNKNOWN] } },
+		band: { band: { in: params.band ?? [...data.bands.keys(), UNKNOWN] } },
 		character: {
-			character: { in: params.character ?? [...CHARACTERS, UNKNOWN] },
+			character: {
+				in: params.character ?? [...data.characters.keys(), UNKNOWN],
+			},
 		},
 	};
 
