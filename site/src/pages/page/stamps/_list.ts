@@ -11,7 +11,7 @@ const UNKNOWN = "unknown";
 
 export const filterStamps = async (
 	{ voice_stamp, ...params }: z.infer<typeof schema>,
-	stamps: (Bandori.Stamp & { id: string })[],
+	stamps: Bandori.Stamp[],
 ) => {
 	const db = (() => {
 		const stampDB = create({ schema: { band: "enum", character: "enum" } });

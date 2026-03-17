@@ -4,8 +4,7 @@ import type { Bandori } from "@hina-is/bestdori/data";
 
 interface Props {
 	band: Bandori.Band & {
-		id: number;
-		characters: (Bandori.Character & { id: number })[];
+		characters: Bandori.Character[];
 	};
 }
 

@@ -12,7 +12,7 @@ import type { schema } from "./_params";
 
 export const filterEvents = async (
 	{ list, filter_band, filter_character, ...params }: z.infer<typeof schema>,
-	events: (Bandori.Event & { id: number })[],
+	events: Bandori.Event[],
 ) => {
 	const db = (() => {
 		const eventDB = create({
