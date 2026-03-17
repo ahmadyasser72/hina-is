@@ -62,13 +62,11 @@ import { AUDIO_FORMAT } from "@hina-is/bestdori/constants";
 		playAudio(button, `/assets/stamps/${slug}-voice.${AUDIO_FORMAT}`);
 
 	window.playCardAudio = (button, slug) => {
-		const dropdown = button.closest<HTMLElement>(".dropdown")!;
+		const gachaText = document.getElementById(`${slug}-gacha-text`)!;
 
 		playAudio(button, `/assets/cards/${slug}-voice.${AUDIO_FORMAT}`, {
-			beforePlay: () =>
-				dropdown.classList.replace("dropdown-close", "dropdown-open"),
-			afterPlay: () =>
-				dropdown.classList.replace("dropdown-open", "dropdown-close"),
+			beforePlay: () => gachaText.classList.replace("opacity-0", "opacity-100"),
+			afterPlay: () => gachaText.classList.replace("opacity-100", "opacity-0"),
 		});
 	};
 }

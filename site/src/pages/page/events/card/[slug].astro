@@ -70,31 +70,19 @@ const {
 					/>
 				</div>
 
-				{
-					card.gachaText && (
-						<div class="dropdown dropdown-end dropdown-close">
-							<button
-								class="btn not-disabled:bg-character btn-circle not-disabled:text-character-content size-12"
-								onclick={`playCardAudio(this, '${card.slug}')`}
-							>
-								<iconify-icon
-									class="htmx-indicator-replace size-8"
-									icon="lucide:volume-2"
-									width="none"
-								/>
-								<iconify-icon
-									class="htmx-indicator size-8"
-									icon="svg-spinners:90-ring-with-bg"
-									width="none"
-								/>
-							</button>
-
-							<div class="dropdown-content bg-character text-character-content rounded-box mt-2 w-max max-w-64 px-2 py-1 text-sm">
-								{card.gachaText}
-							</div>
-						</div>
-					)
-				}
+				<button
+					class="btn not-disabled:bg-character btn-circle not-disabled:text-character-content size-12"
+					onclick={`playCardAudio(this, '${card.slug}')`}
+				>
+					<iconify-icon
+						class="htmx-indicator-replace size-8"
+						icon="lucide:volume-2"
+						width="none"></iconify-icon>
+					<iconify-icon
+						class="htmx-indicator size-8"
+						icon="svg-spinners:90-ring-with-bg"
+						width="none"></iconify-icon>
+				</button>
 			</div>
 
 			<div
@@ -123,25 +111,34 @@ const {
 			</div>
 		</div>
 
-		<figure
-			class="hover-gallery bg-character/5 rounded-box shadow-band hover:shadow-character mt-2 aspect-60/45 w-full shadow-md"
-		>
-			<img
-				{...Astro.locals.useThumbhash(`${card.slug}-full-normal`)}
-				src={`/assets/cards/${card.slug}-full-normal.${IMAGE_FORMAT}`}
-				alt={`${card.name}`}
-			/>
-			<img
-				{...Astro.locals.useThumbhash(`${card.slug}-full-normal`)}
-				src={`/assets/cards/${card.slug}-full-normal.${IMAGE_FORMAT}`}
-				alt={`${card.name}`}
-			/>
-			<img
-				{...Astro.locals.useThumbhash(`${card.slug}-full-trained`)}
-				src={`/assets/cards/${card.slug}-full-trained.${IMAGE_FORMAT}`}
-				alt={`${card.name} (trained)`}
-			/>
-		</figure>
+		<div class="relative mt-2">
+			<figure
+				class="hover-gallery bg-character/5 rounded-box shadow-band hover:shadow-character aspect-60/45 w-full shadow-md"
+			>
+				<img
+					{...Astro.locals.useThumbhash(`${card.slug}-full-normal`)}
+					src={`/assets/cards/${card.slug}-full-normal.${IMAGE_FORMAT}`}
+					alt={`${card.name}`}
+				/>
+				<img
+					{...Astro.locals.useThumbhash(`${card.slug}-full-normal`)}
+					src={`/assets/cards/${card.slug}-full-normal.${IMAGE_FORMAT}`}
+					alt={`${card.name}`}
+				/>
+				<img
+					{...Astro.locals.useThumbhash(`${card.slug}-full-trained`)}
+					src={`/assets/cards/${card.slug}-full-trained.${IMAGE_FORMAT}`}
+					alt={`${card.name} (trained)`}
+				/>
+			</figure>
+
+			<div
+				class="bg-character/90 text-character-content rounded-box absolute top-2 left-1/2 w-max max-w-64 -translate-x-1/2 px-2 py-1 text-center opacity-0 transition-opacity select-none"
+				id={`${card.slug}-gacha-text`}
+			>
+				{card.gachaText}
+			</div>
+		</div>
 
 		<a
 			class="btn btn-sm btn-info mt-2 w-full"
