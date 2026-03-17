@@ -1,7 +1,7 @@
 ---
 import { IMAGE_FORMAT } from "@hina-is/bestdori/constants";
 
-import { isEqual, startCase } from "es-toolkit";
+import { isEqual } from "es-toolkit";
 
 import IconifyLoader from "~/components/loader/iconify-loader.astro";
 import InfiniteLoader from "~/components/loader/infinite-loader.astro";
@@ -12,7 +12,6 @@ import { filterStamps, getStamps } from "./_list";
 import { schema } from "./_params";
 
 const params = Astro.locals.parseQuery(schema);
-const otherSort = params.sort === "default" ? "event-release" : "default";
 
 const stamps = getStamps();
 const { filtered } = await filterStamps(params, stamps);
@@ -49,20 +48,52 @@ if (Astro.request.headers.get("hx-request") === "true" && page.current === 1) {
 			<h2 class="badge badge-accent badge-xl w-48 font-medium">Stamps</h2>
 
 			<button
-				hx-get
-				class="btn btn-sm btn-circle tooltip tooltip-left btn-success"
-				data-tip={`Sort: ${startCase(otherSort)}`}
+				class="btn btn-sm btn-circle btn-success tooltip tooltip-left"
+				data-tip="Sort stamps"
+				popovertarget="choose-sort-stamps"
+				style="anchor-name: --anchor-choose-sort-stamps"
+			>
+				<iconify-icon class="size-4" icon="lucide:arrow-up-down" width="none"
+				></iconify-icon>
+			</button>
+			<div
+				class="dropdown dropdown-end bg-base-100/80 rounded-field mt-1 w-max overflow-hidden shadow-sm"
+				id="choose-sort-stamps"
 				hx-select="#stamps"
 				hx-swap="outerHTML transition:true"
 				hx-target="#stamps"
-				hx-vals={JSON.stringify({ ...params, sort: otherSort })}
+				popover
+				style="position-anchor: --anchor-choose-sort-stamps"
 			>
-				<IconifyLoader
-					icon={otherSort === "event-release"
-						? "lucide:calendar-days"
-						: "lucide:arrow-up-down"}
-				/>
-			</button>
+				<div class="join join-vertical">
+					<button
+						hx-get
+						name="sort"
+						value="default"
+						class:list={[
+							"btn btn-sm join-item",
+							params.sort === "default" &&
+								"btn-secondary btn-active pointer-events-none",
+						]}
+					>
+						<IconifyLoader icon="lucide:list" />
+						Default
+					</button>
+					<button
+						hx-get
+						name="sort"
+						value="event-release"
+						class:list={[
+							"btn btn-sm join-item",
+							params.sort === "event-release" &&
+								"btn-secondary btn-active pointer-events-none",
+						]}
+					>
+						<IconifyLoader icon="lucide:calendar" />
+						Event release
+					</button>
+				</div>
+			</div>
 		</div>
 
 		<div

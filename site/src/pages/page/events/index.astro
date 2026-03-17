@@ -13,7 +13,6 @@ import { filterEvents, getEvents } from "./_list";
 import { schema } from "./_params";
 
 const params = Astro.locals.parseQuery(schema);
-const oppositeList = params.list === "future" ? "past" : "future";
 
 const events = getEvents(params);
 const { filtered } = await filterEvents(params, events.list);
@@ -68,41 +67,65 @@ if (Astro.request.headers.get("hx-request") === "true" && page.current === 1) {
 
 		<div class="flex scroll-mt-8 flex-col items-center gap-4" id="events">
 			<div class="inline-flex gap-2">
-				<div
-					class="tooltip tooltip-right"
-					data-tip={`Filter ${params.list} events`}
+				<button
+					hx-get="/page/events/filter"
+					class="btn btn-sm btn-circle btn-success tooltip tooltip-right"
+					data-tip={`Filter events`}
+					hx-vals={JSON.stringify(params)}
 				>
-					<button
-						hx-get="/page/events/filter"
-						class="btn btn-sm btn-circle btn-success"
-						hx-vals={JSON.stringify(params)}
-					>
-						<IconifyLoader icon="lucide:list-filter" />
-					</button>
-				</div>
+					<IconifyLoader icon="lucide:list-filter" />
+				</button>
 
 				<h2 class="badge badge-accent badge-xl w-48 font-medium">
 					{upperFirst(params.list)} events
 				</h2>
 
-				<div
-					class="tooltip tooltip-left"
-					data-tip={`Show ${oppositeList} events`}
+				<button
+					class="btn btn-sm btn-circle btn-success tooltip tooltip-left"
+					data-tip="Show events"
+					popovertarget="choose-show-events"
+					style="anchor-name: --anchor-choose-show-events"
 				>
-					<button
-						hx-get={Astro.url.pathname}
-						class="btn btn-sm btn-circle btn-success"
-						hx-select="#events"
-						hx-swap="outerHTML transition:true show:top"
-						hx-target="#events"
-						hx-vals={JSON.stringify({ list: oppositeList })}
-					>
-						<IconifyLoader
-							icon={oppositeList === "future"
-								? "lucide:calendar-clock"
-								: "lucide:history"}
-						/>
-					</button>
+					<iconify-icon class="size-4" icon="lucide:clock" width="none"
+					></iconify-icon>
+				</button>
+				<div
+					class="dropdown dropdown-end bg-base-100/80 rounded-field mt-1 w-max overflow-hidden shadow-sm"
+					id="choose-show-events"
+					hx-select="#events"
+					hx-swap="outerHTML transition:true"
+					hx-target="#events"
+					popover
+					style="position-anchor: --anchor-choose-show-events"
+				>
+					<div class="join join-vertical">
+						<button
+							hx-get={Astro.url.pathname}
+							name="list"
+							value="future"
+							class:list={[
+								"btn btn-sm join-item",
+								params.list === "future" &&
+									"btn-secondary btn-active pointer-events-none",
+							]}
+						>
+							<IconifyLoader icon="lucide:calendar-clock" />
+							Future
+						</button>
+						<button
+							hx-get={Astro.url.pathname}
+							name="list"
+							value="past"
+							class:list={[
+								"btn btn-sm join-item",
+								params.list === "past" &&
+									"btn-secondary btn-active pointer-events-none",
+							]}
+						>
+							<IconifyLoader icon="lucide:history" />
+							Past
+						</button>
+					</div>
 				</div>
 			</div>
 
