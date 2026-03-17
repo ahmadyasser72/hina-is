@@ -10,21 +10,27 @@ import type { schema } from "./_params";
 const UNKNOWN = "unknown";
 
 export const filterStamps = async (
-	{ voice_stamp, ...params }: z.infer<typeof schema>,
+	{ voice_stamp, sort, ...params }: z.infer<typeof schema>,
 	stamps: Bandori.Stamp[],
 ) => {
 	const db = (() => {
 		const stampDB = create({ schema: { band: "enum", character: "enum" } });
 
+		const items = voice_stamp ? stamps.filter(({ voiced }) => voiced) : stamps;
+		if (sort === "event-release")
+			items.sort(
+				(a, b) =>
+					(b.eventRelease?.valueOf() ?? -Infinity) -
+					(a.eventRelease?.valueOf() ?? -Infinity),
+			);
+
 		insertMultiple(
 			stampDB,
-			(voice_stamp ? stamps.filter(({ voiced }) => voiced) : stamps).map(
-				({ id, character }) => ({
-					id,
-					band: character?.band.slug ?? UNKNOWN,
-					character: character?.slug ?? UNKNOWN,
-				}),
-			),
+			items.map(({ id, character }) => ({
+				id,
+				band: character?.band.slug ?? UNKNOWN,
+				character: character?.slug ?? UNKNOWN,
+			})),
 		);
 
 		return stampDB;

@@ -400,6 +400,18 @@ const data = await (async () => {
 
 									return character;
 								},
+								get eventRelease() {
+									const event = findValue(events, ({ pointRewards }) => {
+										const stampId = unwrap(pointRewards).find(
+											({ rewardId, rewardType }) =>
+												rewardType === "stamp" && rewardId,
+										)!.rewardId!;
+
+										return stamps.get(stampId)!.imageName === id;
+									});
+
+									return event?.startAt.jp ?? null;
+								},
 								region,
 								voiced,
 							},
