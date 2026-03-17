@@ -4,6 +4,7 @@ import { IMAGE_FORMAT } from "@hina-is/bestdori/constants";
 import { isEqual } from "es-toolkit";
 
 import IconifyLoader from "~/components/loader/iconify-loader.astro";
+import InfiniteLoader from "~/components/loader/infinite-loader.astro";
 import BaseLayout from "~/layouts/base-layout.astro";
 import { pages } from "~/lib/page";
 import { paginate } from "~/lib/paginate";
@@ -78,17 +79,7 @@ if (Astro.request.headers.get("hx-request") === "true" && page.current === 1) {
 				))
 			}
 		</div>
-
-		<div class="htmx-indicator relative mt-8 h-32 w-full" id="stamps-loader">
-			<iconify-icon
-				class="text-accent center bg-accent-content/80 absolute size-32 rounded-full"
-				icon="svg-spinners:90-ring-with-bg"
-				width="none"></iconify-icon>
-
-			<span
-				class="badge center badge-lg badge-accent absolute w-max font-medium"
-				>loading more stamps...</span
-			>
-		</div>
 	</div>
+
+	<InfiniteLoader class="mt-8" id="stamps-loader" thing="stamps" />
 </BaseLayout>
