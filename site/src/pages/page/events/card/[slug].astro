@@ -2,6 +2,8 @@
 import { IMAGE_FORMAT } from "@hina-is/bestdori/constants";
 import { cards } from "@hina-is/bestdori/data";
 
+import IconifyLoader from "~/components/loader/iconify-loader.astro";
+
 export const partial = true;
 
 const card = cards.get(Astro.params.slug ?? "");
@@ -74,14 +76,7 @@ const {
 					class="btn not-disabled:bg-character btn-circle not-disabled:text-character-content size-12"
 					onclick={`playCardAudio(this, '${card.slug}')`}
 				>
-					<iconify-icon
-						class="htmx-indicator-replace size-8"
-						icon="lucide:volume-2"
-						width="none"></iconify-icon>
-					<iconify-icon
-						class="htmx-indicator size-8"
-						icon="svg-spinners:90-ring-with-bg"
-						width="none"></iconify-icon>
+					<IconifyLoader icon="lucide:volume-2" size-class="size-8" />
 				</button>
 			</div>
 

@@ -3,6 +3,7 @@ import { IMAGE_FORMAT } from "@hina-is/bestdori/constants";
 
 import { isEqual } from "es-toolkit";
 
+import IconifyLoader from "~/components/loader/iconify-loader.astro";
 import BaseLayout from "~/layouts/base-layout.astro";
 import { pages } from "~/lib/page";
 import { paginate } from "~/lib/paginate";
@@ -40,14 +41,7 @@ if (Astro.request.headers.get("hx-request") === "true" && page.current === 1) {
 					class="btn btn-sm btn-circle btn-success"
 					hx-vals={JSON.stringify(params)}
 				>
-					<iconify-icon
-						class="htmx-indicator-replace size-4"
-						icon="lucide:list-filter"
-						width="none"></iconify-icon>
-					<iconify-icon
-						class="htmx-indicator size-4"
-						icon="svg-spinners:90-ring-with-bg"
-						width="none"></iconify-icon>
+					<IconifyLoader icon="lucide:list-filter" />
 				</button>
 			</div>
 
@@ -77,16 +71,7 @@ if (Astro.request.headers.get("hx-request") === "true" && page.current === 1) {
 								class="btn bg-base-100/80 btn-circle absolute right-1 bottom-1.5 size-8 border-0 backdrop-blur-sm"
 								onclick={`playStampAudio(this, '${stamp.slug}')`}
 							>
-								<iconify-icon
-									class="htmx-indicator-replace size-4"
-									icon="lucide:volume-2"
-									width="none"
-								/>
-								<iconify-icon
-									class="htmx-indicator size-4"
-									icon="svg-spinners:90-ring-with-bg"
-									width="none"
-								/>
+								<IconifyLoader icon="lucide:volume-2" />
 							</button>
 						)}
 					</div>

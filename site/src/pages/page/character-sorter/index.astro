@@ -3,6 +3,7 @@ import * as data from "@hina-is/bestdori/data";
 
 import { sample, shuffle } from "es-toolkit";
 
+import IconifyLoader from "~/components/loader/iconify-loader.astro";
 import { CharacterSorter } from "~/components/preact/character-sorter";
 import {
 	CHARACTER_SORTER_STATE_KEY,
@@ -52,14 +53,7 @@ if (params.slug && !override) return Astro.redirect("/page/character-sorter");
 				hx-confirm="Start over?"
 				hx-on--before-request={`delete localStorage["${CHARACTER_SORTER_STATE_KEY}"]`}
 			>
-				<iconify-icon
-					class="htmx-indicator-replace size-4"
-					icon="lucide:rotate-ccw"
-					width="none"></iconify-icon>
-				<iconify-icon
-					class="htmx-indicator size-4"
-					icon="svg-spinners:90-ring-with-bg"
-					width="none"></iconify-icon>
+				<IconifyLoader icon="lucide:rotate-ccw" />
 			</button>
 
 			<h2 class="badge badge-accent badge-xl w-48 font-medium">
@@ -71,14 +65,7 @@ if (params.slug && !override) return Astro.redirect("/page/character-sorter");
 				class="btn btn-sm btn-circle btn-warning tooltip tooltip-left"
 				data-tip="Reload sorter"
 			>
-				<iconify-icon
-					class="htmx-indicator-replace size-4"
-					icon="lucide:refresh-ccw"
-					width="none"></iconify-icon>
-				<iconify-icon
-					class="htmx-indicator size-4"
-					icon="svg-spinners:90-ring-with-bg"
-					width="none"></iconify-icon>
+				<IconifyLoader icon="lucide:refresh-ccw" />
 			</button>
 		</div>
 
@@ -164,16 +151,7 @@ if (params.slug && !override) return Astro.redirect("/page/character-sorter");
 							hx-target="#sorter"
 						>
 							<button hx-get class="btn btn-neutral join-item flex-1">
-								<iconify-icon
-									class="htmx-indicator-replace size-4"
-									icon="lucide:play"
-									width="none"
-								/>
-								<iconify-icon
-									class="htmx-indicator size-4"
-									icon="svg-spinners:90-ring-with-bg"
-									width="none"
-								/>
+								<IconifyLoader icon="lucide:play" />
 								Start sorting
 							</button>
 
@@ -184,16 +162,7 @@ if (params.slug && !override) return Astro.redirect("/page/character-sorter");
 									name="continue"
 									value="true"
 								>
-									<iconify-icon
-										class="htmx-indicator-replace size-4"
-										icon="lucide:redo"
-										width="none"
-									/>
-									<iconify-icon
-										class="htmx-indicator size-4"
-										icon="svg-spinners:90-ring-with-bg"
-										width="none"
-									/>
+									<IconifyLoader icon="lucide:redo" />
 									Continue
 								</button>
 							)}

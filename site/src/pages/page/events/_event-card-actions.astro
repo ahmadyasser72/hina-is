@@ -2,6 +2,7 @@
 import { IMAGE_FORMAT } from "@hina-is/bestdori/constants";
 import type { Bandori } from "@hina-is/bestdori/data";
 
+import IconifyLoader from "~/components/loader/iconify-loader.astro";
 import { dayjs } from "~/lib/date";
 import EventCardCardIcon from "./_event-card-card-icon.astro";
 
@@ -98,14 +99,7 @@ const { cards, stamp } = event;
 			class="btn btn-circle btn-primary btn-sm"
 			onclick={`playEventBGM(this, '${event.slug}')`}
 		>
-			<iconify-icon
-				class="htmx-indicator-replace size-4"
-				icon="lucide:play"
-				width="none"></iconify-icon>
-			<iconify-icon
-				class="htmx-indicator size-4"
-				icon="svg-spinners:90-ring-with-bg"
-				width="none"></iconify-icon>
+			<IconifyLoader icon="lucide:play" />
 		</button>
 
 		<button
@@ -151,16 +145,7 @@ const { cards, stamp } = event;
 					class="btn bg-base-100/80 btn-circle absolute right-1 bottom-1.5 size-8 border-0 backdrop-blur-sm"
 					onclick={`playStampAudio(this, '${event.stamp.slug}')`}
 				>
-					<iconify-icon
-						class="htmx-indicator-replace size-4"
-						icon="lucide:volume-2"
-						width="none"
-					/>
-					<iconify-icon
-						class="htmx-indicator size-4"
-						icon="svg-spinners:90-ring-with-bg"
-						width="none"
-					/>
+					<IconifyLoader icon="lucide:volume-2" />
 				</button>
 			)
 		}

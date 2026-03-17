@@ -1,0 +1,19 @@
+---
+const LOADER_ICON = "svg-spinners:90-ring-with-bg";
+
+interface Props {
+	icon: string;
+	"size-class"?: `size-${number}`;
+}
+
+const { icon, "size-class": sizeClass = "size-4" } = Astro.props;
+---
+
+<iconify-icon
+	class:list={["htmx-indicator-replace", sizeClass]}
+	{icon}
+	width="none"></iconify-icon>
+<iconify-icon
+	class:list={["htmx-indicator", sizeClass]}
+	icon={LOADER_ICON}
+	width="none"></iconify-icon>

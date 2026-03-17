@@ -1,6 +1,7 @@
 ---
 import { startCase } from "es-toolkit";
 
+import IconifyLoader from "~/components/loader/iconify-loader.astro";
 import { filterEvents, getEvents } from "../_list";
 import { schema } from "../_params";
 import FilterFieldset from "./_filter-fieldset.astro";
@@ -86,15 +87,7 @@ const { facets } = await filterEvents(params, events.list);
 				hx-target="#events"
 				hx-vals={JSON.stringify(params)}
 			>
-				<iconify-icon
-					class="htmx-indicator-replace size-6"
-					icon="lucide:filter"
-					width="none"></iconify-icon>
-				<iconify-icon
-					class="htmx-indicator size-6"
-					icon="svg-spinners:90-ring-with-bg"
-					width="none"></iconify-icon>
-
+				<IconifyLoader icon="lucide:filter" size-class="size-6" />
 				Apply
 			</button>
 
@@ -105,15 +98,7 @@ const { facets } = await filterEvents(params, events.list);
 				hx-target="closest dialog"
 				hx-vals={JSON.stringify(schema.parse({}))}
 			>
-				<iconify-icon
-					class="htmx-indicator-replace size-6"
-					icon="lucide:rotate-ccw"
-					width="none"></iconify-icon>
-				<iconify-icon
-					class="htmx-indicator size-6"
-					icon="svg-spinners:90-ring-with-bg"
-					width="none"></iconify-icon>
-
+				<IconifyLoader icon="lucide:rotate-ccw" size-class="size-6" />
 				Reset
 			</button>
 		</div>

@@ -3,6 +3,7 @@ import { IMAGE_FORMAT } from "@hina-is/bestdori/constants";
 
 import { isEqual, upperFirst } from "es-toolkit";
 
+import IconifyLoader from "~/components/loader/iconify-loader.astro";
 import BaseLayout from "~/layouts/base-layout.astro";
 import { pages } from "~/lib/page";
 import { paginate } from "~/lib/paginate";
@@ -75,14 +76,7 @@ if (Astro.request.headers.get("hx-request") === "true" && page.current === 1) {
 						class="btn btn-sm btn-circle btn-success"
 						hx-vals={JSON.stringify(params)}
 					>
-						<iconify-icon
-							class="htmx-indicator-replace size-4"
-							icon="lucide:list-filter"
-							width="none"></iconify-icon>
-						<iconify-icon
-							class="htmx-indicator size-4"
-							icon="svg-spinners:90-ring-with-bg"
-							width="none"></iconify-icon>
+						<IconifyLoader icon="lucide:list-filter" />
 					</button>
 				</div>
 
@@ -102,16 +96,11 @@ if (Astro.request.headers.get("hx-request") === "true" && page.current === 1) {
 						hx-target="#events"
 						hx-vals={JSON.stringify({ list: oppositeList })}
 					>
-						<iconify-icon
-							class="htmx-indicator-replace size-4"
+						<IconifyLoader
 							icon={oppositeList === "future"
 								? "lucide:calendar-clock"
 								: "lucide:history"}
-							width="none"></iconify-icon>
-						<iconify-icon
-							class="htmx-indicator size-4"
-							icon="svg-spinners:90-ring-with-bg"
-							width="none"></iconify-icon>
+						/>
 					</button>
 				</div>
 			</div>
