@@ -24,6 +24,7 @@ const { facets } = await filterStamps(params, stamps);
 			hx-select-oob="#filter-actions"
 			hx-swap="outerHTML transition:true"
 			hx-target="this"
+			hx-vals={JSON.stringify({ sort: params.sort })}
 		>
 			<label class="label mx-auto">
 				<input
