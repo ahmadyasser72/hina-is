@@ -17,4 +17,4 @@ export const parseRegionTuple = <T extends z.ZodType>(schema: T) => {
 	);
 };
 
-export const dateTimestamp = z.coerce.number().transform((it) => new Date(it));
+export const dateTimestamp = z.coerce.number();

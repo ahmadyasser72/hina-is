@@ -19,9 +19,7 @@ export const filterStamps = async (
 		const items = voice_stamp ? stamps.filter(({ voiced }) => voiced) : stamps;
 		if (sort === "event-release")
 			items.sort(
-				(a, b) =>
-					(b.eventRelease?.valueOf() ?? -Infinity) -
-					(a.eventRelease?.valueOf() ?? -Infinity),
+				(a, b) => (b.eventRelease ?? -Infinity) - (a.eventRelease ?? -Infinity),
 			);
 
 		insertMultiple(

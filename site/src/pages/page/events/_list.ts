@@ -233,8 +233,8 @@ export const getEvents = ({ list }: z.infer<typeof schema>) => {
 						lastEndAt = endAtEn;
 
 						return {
-							startAt: { ...startAt, en: startAtEn.toDate() },
-							endAt: { ...endAt, en: endAtEn.toDate() },
+							startAt: { ...startAt, en: startAtEn.valueOf() },
+							endAt: { ...endAt, en: endAtEn.valueOf() },
 							...event,
 						};
 					}),
