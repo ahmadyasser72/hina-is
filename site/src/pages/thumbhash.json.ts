@@ -34,7 +34,7 @@ export const GET: APIRoute = async () => {
 
 	const assetTypes = ["cards", "events", "stamps"] satisfies AssetType[];
 	const assets = assetTypes.flatMap((type) =>
-		resolveAssets(type, [...data[type].values()]),
+		resolveAssets(type, Object.values(data[type])),
 	);
 
 	const hashEntries = await Promise.all(

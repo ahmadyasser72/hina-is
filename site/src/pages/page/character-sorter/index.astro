@@ -19,10 +19,10 @@ const characters = (() => {
 	if (!params.band && !params.slug) return;
 	else if (params.continue || params.slug) return [];
 
-	const results = [...data.characters.values()]
+	const results = Object.values(data.characters)
 		.filter(({ band }) => params.band!.includes(band.slug))
 		.map(({ name, slug }) => {
-			const randomCard = sample([...data.cardsByCharacter.get(slug)!]);
+			const randomCard = sample([...data.cardsByCharacter[slug]]);
 
 			return { name, slug, card: randomCard.slug };
 		});
@@ -98,12 +98,12 @@ if (params.slug && !override) return Astro.redirect("/page/character-sorter");
 						<legend class="fieldset-legend">Bands</legend>
 
 						<div class="flex flex-wrap gap-1">
-							{[...data.bands.values()]
-								.map(({ slug }, idx) => ({
+							{Object.values(data.bands)
+								.map(({ name, slug }, idx) => ({
 									id: `band_${idx}`,
 									value: slug,
 									icon: `/assets/bands/${slug}.svg`,
-									label: data.bands.get(slug)!.name,
+									label: name,
 								}))
 								.map(({ id, value, label, icon }) => (
 									<div data-band={value}>

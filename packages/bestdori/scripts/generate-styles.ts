@@ -17,7 +17,7 @@ const groups = [
 ];
 
 for (const { data, name } of groups) {
-	for (const { slug, color } of data.values()) {
+	for (const { slug, color } of Object.values(data)) {
 		if (!color) continue;
 
 		const selector = `[data-${name}="${slug}"]`;

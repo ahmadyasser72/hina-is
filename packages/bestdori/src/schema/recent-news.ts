@@ -1,5 +1,6 @@
 import z from "zod";
 
+import { Id } from "./constants";
 import { parseRegionTuple } from "./helpers";
 
 // /api/news/dynamic/recent.json
@@ -21,8 +22,8 @@ export const RecentNews = z.object({
 							([, { eventName, startAt, endAt }]) =>
 								eventName.en && startAt.en && endAt.en,
 						)
-						.map(([id]) => Number(id)),
-				z.array(z.number()),
+						.map(([id]) => id),
+				z.array(Id),
 			),
 		),
 });

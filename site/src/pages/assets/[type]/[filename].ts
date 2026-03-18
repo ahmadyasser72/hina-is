@@ -65,7 +65,7 @@ export const getStaticPaths = (() => {
 	] satisfies AssetType[];
 
 	return assetTypes.flatMap((type) =>
-		resolveAssets(type, [...data[type].values()]),
+		resolveAssets(type, Object.values(data[type])),
 	);
 }) satisfies GetStaticPaths;
 

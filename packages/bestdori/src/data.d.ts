@@ -11,15 +11,15 @@ export const {
 	recentNews,
 }: Data;
 
-type MapValue<T> = T extends Map<any, infer V> ? V : never;
+type ObjectValue<T> = T[keyof T];
 
 namespace Bandori {
-	type Attribute = MapValue<typeof attributes>;
-	type Band = MapValue<typeof bands>;
-	type Card = MapValue<typeof cards>;
-	type Character = MapValue<typeof characters>;
-	type Event = MapValue<typeof events>;
-	type Stamp = MapValue<typeof stamps>;
+	type Attribute = ObjectValue<typeof attributes>;
+	type Band = ObjectValue<typeof bands>;
+	type Card = ObjectValue<typeof cards>;
+	type Character = ObjectValue<typeof characters>;
+	type Event = ObjectValue<typeof events>;
+	type Stamp = ObjectValue<typeof stamps>;
 
 	type GameRegion = "jp" | "en";
 }

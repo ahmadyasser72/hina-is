@@ -3,7 +3,7 @@ import path from "node:path";
 
 import * as devalue from "devalue";
 import { deburr, groupBy } from "es-toolkit";
-import { findValue } from "es-toolkit/map";
+import { findKey } from "es-toolkit/object";
 import type { z } from "zod";
 
 import { bestdoriJSON, GIT_ROOT_PATH } from "~/index";
@@ -25,6 +25,11 @@ const createSlug = (...parts: (string | number)[]) =>
 		.toLowerCase()
 		.replace(/[^a-zA-Z0-9\s-]/g, "")
 		.replace(/\s+/g, "-");
+
+const findValue = <T extends Record<any, any>>(
+	obj: T,
+	predicate: (value: T[keyof T], key: keyof T, obj: T) => boolean,
+): T[keyof T] | undefined => obj[findKey(obj, predicate)];
 
 const time = async <T>(
 	message: string,
@@ -113,7 +118,7 @@ const data = await (async () => {
 				cool: "#4057e3",
 			};
 
-			return new Map(
+			return Object.fromEntries(
 				CardAttribute.options.map((slug) => [
 					slug,
 					{ id: slug, name: slug.toUpperCase(), color: colors[slug], slug },
@@ -133,7 +138,7 @@ const data = await (async () => {
 				45: "#2273a5",
 			};
 
-			return new Map(
+			return Object.fromEntries(
 				[...bands.entries()].map(([id, { name }]) => {
 					const slug = createSlug(id, unwrap(name));
 					return [
@@ -150,7 +155,7 @@ const data = await (async () => {
 		},
 
 		get characters() {
-			return new Map(
+			return Object.fromEntries(
 				[...characters.entries()].map(
 					([id, { bandId, nickname, name, colorCode, ...entry }]) => {
 						const displayName = unwrap(nickname) ?? unwrap(name);
@@ -175,7 +180,7 @@ const data = await (async () => {
 		},
 
 		get cards() {
-			return new Map(
+			return Object.fromEntries(
 				[...cards.entries()].map(
 					([
 						id,
@@ -207,7 +212,7 @@ const data = await (async () => {
 									)!;
 								},
 								get attribute() {
-									return data.attributes.get(attribute)!;
+									return data.attributes[attribute];
 								},
 								type: type.toUpperCase(),
 								...entry,
@@ -273,12 +278,12 @@ const data = await (async () => {
 			);
 		},
 		get cardsByCharacter() {
-			const cards = [...data.cards.values()].filter(
+			const cards = Object.values(data.cards).filter(
 				({ trainingState }) => trainingState === "both",
 			);
 
-			return new Map(
-				[...data.characters.values()].map((character) => [
+			return Object.fromEntries(
+				Object.values(data.characters).map((character) => [
 					character.slug,
 					cards.filter((card) => card.character.slug === character.slug),
 				]),
@@ -286,7 +291,7 @@ const data = await (async () => {
 		},
 
 		get events() {
-			return new Map(
+			return Object.fromEntries(
 				[...events.entries()].map(
 					([
 						id,
@@ -307,7 +312,7 @@ const data = await (async () => {
 								id,
 								slug,
 								get attribute() {
-									return data.attributes.get(attribute)!;
+									return data.attributes[attribute];
 								},
 								get band() {
 									const [first, ...theRest] = characters.map(
@@ -377,7 +382,7 @@ const data = await (async () => {
 					return map;
 				}, new Map<string, { id: string; region: "jp" | "en"; voiced: boolean }>());
 
-			return new Map(
+			return Object.fromEntries(
 				[...stampsMap.values()]
 					.sort(
 						(a, b) => Number(a.id.split("_")[1]) - Number(b.id.split("_")[1]),
@@ -391,7 +396,9 @@ const data = await (async () => {
 								id,
 								slug,
 								get character() {
-									const characterId = Number(id.split("_")[1]!.slice(0, 3));
+									const characterId = Number(
+										id.split("_")[1]!.slice(0, 3),
+									).toString();
 									const character = findValue(
 										data.characters,
 										({ id }) => id === characterId,
@@ -401,14 +408,17 @@ const data = await (async () => {
 									return character;
 								},
 								get eventRelease() {
-									const event = findValue(events, ({ pointRewards }) => {
-										const stampId = unwrap(pointRewards).find(
-											({ rewardId, rewardType }) =>
-												rewardType === "stamp" && rewardId,
-										)!.rewardId!;
+									const event = findValue(
+										Object.fromEntries([...events.entries()]),
+										({ pointRewards }) => {
+											const stampId = unwrap(pointRewards).find(
+												({ rewardId, rewardType }) =>
+													rewardType === "stamp" && rewardId,
+											)!.rewardId!;
 
-										return stamps.get(stampId)!.imageName === id;
-									});
+											return stamps.get(stampId)!.imageName === id;
+										},
+									);
 
 									return event?.startAt.jp ?? null;
 								},

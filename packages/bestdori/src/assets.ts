@@ -1,8 +1,11 @@
 import * as data from "./data";
-import type { MapValue } from "./data";
+import type { ObjectValue } from "./data";
 
-export type AssetType = Exclude<keyof typeof data, "cardsByCharacter">;
-export type DataForAsset<T extends AssetType> = MapValue<(typeof data)[T]>;
+export type AssetType = keyof Pick<
+	typeof data,
+	"attributes" | "bands" | "characters" | "cards" | "events" | "stamps"
+>;
+export type DataForAsset<T extends AssetType> = ObjectValue<(typeof data)[T]>;
 
 const getRegionAsset = (pathname: string, releasedAt: { en: number | null }) =>
 	["/assets", releasedAt.en ? "en" : "jp", pathname].join("/");
@@ -29,7 +32,7 @@ export const getAsset = <T extends AssetType>(
 		}
 
 		case "cards": {
-			const chunkId = Math.floor((id as number) / 50)
+			const chunkId = Math.floor(Number(id) / 50)
 				.toString()
 				.padStart(5, "0");
 			const {

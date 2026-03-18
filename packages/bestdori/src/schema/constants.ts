@@ -1,6 +1,9 @@
 import z from "zod";
 
-export const Id = z.coerce.number().positive();
+export const Id = z.coerce
+	.number()
+	.positive()
+	.transform((id) => id.toString());
 
 export const CardAttribute = z.enum(["powerful", "cool", "pure", "happy"]);
 export const CardRarity = z.number().min(1).max(5);

@@ -84,14 +84,14 @@ export const filterEvents = async (
 	const baseFilter = {
 		band: params.band
 			? { containsAll: params.band }
-			: { containsAny: [...data.bands.keys()] },
+			: { containsAny: Object.keys(data.bands) },
 		character: params.character
 			? { containsAll: params.character }
-			: { containsAny: [...data.characters.keys()] },
+			: { containsAny: Object.keys(data.characters) },
 	};
 	const filter = {
 		attribute: {
-			attribute: { in: params.attribute ?? [...data.attributes.keys()] },
+			attribute: { in: params.attribute ?? Object.keys(data.attributes) },
 		},
 		event_type: {
 			event_type: {
@@ -122,7 +122,7 @@ export const filterEvents = async (
 
 	const selectedBands = new Set(params.band);
 	const selectedCharacterBands = new Set(
-		params.character?.map((slug) => data.characters.get(slug)!.band.slug),
+		params.character?.map((slug) => data.characters[slug].band.slug),
 	);
 
 	const facets = {
@@ -136,7 +136,7 @@ export const filterEvents = async (
 		character: Object.entries(main.facets!.character.values).filter(
 			([slug, count]) =>
 				selectedBands.size > 0
-					? selectedBands.has(data.characters.get(slug)!.band.slug)
+					? selectedBands.has(data.characters[slug].band.slug)
 					: count > 0,
 		),
 	} satisfies Record<keyof typeof params, [string, number][]>;
@@ -167,14 +167,14 @@ export const filterEvents = async (
 				icon: getIcon?.(value),
 			}));
 
-	const hits = new Set(main.hits.map(({ id }) => Number(id)));
+	const hits = new Set(main.hits.map(({ id }) => id));
 	return {
 		filtered: events.filter(({ id }) => hits.has(id)),
 		facets: {
 			attribute: getFacets(
 				"attribute",
 				(id) => `/assets/attributes/${id}.svg`,
-				(id) => data.attributes.get(id as never)!.name,
+				(id) => data.attributes[id as keyof typeof data.attributes].name,
 			),
 			event_type: getFacets("event_type", undefined, (type) =>
 				formatEventType(type as never),
@@ -182,12 +182,12 @@ export const filterEvents = async (
 			band: getFacets(
 				"band",
 				(slug) => `/assets/bands/${slug}.svg`,
-				(slug) => data.bands.get(slug)!.name,
+				(slug) => data.bands[slug].name,
 			),
 			character: getFacets(
 				"character",
 				(slug) => `/assets/characters/${slug}.${IMAGE_FORMAT}`,
-				(slug) => data.characters.get(slug)!.name,
+				(slug) => data.characters[slug].name,
 			),
 		},
 	};
@@ -200,7 +200,7 @@ export const getEvents = ({ list }: z.infer<typeof schema>) => {
 
 	const now = dayjs();
 	let lastEndAt: dayjs.Dayjs;
-	for (const event of [...data.events.values()]) {
+	for (const event of Object.values(data.events)) {
 		const { startAt, endAt } = event;
 		if (!startAt.en || !endAt.en) {
 			future.push(event);

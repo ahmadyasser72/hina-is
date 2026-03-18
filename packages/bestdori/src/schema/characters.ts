@@ -39,7 +39,7 @@ export const Characters = z
 					Object.keys(characters).map(
 						async (id) =>
 							[
-								Number(id),
+								id,
 								await bestdoriJSON<z.input<typeof Character>>(
 									`/api/characters/${id}.json`,
 									true,

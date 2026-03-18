@@ -36,4 +36,4 @@ export const filterCharacters = async (
 	return { filtered: characters.filter(({ slug }) => hits.has(slug)) };
 };
 
-export const getCharacters = () => [...data.characters.values()];
+export const getCharacters = () => Object.values(data.characters);

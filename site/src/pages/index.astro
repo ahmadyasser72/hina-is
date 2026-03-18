@@ -7,7 +7,7 @@ import { sample } from "es-toolkit";
 import BaseLayout from "~/layouts/base-layout.astro";
 import { pages } from "~/lib/page";
 
-const randomEvent = sample([...events.values()]);
+const randomEvent = sample(Object.values(events));
 ---
 
 <BaseLayout
