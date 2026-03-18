@@ -18,7 +18,7 @@ const { filtered } = await filterStamps(params, stamps);
 const page = paginate({
 	items: filtered,
 	context: Astro,
-	size: 20,
+	size: 32,
 	extraProps: { "hx-select": ".stamp", "hx-swap": "afterend" },
 	params,
 });
