@@ -7,13 +7,16 @@ export type AssetType = keyof Pick<
 >;
 export type DataForAsset<T extends AssetType> = ObjectValue<(typeof data)[T]>;
 
+const latestStamps = new Set(
+	data.recentNews.events.map(({ stamp }) => stamp.id),
+);
 const getRegionAsset = (pathname: string, releasedAt: { en: number | null }) =>
 	["/assets", releasedAt.en ? "en" : "jp", pathname].join("/");
 
 export const getAsset = <T extends AssetType>(
 	type: T,
 	entry: DataForAsset<T>,
-): Record<string, string | { path: string; ignoreCache: boolean }> => {
+): Record<string, string | { pathname: string; redownload: boolean }> => {
 	const { id, slug } = entry;
 
 	switch (type) {
@@ -108,15 +111,11 @@ export const getAsset = <T extends AssetType>(
 		}
 
 		case "stamps": {
-			const isLatestStamp = data.recentNews.events
-				.map(({ stamp }) => stamp.id)
-				.includes(id as never);
-
 			const { region, voiced } = entry as DataForAsset<"stamps">;
 			return {
 				[`${slug}-image`]: {
-					path: `/assets/${region}/stamp/01_rip/${id}.png`,
-					ignoreCache: isLatestStamp,
+					pathname: `/assets/${region}/stamp/01_rip/${id}.png`,
+					redownload: latestStamps.has(id),
 				},
 				...(voiced && {
 					[`${slug}-voice`]: `/assets/${region}/sound/voice_stamp_rip/${id}.mp3`,

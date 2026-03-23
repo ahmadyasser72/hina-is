@@ -19,7 +19,7 @@ const resolveAssets = (type: AssetType, entries: DataForAsset<AssetType>[]) => {
 		return assets
 			.map(([filename, detail]) => ({
 				filename,
-				pathname: typeof detail === "object" ? detail.path : detail,
+				pathname: typeof detail === "object" ? detail.pathname : detail,
 			}))
 			.filter(({ pathname }) => pathname.endsWith("png"));
 	});

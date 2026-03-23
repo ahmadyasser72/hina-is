@@ -17,14 +17,8 @@ import type {
 
 export const prerender = true;
 
-export const GET: APIRoute<Props, Params> = async ({ props }) => {
-	const { path, ignoreCache } =
-		typeof props.pathname === "object"
-			? props.pathname
-			: { path: props.pathname, ignoreCache: false };
-
-	return bestdori(path, !ignoreCache);
-};
+export const GET: APIRoute<Props, Params> = async ({ props }) =>
+	bestdori(props.pathname, !props.redownload);
 
 export const getStaticPaths = (() => {
 	const resolveAssets = (
@@ -35,7 +29,8 @@ export const getStaticPaths = (() => {
 			const assets = Object.entries(getAsset(type, entry));
 
 			return assets.map(([filename, detail]) => {
-				const pathname = typeof detail === "object" ? detail.path : detail;
+				const { pathname, redownload = false } =
+					typeof detail === "object" ? detail : { pathname: detail };
 
 				let kind: "audio" | "image" | "other";
 				if (pathname.endsWith("mp3")) kind = "audio";
@@ -49,7 +44,7 @@ export const getStaticPaths = (() => {
 
 				return {
 					params: { type, filename: [filename, format].join(".") },
-					props: { pathname },
+					props: { pathname, redownload },
 				};
 			});
 		});
