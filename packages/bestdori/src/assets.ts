@@ -10,28 +10,43 @@ export type DataForAsset<T extends AssetType> = ObjectValue<(typeof data)[T]>;
 const latestStamps = new Set(
 	data.recentNews.events.map(({ stamp }) => stamp.id),
 );
-const getRegionAsset = (pathname: string, releasedAt: { en: number | null }) =>
-	["/assets", releasedAt.en ? "en" : "jp", pathname].join("/");
+
+const asset = (pathname: string, identifier: string, redownload = false) => ({
+	pathname,
+	identifier,
+	redownload,
+});
+const regionAsset = (
+	pathname: string,
+	releasedAt: { en: number | null },
+	identifier: string,
+	redownload = false,
+) =>
+	asset(
+		["/assets", releasedAt.en ? "en" : "jp", pathname].join("/"),
+		identifier,
+		redownload,
+	);
 
 export const getAsset = <T extends AssetType>(
 	type: T,
 	entry: DataForAsset<T>,
-): Record<string, string | { pathname: string; redownload: boolean }> => {
+): Record<string, ReturnType<typeof asset>> => {
 	const { id, slug } = entry;
 
 	switch (type) {
 		case "attributes": {
-			return { [slug]: `/res/icon/${slug}.svg` };
+			return { [slug]: asset(`/res/icon/${slug}.svg`, "icon") };
 		}
 
 		case "bands": {
 			const { color } = entry as DataForAsset<"bands">;
-			if (color) return { [slug]: `/res/icon/band_${id}.svg` };
+			if (color) return { [slug]: asset(`/res/icon/band_${id}.svg`, "icon") };
 			break;
 		}
 
 		case "characters": {
-			return { [slug]: `/res/icon/chara_icon_${id}.png` };
+			return { [slug]: asset(`/res/icon/chara_icon_${id}.png`, "icon") };
 		}
 
 		case "cards": {
@@ -47,30 +62,35 @@ export const getAsset = <T extends AssetType>(
 			} = entry as DataForAsset<"cards">;
 
 			const normal = {
-				[`${slug}-icon-normal`]: getRegionAsset(
+				[`${slug}-icon-normal`]: regionAsset(
 					`thumb/chara/card${chunkId}_rip/${resourceSetName}_normal.png`,
 					releasedAt,
+					"icon_untrained",
 				),
-				[`${slug}-full-normal`]: getRegionAsset(
+				[`${slug}-full-normal`]: regionAsset(
 					`characters/resourceset/${resourceSetName}_rip/card_normal.png`,
 					releasedAt,
+					"full_untrained",
 				),
 			};
 			const trained = {
-				[`${slug}-icon-trained`]: getRegionAsset(
+				[`${slug}-icon-trained`]: regionAsset(
 					`thumb/chara/card${chunkId}_rip/${resourceSetName}_after_training.png`,
 					releasedAt,
+					"icon_trained",
 				),
-				[`${slug}-full-trained`]: getRegionAsset(
+				[`${slug}-full-trained`]: regionAsset(
 					`characters/resourceset/${resourceSetName}_rip/card_after_training.png`,
 					releasedAt,
+					"full_trained",
 				),
 			};
 			const voice = gachaText &&
 				gachaType && {
-					[`${slug}-voice`]: getRegionAsset(
+					[`${slug}-voice`]: regionAsset(
 						`/sound/voice/gacha/${gachaType}_rip/${resourceSetName}.mp3`,
 						releasedAt,
+						"gacha_voiceline",
 					),
 				};
 
@@ -98,27 +118,33 @@ export const getAsset = <T extends AssetType>(
 			}
 
 			return {
-				[`${slug}-banner`]: getRegionAsset(
+				[`${slug}-banner`]: regionAsset(
 					`homebanner_rip/${bannerAssetBundleName}.png`,
 					startAt,
+					"banner",
 				),
-				[`${slug}-background`]: getRegionAsset(
+				[`${slug}-background`]: regionAsset(
 					`event/${assetBundleName}/topscreen_rip/bg_eventtop.png`,
 					startAt,
+					"background",
 				),
-				[`${slug}-bgm`]: getRegionAsset(bgmAsset, startAt),
+				[`${slug}-bgm`]: regionAsset(bgmAsset, startAt, "bgm"),
 			};
 		}
 
 		case "stamps": {
 			const { region, voiced } = entry as DataForAsset<"stamps">;
 			return {
-				[`${slug}-image`]: {
-					pathname: `/assets/${region}/stamp/01_rip/${id}.png`,
-					redownload: latestStamps.has(id),
-				},
+				[`${slug}-image`]: asset(
+					`/assets/${region}/stamp/01_rip/${id}.png`,
+					"image",
+					latestStamps.has(id),
+				),
 				...(voiced && {
-					[`${slug}-voice`]: `/assets/${region}/sound/voice_stamp_rip/${id}.mp3`,
+					[`${slug}-voice`]: asset(
+						`/assets/${region}/sound/voice_stamp_rip/${id}.mp3`,
+						"audio",
+					),
 				}),
 			};
 		}

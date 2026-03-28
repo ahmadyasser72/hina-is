@@ -29,8 +29,7 @@ export const getStaticPaths = (() => {
 			const assets = Object.entries(getAsset(type, entry));
 
 			return assets.map(([filename, detail]) => {
-				const { pathname, redownload = false } =
-					typeof detail === "object" ? detail : { pathname: detail };
+				const { pathname, redownload = false } = detail;
 
 				let kind: "audio" | "image" | "other";
 				if (pathname.endsWith("mp3")) kind = "audio";
