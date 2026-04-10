@@ -1,5 +1,6 @@
 declare global {
 	declare const __BUILD_DATE__: string;
+	declare const __GITHUB_URL__: string;
 
 	interface Window {
 		playCardAudio: (button: HTMLButtonElement, slug: string) => void;

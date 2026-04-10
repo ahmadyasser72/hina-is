@@ -1,8 +1,16 @@
 // @ts-check
+import { exec } from "node:child_process";
+
 import cloudflare from "@astrojs/cloudflare";
 import preact from "@astrojs/preact";
 import tailwindcss from "@tailwindcss/vite";
 import { defineConfig, envField, fontProviders } from "astro/config";
+
+const GITHUB_URL = await new Promise((resolve, reject) => {
+	exec("git config --get remote.origin.url", (error, stdout) =>
+		error ? reject(error) : resolve(stdout.trim().replace(/.git$/, "/")),
+	);
+});
 
 // https://astro.build/config
 export default defineConfig({
@@ -50,6 +58,7 @@ export default defineConfig({
 
 		define: {
 			__BUILD_DATE__: JSON.stringify(Date.now()),
+			__GITHUB_URL__: JSON.stringify(GITHUB_URL),
 		},
 	},
 
