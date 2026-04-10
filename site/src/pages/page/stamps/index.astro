@@ -1,10 +1,9 @@
 ---
-import { IMAGE_FORMAT } from "@hina-is/bestdori/constants";
-
 import { isEqual } from "es-toolkit";
 
 import IconifyLoader from "~/components/loader/iconify-loader.astro";
 import InfiniteLoader from "~/components/loader/infinite-loader.astro";
+import BandoriStamp from "~/components/shared/bandori-stamp.astro";
 import BaseLayout from "~/layouts/base-layout.astro";
 import { pages } from "~/lib/page";
 import { paginate } from "~/lib/paginate";
@@ -101,28 +100,12 @@ if (Astro.request.headers.get("hx-request") === "true" && page.current === 1) {
 			hx-indicator="#stamps-loader"
 		>
 			{
-				page.items.map(({ id, ...stamp }, idx) => (
-					<div
+				page.items.map((stamp, idx) => (
+					<BandoriStamp
+						class="stamp"
+						{stamp}
 						{...(page.isLastElement(idx) && page.props)}
-						class="stamp relative aspect-40/33 h-32"
-					>
-						<img
-							class="w-full"
-							{...Astro.locals.useThumbhash(`${stamp.slug}-image`)}
-							src={`/assets/stamps/${stamp.slug}-image.${IMAGE_FORMAT}`}
-							alt={`Stamp #${id}`}
-							loading="lazy"
-						/>
-
-						{stamp.voiced && (
-							<button
-								class="btn bg-base-100/80 btn-circle absolute right-1 bottom-1.5 size-8 border-0 backdrop-blur-sm"
-								onclick={`playStampAudio(this, '${stamp.slug}')`}
-							>
-								<IconifyLoader icon="lucide:volume-2" />
-							</button>
-						)}
-					</div>
+					/>
 				))
 			}
 		</div>

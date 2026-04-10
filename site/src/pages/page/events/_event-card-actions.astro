@@ -1,8 +1,8 @@
 ---
-import { IMAGE_FORMAT } from "@hina-is/bestdori/constants";
 import type { Bandori } from "@hina-is/bestdori/data";
 
 import IconifyLoader from "~/components/loader/iconify-loader.astro";
+import BandoriStamp from "~/components/shared/bandori-stamp.astro";
 import { dayjs } from "~/lib/date";
 import EventCardCardIcon from "./_event-card-card-icon.astro";
 
@@ -130,26 +130,7 @@ const { cards, stamp } = event;
 >
 	<div class="mb-1 text-center text-sm font-medium">Event Stamp</div>
 
-	<div class="relative aspect-40/33 h-32">
-		<img
-			class="w-full"
-			{...Astro.locals.useThumbhash(`${stamp.slug}-image`)}
-			src={`/assets/stamps/${stamp.slug}-image.${IMAGE_FORMAT}`}
-			alt={`Stamp #${stamp.id}`}
-			loading="lazy"
-		/>
-
-		{
-			stamp.voiced && (
-				<button
-					class="btn bg-base-100/80 btn-circle absolute right-1 bottom-1.5 size-8 border-0 backdrop-blur-sm"
-					onclick={`playStampAudio(this, '${event.stamp.slug}')`}
-				>
-					<IconifyLoader icon="lucide:volume-2" />
-				</button>
-			)
-		}
-	</div>
+	<BandoriStamp {stamp} />
 </div>
 
 <div

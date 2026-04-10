@@ -1,0 +1,35 @@
+---
+import { IMAGE_FORMAT } from "@hina-is/bestdori/constants";
+import type { Bandori } from "@hina-is/bestdori/data";
+
+import type { JSX } from "astro/jsx-runtime";
+
+import IconifyLoader from "~/components/loader/iconify-loader.astro";
+
+interface Props extends JSX.HTMLAttributes {
+	stamp: Bandori.Stamp;
+}
+
+const { stamp, class: className, ...props } = Astro.props;
+---
+
+<div class:list={["relative aspect-40/33 h-32", className]} {...props}>
+	<img
+		class="w-full"
+		{...Astro.locals.useThumbhash(`${stamp.slug}-image`)}
+		src={`/assets/stamps/${stamp.slug}-image.${IMAGE_FORMAT}`}
+		alt={`Stamp #${stamp.id}`}
+		loading="lazy"
+	/>
+
+	{
+		stamp.voiced && (
+			<button
+				class="btn bg-base-100/80 btn-circle absolute right-1 bottom-1.5 size-8 border-0 backdrop-blur-sm"
+				onclick={`playStampAudio(this, '${stamp.slug}')`}
+			>
+				<IconifyLoader icon="lucide:volume-2" />
+			</button>
+		)
+	}
+</div>
