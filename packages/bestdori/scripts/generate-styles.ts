@@ -1,13 +1,12 @@
 import { join } from "node:path";
 
 import { colord } from "colord";
+import yoctoSpinner from "yocto-spinner";
 
 import { attributes, bands, characters } from "~/data";
 import { GIT_ROOT_PATH } from "~/index";
 
-console.time("everything");
-
-console.time("generating CSS rules");
+const spinner = yoctoSpinner({ text: "generating styles" }).start();
 
 const rules: string[] = [];
 const groups = [
@@ -73,13 +72,10 @@ for (const { name } of groups) {
 }
 
 const styles = rules.map((rule) => rule.trim()).join("\n\n");
-console.timeEnd("generating CSS rules");
 
-console.time(`writing styles`);
 await Bun.write(
 	join(GIT_ROOT_PATH, "site/src/styles/bandori.css"),
 	styles + "\n",
 );
-console.timeEnd(`writing styles`);
 
-console.timeEnd("everything");
+spinner.success("styles generated");

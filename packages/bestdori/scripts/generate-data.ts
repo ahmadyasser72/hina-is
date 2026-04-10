@@ -2,9 +2,10 @@ import { writeFile } from "node:fs/promises";
 import path from "node:path";
 
 import * as devalue from "devalue";
-import { deburr, groupBy } from "es-toolkit";
+import { deburr, groupBy, limitAsync } from "es-toolkit";
 import { findKey } from "es-toolkit/object";
-import type { z } from "zod";
+import yoctoSpinner from "yocto-spinner";
+import { z } from "zod";
 
 import { bestdoriJSON, GIT_ROOT_PATH } from "~/index";
 import { Bands } from "~/schema/bands";
@@ -12,13 +13,14 @@ import { Cards } from "~/schema/cards";
 import { Characters } from "~/schema/characters";
 import { CardAttribute } from "~/schema/constants";
 import { Events } from "~/schema/events";
-import { StampImages, StampVoices } from "~/schema/extras/stamps";
+import { GenericAssets } from "~/schema/extras/generic-assets";
+import { StampId } from "~/schema/extras/stamps";
 import { RecentNews } from "~/schema/recent-news";
 import { Skills } from "~/schema/skills";
 import { Stamps } from "~/schema/stamps";
 import { unwrap } from "~/utilities";
 
-console.time("everything");
+const createSpinner = (text: string) => yoctoSpinner({ text }).start();
 
 const createSlug = (placeholder: string, ...parts: (string | number)[]) =>
 	deburr(parts.join(" "))
@@ -32,41 +34,36 @@ const findValue = <T extends Record<any, any>>(
 	predicate: (value: T[keyof T], key: keyof T, obj: T) => boolean,
 ): T[keyof T] | undefined => obj[findKey(obj, predicate)];
 
-const time = async <T>(
-	message: string,
-	it: Promise<T> | (() => T),
-): Promise<T> => {
-	console.time(message);
-	const result = it instanceof Promise ? await it : it();
-	console.timeEnd(message);
-	return result;
-};
+const data = await (async () => {
+	const spinner = createSpinner("fetch data");
 
-const SCHEMAS = {
-	bands: Bands,
-	cards: Cards,
-	characters: Characters,
-	events: Events,
-	stamps: Stamps,
-	skills: Skills,
-	stampImages: StampImages,
-	stampVoices: StampVoices,
-	recentNews: RecentNews,
-} as const;
+	const SCHEMAS = {
+		bands: Bands,
+		cards: Cards,
+		characters: Characters,
+		events: Events,
+		stamps: Stamps,
+		skills: Skills,
+		stampImages: GenericAssets("png", StampId),
+		stampVoices: GenericAssets("mp3", StampId),
+		recentNews: RecentNews,
+		gachaTypeVoiceList: GenericAssets("mp3", z.string()),
+	} as const;
 
-const get = async <K extends keyof typeof SCHEMAS>(
-	key: K,
-	pathname: string,
-): Promise<z.infer<(typeof SCHEMAS)[K]>> => {
-	const json = await time(
-		`get ${key} (${pathname})`,
-		bestdoriJSON(pathname, false),
+	const get = limitAsync(
+		async <K extends keyof typeof SCHEMAS>(
+			key: K,
+			pathname: string,
+		): Promise<z.infer<(typeof SCHEMAS)[K]>> => {
+			spinner.text = `fetching ${key} (${pathname})`;
+			const json = await bestdoriJSON(pathname, false);
+			const output = (await SCHEMAS[key].parseAsync(json)) as never;
+
+			return output;
+		},
+		1,
 	);
 
-	return time(`get ${key} entries`, SCHEMAS[key].parseAsync(json) as never);
-};
-
-const data = await (async () => {
 	const [
 		bands,
 		cards,
@@ -93,22 +90,16 @@ const data = await (async () => {
 		get("recentNews", "/api/news/dynamic/recent.json"),
 	]);
 
-	const gachaTypeList = await time(
-		"fetch gachaTypeList",
-		Promise.all(
-			["birthdayspin", "limitedspin", "operationspin", "spin"].map((type) =>
-				bestdoriJSON<string[]>(
-					`api/explorer/jp/assets/sound/voice/gacha/${type}.json`,
-					false,
-				).then((entries) => ({
-					type,
-					entries: entries
-						.filter((it) => it.endsWith("mp3"))
-						.map((it) => it.replace(".mp3", "")),
-				})),
-			),
+	const gachaTypeVoiceList = await Promise.all(
+		["birthdayspin", "limitedspin", "operationspin", "spin"].map((type) =>
+			get(
+				"gachaTypeVoiceList",
+				`api/explorer/jp/assets/sound/voice/gacha/${type}.json`,
+			).then((entries) => ({ type, entries })),
 		),
 	);
+
+	spinner.success("done fetching");
 
 	return {
 		get attributes() {
@@ -224,7 +215,7 @@ const data = await (async () => {
 									if (!unwrap(gachaText)) return null;
 
 									return (
-										gachaTypeList.find(({ entries }) =>
+										gachaTypeVoiceList.find(({ entries }) =>
 											entries.includes(entry.resourceSetName),
 										)?.type ?? null
 									);
@@ -445,22 +436,24 @@ const data = await (async () => {
 
 export type Data = typeof data;
 
-const lines = await time(
-	"uneval all",
-	Promise.all(
-		Object.entries(data).map(async ([key, map]) => {
-			const out = await time(`uneval ${key}`, () => devalue.uneval(map));
-			return `export const ${key} = ${out}`;
-		}),
-	),
-);
+const lines = (() => {
+	const spinner = createSpinner("uneval data");
+	const output = Object.entries(data).map(([key, map]) => {
+		spinner.text = `uneval ${key}`;
+		const out = devalue.uneval(map);
+		return `export const ${key} = ${out}`;
+	});
 
-await time(
-	"write data.js",
-	writeFile(
+	spinner.success("done uneval");
+	return output;
+})();
+
+{
+	const spinner = createSpinner("write data.js");
+	await writeFile(
 		path.join(GIT_ROOT_PATH, "packages/bestdori/src/data.js"),
 		lines.join(";"),
-	),
-);
+	);
 
-console.timeEnd("everything");
+	spinner.success("data.js written");
+}
