@@ -1,5 +1,8 @@
 ---
+import { dayjs } from "~/lib/date";
 import NavigationMenu from "./navigation-menu.astro";
+
+const BUILD_DATE = dayjs.tz(__BUILD_DATE__);
 ---
 
 <header
@@ -30,8 +33,35 @@ import NavigationMenu from "./navigation-menu.astro";
 			/>
 		</div>
 
-		<div class="max-md:navbar-start navbar-center">
-			<a class="btn btn-ghost text-base font-medium" href="/">hina-is ♥</a>
+		<div
+			class="max-md:navbar-start navbar-center"
+			style="anchor-name: --anchor-header-site"
+		>
+			<a class="btn btn-ghost btn-sm text-base font-medium" href="/"
+				>hina-is ♥</a
+			>
+
+			<button
+				class="btn btn-square btn-sm btn-ghost"
+				popovertarget="header-site-dropdown"
+			>
+				<iconify-icon class="size-4" icon="lucide:info" width="none"
+				></iconify-icon>
+			</button>
+			<div
+				class="dropdown bg-base-200 rounded-box md:dropdown-center mt-1 w-max overflow-visible px-4 py-2 shadow-sm"
+				id="header-site-dropdown"
+				popover
+				style="position-anchor: --anchor-header-site"
+			>
+				Last updated
+				<span
+					class="tooltip tooltip-bottom underline decoration-dotted"
+					data-tip={BUILD_DATE.fromNow()}
+				>
+					{BUILD_DATE.format("MM/DD/YYYY hh:mm A")}</span
+				>
+			</div>
 		</div>
 
 		<div class="navbar-end">

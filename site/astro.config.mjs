@@ -47,6 +47,10 @@ export default defineConfig({
 				"node:path",
 			],
 		},
+
+		define: {
+			__BUILD_DATE__: JSON.stringify(Date.now()),
+		},
 	},
 
 	experimental: {
