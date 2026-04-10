@@ -20,11 +20,12 @@ import { unwrap } from "~/utilities";
 
 console.time("everything");
 
-const createSlug = (...parts: (string | number)[]) =>
+const createSlug = (placeholder: string, ...parts: (string | number)[]) =>
 	deburr(parts.join(" "))
 		.toLowerCase()
 		.replace(/[^a-zA-Z0-9\s-]/g, "")
-		.replace(/\s+/g, "-");
+		.replace(/\s+/g, "-")
+		.replace(/-$/, "-" + placeholder);
 
 const findValue = <T extends Record<any, any>>(
 	obj: T,
@@ -140,7 +141,7 @@ const data = await (async () => {
 
 			return Object.fromEntries(
 				[...bands.entries()].map(([id, { name }]) => {
-					const slug = createSlug(id, unwrap(name));
+					const slug = createSlug("band", id, unwrap(name));
 					return [
 						slug,
 						{
@@ -159,7 +160,7 @@ const data = await (async () => {
 				[...characters.entries()].map(
 					([id, { bandId, nickname, name, colorCode, ...entry }]) => {
 						const displayName = unwrap(nickname) ?? unwrap(name);
-						const slug = createSlug(id, displayName);
+						const slug = createSlug("character", id, displayName);
 						return [
 							slug,
 							{
@@ -199,7 +200,7 @@ const data = await (async () => {
 						const character = characters.get(characterId)!;
 						const characterName =
 							unwrap(character.nickname) ?? unwrap(character.name);
-						const slug = createSlug(id, characterName, unwrap(name));
+						const slug = createSlug("card", id, characterName, unwrap(name));
 						return [
 							slug,
 							{
@@ -305,7 +306,7 @@ const data = await (async () => {
 							...entry
 						},
 					]) => {
-						const slug = createSlug(id, unwrap(name));
+						const slug = createSlug("event", id, unwrap(name));
 						return [
 							slug,
 							{
@@ -389,7 +390,7 @@ const data = await (async () => {
 					)
 					.sort((a, b) => Number(b.voiced) - Number(a.voiced))
 					.map(({ id, region, voiced }) => {
-						const slug = createSlug(...id.split("_"));
+						const slug = createSlug("stamp", ...id.split("_"));
 						return [
 							slug,
 							{
