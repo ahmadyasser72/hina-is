@@ -39,7 +39,7 @@ export const GET: APIRoute = async () => {
 
 	const hashEntries = await Promise.all(
 		assets.map(async ({ filename, pathname }) => {
-			const response = await bestdori(pathname, true);
+			const { response } = await bestdori(pathname, true);
 			const buffer = Buffer.from(await response.arrayBuffer());
 			const hash = await generateThumbhash(buffer);
 

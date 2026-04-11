@@ -8,6 +8,7 @@
 		"./assets": "./src/assets.js",
 		"./constants": "./src/constants.js",
 		"./data": "./src/data.js",
+		"./process": "./src/process/index.js",
 		"./utilities": "./src/utilities.js"
 	},
 	"scripts": {

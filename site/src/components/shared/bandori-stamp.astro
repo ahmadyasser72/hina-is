@@ -1,5 +1,9 @@
 ---
-import { AUDIO_FORMAT, IMAGE_FORMAT } from "@hina-is/bestdori/constants";
+import {
+	AUDIO_FORMAT,
+	IMAGE_FORMAT,
+	STAMP_VIDEO_FORMAT,
+} from "@hina-is/bestdori/constants";
 import type { Bandori } from "@hina-is/bestdori/data";
 
 import type { JSX } from "astro/jsx-runtime";
@@ -37,19 +41,34 @@ const { stamp, class: className, ...props } = Astro.props;
 
 			{
 				stamp.voiced && (
-					<li>
-						<a
-							href={`/assets/stamps/${stamp.slug}-voice.${AUDIO_FORMAT}`}
-							download
-						>
-							<iconify-icon
-								class="size-4"
-								icon="lucide:file-volume"
-								width="none"
-							/>
-							audio
-						</a>
-					</li>
+					<>
+						<li>
+							<a
+								href={`/assets/stamps/${stamp.slug}-voice.${AUDIO_FORMAT}`}
+								download
+							>
+								<iconify-icon
+									class="size-4"
+									icon="lucide:audio-lines"
+									width="none"
+								/>
+								audio
+							</a>
+						</li>
+						<li>
+							<a
+								href={`/assets/stamps/${stamp.slug}.${STAMP_VIDEO_FORMAT}`}
+								download
+							>
+								<iconify-icon
+									class="size-4"
+									icon="lucide:file-play"
+									width="none"
+								/>
+								video
+							</a>
+						</li>
+					</>
 				)
 			}
 		</ul>

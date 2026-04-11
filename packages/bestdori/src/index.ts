@@ -1,5 +1,4 @@
 import { exec } from "node:child_process";
-import { createHash } from "node:crypto";
 import { mkdir } from "node:fs/promises";
 import path from "node:path";
 
@@ -11,6 +10,7 @@ import {
 	IMAGE_FORMAT_ORIGINAL,
 } from "./preprocess/constants";
 import { compressImage } from "./preprocess/image";
+import { hashBuffer } from "./utilities";
 
 export const createDirectoryIfNotExists = async (path: string) =>
 	mkdir(path, { recursive: true }).then(() => path);
@@ -70,7 +70,7 @@ const fetchBestdori: (
 export const bestdori = async <T = never>(
 	pathname: string,
 	useCachedIf: ((cached: T) => boolean) | boolean,
-): Promise<Response> => {
+) => {
 	const cacheName = pathname.slice(1).replaceAll("/", "_");
 	const cacheFile = Bun.file(path.join(CACHE_DIR, cacheName));
 
@@ -100,25 +100,27 @@ export const bestdori = async <T = never>(
 	if (extension === AUDIO_FORMAT_ORIGINAL) preprocess = compressAudio;
 	else if (extension === IMAGE_FORMAT_ORIGINAL) preprocess = compressImage;
 	else {
-		return new Response(data, {
-			headers: {
-				"content-type": response.headers.get("content-type")!,
-				"content-length": data.byteLength.toString(),
-			},
-		});
+		return {
+			file: cacheFile,
+			response: new Response(data, {
+				headers: {
+					"content-type": response.headers.get("content-type")!,
+					"content-length": data.byteLength.toString(),
+				},
+			}),
+		};
 	}
 
-	const hash = createHash("sha512")
-		.update(Buffer.from(data))
-		.digest("hex")
-		.slice(0, 6);
-
-	return preprocess(
-		[cacheName.replace(path.extname(cacheName), ""), hash].join("."),
-		Buffer.from(data),
-	);
+	const hash = hashBuffer(data);
+	return {
+		file: cacheFile,
+		response: await preprocess(
+			[cacheName.replace(path.extname(cacheName), ""), hash].join("."),
+			Buffer.from(data),
+		),
+	};
 };
 
 export const bestdoriJSON = <T = unknown>(
 	...args: Parameters<typeof bestdori<T>>
-) => bestdori(...args).then((response) => response.json() as Promise<T>);
+) => bestdori(...args).then(({ response }) => response.json() as Promise<T>);

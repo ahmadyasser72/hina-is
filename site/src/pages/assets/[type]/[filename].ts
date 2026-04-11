@@ -17,8 +17,11 @@ import type {
 
 export const prerender = true;
 
-export const GET: APIRoute<Props, Params> = async ({ props }) =>
-	bestdori(props.pathname, !props.redownload);
+export const GET: APIRoute<Props, Params> = async ({ props }) => {
+	const { response } = await bestdori(props.pathname, !props.redownload);
+
+	return response;
+};
 
 export const getStaticPaths = (() => {
 	const resolveAssets = (
