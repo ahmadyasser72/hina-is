@@ -31,7 +31,9 @@ const characters = (() => {
 })();
 
 const override = params.slug
-	? await Astro.locals.redis.get<ResultData>(`character-sorter:${params.slug}`)
+	? await Astro.locals.redis
+			.get<ResultData>(`character-sorter:${params.slug}`)
+			.catch(null)
 	: null;
 
 if (params.slug && !override) return Astro.redirect("/page/character-sorter");

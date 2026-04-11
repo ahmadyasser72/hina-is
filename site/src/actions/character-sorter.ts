@@ -1,4 +1,4 @@
-import { defineAction } from "astro:actions";
+import { ActionError, defineAction } from "astro:actions";
 import z from "astro/zod";
 import hashObject from "hash-object/async";
 
@@ -24,8 +24,15 @@ export const createShareLink = defineAction({
 		const slug = hash.slice(0, 6);
 
 		const payload = { slug, ...data } satisfies ResultData;
-		await locals.redis.set(`character-sorter:${slug}`, payload);
+		try {
+			await locals.redis.set(`character-sorter:${slug}`, payload);
 
-		return { slug };
+			return { slug };
+		} catch (error) {
+			throw new ActionError({
+				code: "INTERNAL_SERVER_ERROR",
+				message: "Failed to upload ranking data.",
+			});
+		}
 	},
 });

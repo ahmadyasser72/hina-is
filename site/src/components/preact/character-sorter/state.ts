@@ -170,7 +170,10 @@ export const createState = (
 	let persisted: PersistedState | null = null;
 	if (characters.length === 0 && !override) {
 		const data = localStorage.getItem(CHARACTER_SORTER_STATE_KEY);
-		if (data) persisted = devalue.parse(data);
+		if (data) {
+			persisted = devalue.parse(data);
+			if (persisted && !persisted.slug) persisted.slug = null;
+		}
 	}
 
 	const items = persisted?.current.result ?? characters;

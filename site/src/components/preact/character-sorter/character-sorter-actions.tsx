@@ -75,7 +75,7 @@ export const CharacterSorterActions = ({
 			}
 		},
 		upload: async () => {
-			if (state.slug || !output.blob || output.loading) return;
+			if (state.slug !== null || !output.blob || output.loading) return;
 
 			try {
 				output.loading = "upload";
@@ -88,8 +88,8 @@ export const CharacterSorterActions = ({
 
 				state.slug = data.slug;
 			} catch (error) {
-				console.error("Failed to process data:", error);
-				alert("Failed to process data.");
+				console.error(error);
+				state.slug = "";
 			} finally {
 				output.loading = null;
 			}
@@ -106,7 +106,7 @@ export const CharacterSorterActions = ({
 			URL.revokeObjectURL(url);
 		},
 		share: async () => {
-			if (!state.slug || !output.blob) return;
+			if (state.slug === null || !output.blob) return;
 			else if (!navigator.share || !navigator.canShare) {
 				alert("Sharing is not supported in this browser.");
 				return;
