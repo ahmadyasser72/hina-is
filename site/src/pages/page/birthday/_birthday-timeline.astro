@@ -31,10 +31,12 @@ const { entries } = Astro.props;
 					</div>
 				</div>
 				<div
+					role="button"
 					class:list={[
-						"bg-base-100/67 rounded-box mt-3 mb-6 flex flex-col gap-1 p-4 pt-2 group-odd:md:items-end",
+						"bg-base-100/67 rounded-box mt-3 mb-6 flex cursor-pointer flex-col gap-1 p-4 pt-2 group-odd:md:items-end",
 						idx % 2 === 0 ? "timeline-start" : "timeline-end",
 					]}
+					onclick={`scrollKeepHistory('${id}')`}
 				>
 					<div class="inline-flex gap-2 font-mono group-odd:md:flex-row-reverse">
 						<span class="italic">
@@ -43,18 +45,16 @@ const { entries } = Astro.props;
 						<p class="font-light">
 							(
 							<span
-								class="tooltip tooltip-left tooltip-character group-odd:md:tooltip-right -mx-1.5 underline decoration-dotted before:font-sans before:font-normal"
+								class="tooltip tooltip-left tooltip-character group-odd:md:tooltip-right -mx-1.5 cursor-default underline decoration-dotted before:font-sans before:font-normal after:hidden"
 								data-tip={formatDuration(now, character.nextBirthday)}
+								onclick="event.stopPropagation()"
 								set:text={character.nextBirthday.from(now)}
 							/>
 							)
 						</p>
 					</div>
 
-					<button
-						class="inline-flex cursor-pointer items-center gap-2 group-odd:md:flex-row-reverse"
-						onclick={`scrollKeepHistory('${id}')`}
-					>
+					<div class="inline-flex items-center gap-2 group-odd:md:flex-row-reverse">
 						<img
 							class="size-8"
 							src={`/assets/characters/${character.slug}.${IMAGE_FORMAT}`}
@@ -62,7 +62,7 @@ const { entries } = Astro.props;
 							loading="lazy"
 						/>
 						<span class="font-medium md:text-lg">{character.name}</span>
-					</button>
+					</div>
 
 					<div
 						class="badge badge-band font-medium"
