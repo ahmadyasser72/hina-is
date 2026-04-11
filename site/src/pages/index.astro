@@ -5,7 +5,7 @@ import { events } from "@hina-is/bestdori/data";
 import { sample } from "es-toolkit";
 
 import BaseLayout from "~/layouts/base-layout.astro";
-import { pages } from "~/lib/page";
+import { pageList, pages } from "~/lib/page";
 
 const randomEvent = sample(Object.values(events));
 ---
@@ -19,14 +19,19 @@ const randomEvent = sample(Object.values(events));
 	metadata={pages["/"]}
 >
 	<div class="absolute inset-0 grid place-items-center">
-		<div class="flex flex-col items-center">
+		<div class="flex flex-col items-center gap-4">
 			<h2 class="badge badge-accent badge-xl w-48 font-medium">hina-is</h2>
 
-			<div class="*:link-hover *:btn *:btn-sm mt-4 grid grid-cols-2 gap-1">
-				<a href="/page/events"> Event list </a>
-				<a href="/page/stamps"> Stamp list </a>
-				<a href="/page/birthday"> Birthday tracker </a>
-				<a href="/page/character-sorter"> Character sorter </a>
+			<div class="grid grid-cols-2 gap-1">
+				{
+					pageList
+						.filter(({ path }) => path !== "/")
+						.map(({ path, title }) => (
+							<a class="link-hover btn btn-sm" href={path}>
+								{title}
+							</a>
+						))
+				}
 			</div>
 		</div>
 	</div>
