@@ -34,11 +34,14 @@ export const compressAudio = async (
 			AUDIO_FORMAT,
 			"pipe:1",
 		],
-		{ stdin: buffer, stdout: "pipe", stderr: "ignore" },
+		{ stdin: buffer, stdout: "pipe", stderr: "pipe" },
 	);
 
 	const exitCode = await ffmpeg.exited;
-	if (exitCode !== 0) throw new Error(`failed to compress audio (${name})`);
+	if (exitCode !== 0) {
+		const error = await ffmpeg.stderr.text();
+		throw new Error(`failed to compress audio (${name})\n${error}`);
+	}
 
 	const compressed = await new Response(ffmpeg.stdout).arrayBuffer();
 	await outputFile.write(compressed);

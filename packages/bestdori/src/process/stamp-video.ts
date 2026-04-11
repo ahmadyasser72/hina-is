@@ -51,11 +51,14 @@ export const createStampVideo = async (
 			STAMP_VIDEO_FORMAT,
 			"pipe:1",
 		],
-		{ stdout: "pipe", stderr: "ignore" },
+		{ stdout: "pipe", stderr: "pipe" },
 	);
 
 	const exitCode = await ffmpeg.exited;
-	if (exitCode !== 0) throw new Error(`failed to create stamp-video (${name})`);
+	if (exitCode !== 0) {
+		const error = await ffmpeg.stderr.text();
+		throw new Error(`failed to create stamp-video (${name})\n${error}`);
+	}
 
 	const created = await new Response(ffmpeg.stdout).arrayBuffer();
 	await outputFile.write(created);
