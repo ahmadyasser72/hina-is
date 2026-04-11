@@ -33,7 +33,7 @@ const { entries } = Astro.props;
 				<div
 					role="button"
 					class:list={[
-						"bg-base-100/67 rounded-box mt-3 mb-6 flex cursor-pointer flex-col gap-1 p-4 pt-2 group-odd:md:items-end",
+						"bg-character/67 text-character-content rounded-box mt-3 mb-6 flex cursor-pointer flex-col gap-1 p-4 pt-2 group-odd:md:items-end",
 						idx % 2 === 0 ? "timeline-start" : "timeline-end",
 					]}
 					onclick={`scrollKeepHistory('${id}')`}
