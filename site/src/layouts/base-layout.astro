@@ -87,6 +87,8 @@ const image = new URL(`/open-graph/${route}.webp`, url.origin);
 							<img
 								class="container mx-auto size-full object-cover brightness-67 select-none dark:brightness-33"
 								{...background}
+								id="background"
+								hx-swap-oob="true"
 							/>
 						</div>
 					)

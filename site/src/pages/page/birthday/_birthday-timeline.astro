@@ -1,47 +1,25 @@
 ---
 import { IMAGE_FORMAT } from "@hina-is/bestdori/constants";
-import type { Bandori } from "@hina-is/bestdori/data";
 
 import { dayjs, formatDuration } from "~/lib/date";
+import type { sortLatestBirthday } from "./_birthday";
 
 interface Props {
-	characters: Bandori.Character[];
+	entries: ReturnType<typeof sortLatestBirthday>;
 }
 
-const { characters } = Astro.props;
-
 const now = dayjs();
-const thisYear = now.year();
-const birthdayList = characters
-	.map(({ birthday, ...entry }) => {
-		const birthdayThisYear = dayjs(birthday)
-			.tz()
-			.add(1, "days")
-			.startOf("days")
-			.set("years", thisYear);
-		const nextBirthday = now.isBefore(birthdayThisYear)
-			? birthdayThisYear
-			: birthdayThisYear.add(1, "year");
-		const untilNextBirthday = nextBirthday.diff(now);
-
-		return {
-			headingId: entry.slug.split("-").slice(1).join("-"),
-			nextBirthday,
-			untilNextBirthday,
-			...entry,
-		};
-	})
-	.sort((a, b) => a.untilNextBirthday - b.untilNextBirthday);
+const { entries } = Astro.props;
 ---
 
 <ul
 	class="timeline timeline-snap-icon max-md:timeline-compact timeline-vertical mx-8"
 >
 	{
-		birthdayList.map(({ headingId, ...character }, idx) => (
+		entries.map(({ id, ...character }, idx) => (
 			<li
 				class="group"
-				id={headingId}
+				{id}
 				data-band={character.band.slug}
 				data-character={character.slug}
 			>
@@ -54,7 +32,7 @@ const birthdayList = characters
 				</div>
 				<div
 					class:list={[
-						"mt-3 mb-6 flex flex-col gap-1 group-odd:md:items-end",
+						"bg-base-100/67 rounded-box mt-3 mb-6 flex flex-col gap-1 p-4 pt-2 group-odd:md:items-end",
 						idx % 2 === 0 ? "timeline-start" : "timeline-end",
 					]}
 				>
@@ -75,7 +53,7 @@ const birthdayList = characters
 
 					<button
 						class="inline-flex cursor-pointer items-center gap-2 group-odd:md:flex-row-reverse"
-						onclick={`scrollKeepHistory('${headingId}')`}
+						onclick={`scrollKeepHistory('${id}')`}
 					>
 						<img
 							class="size-8"

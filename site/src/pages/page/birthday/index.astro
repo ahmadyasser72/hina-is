@@ -1,6 +1,12 @@
 ---
+import { IMAGE_FORMAT } from "@hina-is/bestdori/constants";
+import { cardsByCharacter } from "@hina-is/bestdori/data";
+
+import { sample } from "es-toolkit";
+
 import BaseLayout from "~/layouts/base-layout.astro";
 import { pages } from "~/lib/page";
+import { sortLatestBirthday } from "./_birthday";
 import BirthdayTimeline from "./_birthday-timeline.astro";
 import { filterCharacters, getCharacters } from "./_list";
 import { schema } from "./_params";
@@ -9,9 +15,19 @@ const params = Astro.locals.parseQuery(schema);
 
 const characters = getCharacters();
 const { filtered } = await filterCharacters(params, characters);
+const entries = sortLatestBirthday(filtered);
+
+const randomCard = sample(cardsByCharacter[entries[0].slug]);
 ---
 
-<BaseLayout metadata={pages["/page/birthday"]}>
+<BaseLayout
+	background={{
+		...Astro.locals.useThumbhash(`${randomCard.slug}-full-normal`),
+		src: `/assets/cards/${randomCard.slug}-full-normal.${IMAGE_FORMAT}`,
+		alt: `${randomCard.character.name} card`,
+	}}
+	metadata={pages["/page/birthday"]}
+>
 	<div class="flex flex-col items-center gap-4">
 		<div class="badge badge-accent badge-xl w-48 font-medium">
 			Birthday Tracker
@@ -36,7 +52,7 @@ const { filtered } = await filterCharacters(params, characters);
 		<div id="birthday-list">
 			{
 				filtered.length > 0 ? (
-					<BirthdayTimeline characters={filtered} />
+					<BirthdayTimeline {entries} />
 				) : (
 					<p class="text-base-content/50">No characters match your search.</p>
 				)
