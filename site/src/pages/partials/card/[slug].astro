@@ -6,7 +6,7 @@ import IconifyLoader from "~/components/loader/iconify-loader.astro";
 
 export const partial = true;
 
-const card = cards[Astro.params.slug ?? ""];
+const card = cards[Astro.params.slug!];
 if (!card) return new Response(null, { status: 404 });
 
 const {
