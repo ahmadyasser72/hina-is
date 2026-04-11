@@ -41,6 +41,10 @@
 	scrollbar-gutter: stable;
 }
 
+#container > :not(.dropdown) {
+	@apply container mx-auto shadow-sm;
+}
+
 #content * {
 	@apply scroll-mt-20;
 }
