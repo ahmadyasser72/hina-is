@@ -18,12 +18,13 @@ const { filtered } = await filterCharacters(params, characters);
 const entries = sortLatestBirthday(filtered);
 
 const randomCard = sample(cardsByCharacter[entries[0].slug]);
+const randomCardType = sample(["trained", "normal"]);
 ---
 
 <BaseLayout
 	background={{
-		...Astro.locals.useThumbhash(`${randomCard.slug}-full-normal`),
-		src: `/assets/cards/${randomCard.slug}-full-normal.${IMAGE_FORMAT}`,
+		...Astro.locals.useThumbhash(`${randomCard.slug}-full-${randomCardType}`),
+		src: `/assets/cards/${randomCard.slug}-full-${randomCardType}.${IMAGE_FORMAT}`,
 		alt: `${randomCard.character.name} card`,
 	}}
 	metadata={pages["/page/birthday"]}
