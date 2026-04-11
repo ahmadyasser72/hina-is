@@ -72,7 +72,7 @@ const image = new URL(`/open-graph/${route}.webp`, url.origin);
 					hx-get
 					hx-trigger="load"
 					hx-headers="js:{ 'x-timezone': Intl.DateTimeFormat().resolvedOptions().timeZone }"
-					hx-select-oob="#content"
+					hx-select-oob="#container"
 					hx-swap="delete"
 				/>
 			)
