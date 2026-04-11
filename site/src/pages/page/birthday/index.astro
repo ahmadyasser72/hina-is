@@ -42,6 +42,7 @@ const randomCard = sample(cardsByCharacter[entries[0].slug]);
 				class="flex-1"
 				name="query"
 				type="search"
+				hx-on--before-request="history.replaceState(null, '', location.pathname)"
 				hx-select="#birthday-list"
 				hx-swap="outerHTML transition:true"
 				hx-target="#birthday-list"
