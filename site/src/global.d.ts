@@ -10,6 +10,10 @@ declare global {
 		stopEventBGM: () => void;
 
 		scrollKeepHistory: (targetId: string) => void;
+		toggleFloating: (
+			reference: HTMLElement,
+			floatingElement: HTMLElement,
+		) => Promise<void>;
 	}
 
 	interface ObjectConstructor {

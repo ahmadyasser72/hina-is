@@ -77,3 +77,39 @@ window.scrollKeepHistory = (targetId) => {
 	history.replaceState(null, "", selector);
 	document.querySelector(selector)?.scrollIntoView();
 };
+
+window.toggleFloating = async (reference, floatingElement) => {
+	const { computePosition, flip, hide, autoUpdate } =
+		await import("@floating-ui/dom");
+
+	floatingElement.style.display = "block";
+	const updatePosition = async () => {
+		const { x, y, middlewareData } = await computePosition(
+			reference,
+			floatingElement,
+			{
+				placement: "bottom-end",
+				middleware: [flip(), hide({ padding: 80 })],
+			},
+		);
+
+		Object.assign(floatingElement.style, { left: `${x}px`, top: `${y}px` });
+		if (middlewareData.hide) {
+			Object.assign(floatingElement.style, {
+				visibility: middlewareData.hide.referenceHidden ? "hidden" : "visible",
+			});
+		}
+	};
+
+	const cleanup = autoUpdate(reference, floatingElement, updatePosition);
+	document.addEventListener("pointerdown", function hideOnClickOutside(event) {
+		if (
+			event.target instanceof HTMLElement &&
+			!reference.contains(event.target)
+		) {
+			cleanup();
+			floatingElement.style.display = "";
+			document.removeEventListener("pointerdown", hideOnClickOutside);
+		}
+	});
+};

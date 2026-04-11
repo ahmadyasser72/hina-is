@@ -1,5 +1,5 @@
 ---
-import { IMAGE_FORMAT } from "@hina-is/bestdori/constants";
+import { AUDIO_FORMAT, IMAGE_FORMAT } from "@hina-is/bestdori/constants";
 import type { Bandori } from "@hina-is/bestdori/data";
 
 import type { JSX } from "astro/jsx-runtime";
@@ -13,13 +13,55 @@ interface Props extends JSX.HTMLAttributes {
 const { stamp, class: className, ...props } = Astro.props;
 ---
 
-<div class:list={["relative aspect-40/33 h-32", className]} {...props}>
+<div
+	data-character={stamp.character?.slug}
+	class:list={["relative aspect-40/33 h-32", className]}
+	{...props}
+>
+	<div class="floating">
+		<ul
+			class:list={[
+				"menu rounded-field border-base-content/67 border p-0 [&_li>*]:rounded-none",
+				stamp.character
+					? "bg-character text-character-content"
+					: "text-neutral-content bg-neutral",
+			]}
+		>
+			<li>
+				<a href={`/assets/stamps/${stamp.slug}-image.${IMAGE_FORMAT}`} download>
+					<iconify-icon class="size-4" icon="lucide:file-image" width="none"
+					></iconify-icon>
+					image</a
+				>
+			</li>
+
+			{
+				stamp.voiced && (
+					<li>
+						<a
+							href={`/assets/stamps/${stamp.slug}-voice.${AUDIO_FORMAT}`}
+							download
+						>
+							<iconify-icon
+								class="size-4"
+								icon="lucide:file-volume"
+								width="none"
+							/>
+							audio
+						</a>
+					</li>
+				)
+			}
+		</ul>
+	</div>
+
 	<img
 		class="w-full"
 		{...Astro.locals.useThumbhash(`${stamp.slug}-image`)}
 		src={`/assets/stamps/${stamp.slug}-image.${IMAGE_FORMAT}`}
 		alt={`Stamp #${stamp.id}`}
 		loading="lazy"
+		onpointerdown="toggleFloating(this.parentElement, this.previousElementSibling)"
 	/>
 
 	{
