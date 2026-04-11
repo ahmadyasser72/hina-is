@@ -7,7 +7,7 @@ export const schema = z
 		list: z.enum(["future", "past"]).catch("future"),
 		filter_band: z.enum(["any", "single-band", "mixed-band"]).catch("any"),
 		filter_character: z
-			.enum(["event-bonus", "event-cards", "event-focus", "event-stamp"])
+			.enum(["event-bonus", "event-cards",  "event-stamp"])
 			.catch("event-bonus"),
 		attribute: z.string().apply(alwaysArray),
 		event_type: z.string().apply(alwaysArray),

@@ -51,11 +51,6 @@ export const filterEvents = async (
 						character = event.cards.map(({ character }) => character.slug);
 						break;
 
-					case "event-focus":
-						band = [event.cards[0].character.band.slug];
-						character = [event.cards[0].character.slug];
-						break;
-
 					case "event-stamp":
 						band = [event.stamp.character!.band.slug];
 						character = [event.stamp.character!.slug];
