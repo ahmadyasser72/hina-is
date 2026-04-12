@@ -80,7 +80,8 @@ const { stamp, class: className, ...props } = Astro.props;
 		src={`/assets/stamps/${stamp.slug}-image.${IMAGE_FORMAT}`}
 		alt={`Stamp #${stamp.id}`}
 		loading="lazy"
-		onpointerdown="toggleFloating(this.parentElement, this.previousElementSibling)"
+		onclick="toggleFloating(this.parentElement, this.previousElementSibling)"
+		oncontextmenu="event.preventDefault(); toggleFloating(this.parentElement, this.previousElementSibling)"
 	/>
 
 	{

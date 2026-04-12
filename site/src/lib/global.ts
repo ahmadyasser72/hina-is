@@ -79,6 +79,8 @@ window.scrollKeepHistory = (targetId) => {
 };
 
 window.toggleFloating = async (reference, floatingElement) => {
+	if (floatingElement.style.display) return;
+
 	const { computePosition, flip, hide, autoUpdate } =
 		await import("@floating-ui/dom");
 
