@@ -60,6 +60,8 @@ export default defineConfig({
 			__BUILD_DATE__: JSON.stringify(Date.now()),
 			__GITHUB_URL__: JSON.stringify(GITHUB_URL),
 		},
+
+		server: { allowedHosts: [".lhr.life"] },
 	},
 
 	experimental: {

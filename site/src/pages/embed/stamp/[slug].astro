@@ -1,0 +1,67 @@
+---
+import {
+	IMAGE_FORMAT,
+	STAMP_VIDEO_FORMAT,
+	STAMP_VIDEO_FORMAT_MIME,
+} from "@hina-is/bestdori/constants";
+import { stamps } from "@hina-is/bestdori/data";
+
+import type { GetStaticPaths } from "astro";
+
+export const partial = true;
+export const prerender = true;
+
+export const getStaticPaths = (() =>
+	Object.values(stamps)
+		.filter(({ voiced }) => voiced)
+		.map((stamp) => ({
+			params: { slug: stamp.slug },
+			props: { stamp },
+		}))) satisfies GetStaticPaths;
+
+const url = new URL(Astro.site!);
+const { stamp } = Astro.props;
+const character = stamp.character!;
+const title = `${character.name.split(" ")[0]} | ${character.band.name}`;
+
+const redirectTo = new URL("/page/stamps", url);
+const image = new URL(
+	`/assets/stamps/${stamp.slug}-image.${IMAGE_FORMAT}`,
+	url,
+);
+const video = new URL(
+	`/assets/stamps/${stamp.slug}.${STAMP_VIDEO_FORMAT}`,
+	url,
+);
+---
+
+<!doctype html>
+<html lang="en">
+	<head>
+		<link href={redirectTo} rel="canonical" />
+		<meta content={redirectTo} property="og:url" />
+		<meta content={character.name} property="twitter:site" />
+		<meta content={character.name} property="twitter:creator" />
+		<meta content={character.color} property="theme-color" />
+		<meta content={title} property="twitter:title" />
+		<meta content={`0;url=${redirectTo}`} http-equiv="refresh" />
+		<meta content="320" property="twitter:player:height" />
+		<meta content="388" property="twitter:player:width" />
+		<meta content={video} property="twitter:player:stream" />
+		<meta
+			content={STAMP_VIDEO_FORMAT_MIME}
+			property="twitter:player:stream:content_type"
+		/>
+		<meta content={video} property="og:video" />
+		<meta content={video} property="og:video:secure_url" />
+		<meta content="320" property="og:video:height" />
+		<meta content="388" property="og:video:width" />
+		<meta content={STAMP_VIDEO_FORMAT_MIME} property="og:video:type" />
+		<meta content={image} property="og:image" />
+		<meta content={image} property="twitter:image" />
+		<meta content="player" property="twitter:card" />
+		<meta content={title} property="og:title" />
+	</head>
+
+	<body></body>
+</html>

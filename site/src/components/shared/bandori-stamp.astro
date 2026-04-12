@@ -71,6 +71,16 @@ const { stamp, class: className, ...props } = Astro.props;
 					</>
 				)
 			}
+
+			<li>
+				<button
+					onclick={`navigator.share({ url: '${new URL(`/embed/stamp/${stamp.slug}`, Astro.site)}' })`}
+				>
+					<iconify-icon class="size-4" icon="lucide:link" width="none"
+					></iconify-icon>
+					share</button
+				>
+			</li>
 		</ul>
 	</div>
 
