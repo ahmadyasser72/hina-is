@@ -22,11 +22,8 @@ export const GET: APIRoute<Props, Params> = async ({ props }) => {
 		await audio.file.arrayBuffer(),
 	);
 
-	return createStampVideo(
-		[props.stamp.slug, hash, STAMP_VIDEO_FORMAT].join("."),
-		image.file,
-		audio.file,
-	);
+	const name = [props.stamp.slug, hash].join(".");
+	return createStampVideo(name, image.file, audio.file);
 };
 
 export const getStaticPaths = (() =>

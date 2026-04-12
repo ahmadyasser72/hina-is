@@ -23,13 +23,18 @@ export const createStampVideo = async (
 		});
 	}
 
+	const { default: sharp } = await import("sharp");
+	const imageWithBackground = await sharp(image.name)
+		.flatten({ background: "#FFF" })
+		.toBuffer();
+
 	const ffmpeg = Bun.spawn(
 		[
 			"ffmpeg",
 			"-loop",
 			"1",
 			"-i",
-			image.name!,
+			"pipe:0",
 			"-i",
 			audio.name!,
 			"-c:v",
@@ -51,7 +56,7 @@ export const createStampVideo = async (
 			STAMP_VIDEO_FORMAT,
 			"pipe:1",
 		],
-		{ stdout: "pipe", stderr: "pipe" },
+		{ stdin: imageWithBackground, stdout: "pipe", stderr: "pipe" },
 	);
 
 	const exitCode = await ffmpeg.exited;
