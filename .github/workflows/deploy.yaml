@@ -26,6 +26,9 @@ jobs:
           key: bestdori-${{ github.run_id }}
           restore-keys: bestdori-
 
+      - name: Clean old responses
+        run: find .bestdori-cache -type f -mtime +28 -print -delete
+
       - name: Build site
         run: bun run build
         env:
