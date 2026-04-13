@@ -1,5 +1,7 @@
 import { AUDIO_FORMAT } from "@hina-is/bestdori/constants";
 
+import { autoUpdate, computePosition, flip, hide } from "@floating-ui/dom";
+
 {
 	let playEventBGMButton: HTMLButtonElement | undefined;
 	let eventBGM: HTMLAudioElement | undefined;
@@ -80,9 +82,6 @@ window.scrollKeepHistory = (targetId) => {
 
 window.toggleFloating = async (reference, floatingElement) => {
 	if (floatingElement.style.display) return;
-
-	const { computePosition, flip, hide, autoUpdate } =
-		await import("@floating-ui/dom");
 
 	floatingElement.style.display = "block";
 	const updatePosition = async () => {
