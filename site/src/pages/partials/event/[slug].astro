@@ -14,7 +14,13 @@ if (!event) return new Response(null, { status: 404 });
 ---
 
 <dialog class="modal">
-	<div class="modal-box scroll-gutter h-full">
+	<div class="modal-box scroll-gutter min-h-3/4 sm:h-full">
+		<form method="dialog">
+			<button class="btn btn-sm btn-circle btn-ghost absolute top-2 right-2"
+				>✕</button
+			>
+		</form>
+
 		<h3 class="mb-2 text-center text-xl font-medium">{event.name}</h3>
 
 		<div class="tabs max-sm:tabs-sm tabs-lift justify-center">

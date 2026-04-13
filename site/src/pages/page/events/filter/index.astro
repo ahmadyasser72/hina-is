@@ -15,6 +15,12 @@ const { facets } = await filterEvents(params, events.list);
 
 <dialog class="modal" id="filter_modal">
 	<div class="modal-box">
+		<form method="dialog">
+			<button class="btn btn-sm btn-circle btn-ghost absolute top-2 right-2"
+				>✕</button
+			>
+		</form>
+
 		<h3 class="text-center text-lg font-medium">Filter {params.list} events</h3>
 
 		<form
