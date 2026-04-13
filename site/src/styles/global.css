@@ -15,6 +15,14 @@
 
 @custom-variant dark (&:where([data-theme="coffee"], [data-theme="coffee"] *));
 
+@utility .modal {
+	@apply max-sm:modal-bottom;
+}
+
+@utility .modal-box {
+	@apply max-h-4/5 w-full sm:max-w-xl;
+}
+
 @import "./bandori.css";
 
 :not(.htmx-request) > .htmx-indicator:not(.htmx-request),
