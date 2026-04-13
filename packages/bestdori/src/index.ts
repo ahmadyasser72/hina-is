@@ -74,14 +74,15 @@ export const bestdori = async <T = never>(
 	const cacheName = pathname.slice(1).replaceAll("/", "_");
 	const cacheFile = Bun.file(path.join(CACHE_DIR, cacheName));
 
-	let response: Response;
-	const cacheAvailable = await cacheFile.exists();
-	if (
-		cacheAvailable &&
+	const cacheExists = await cacheFile.exists();
+	const useCache =
+		cacheExists &&
 		(useCachedIf === true ||
 			(typeof useCachedIf === "function" &&
-				useCachedIf(await cacheFile.json())))
-	) {
+				useCachedIf(await cacheFile.json())));
+
+	let response: Response;
+	if (useCache) {
 		response = new Response(cacheFile, {
 			headers: {
 				"content-type": cacheFile.type,
@@ -93,7 +94,7 @@ export const bestdori = async <T = never>(
 	}
 
 	const data = await response.arrayBuffer();
-	await cacheFile.write(data);
+	if (!useCache) await cacheFile.write(data);
 
 	let preprocess: typeof compressAudio | typeof compressImage;
 	const extension = path.extname(pathname).slice(1);
