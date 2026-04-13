@@ -374,6 +374,7 @@ const data = await (async () => {
 					return map;
 				}, new Map<string, { id: string; region: "jp" | "en"; voiced: boolean }>());
 
+			const characters = { ...data.characters };
 			return Object.fromEntries(
 				[...stampsMap.values()]
 					.sort(
@@ -381,24 +382,24 @@ const data = await (async () => {
 					)
 					.sort((a, b) => Number(b.voiced) - Number(a.voiced))
 					.map(({ id, region, voiced }) => {
-						const slug = createSlug("stamp", ...id.split("_"));
+						const n = id.split("_")[1]!;
+						const [characterId, stampId] = [Number(n.slice(0, 3)), n.slice(3)];
+						const character =
+							findValue(characters, ({ id }) => Number(id) === characterId) ??
+							null;
+
+						const slug = createSlug(
+							"stamp",
+							character?.slug ?? `${characterId}-unknown`,
+							stampId,
+						);
+
 						return [
 							slug,
 							{
 								id,
 								slug,
-								get character() {
-									const characterId = Number(
-										id.split("_")[1]!.slice(0, 3),
-									).toString();
-									const character = findValue(
-										data.characters,
-										({ id }) => id === characterId,
-									);
-									if (!character) return null;
-
-									return character;
-								},
+								character,
 								get eventRelease() {
 									const event = findValue(
 										Object.fromEntries([...events.entries()]),
