@@ -54,20 +54,13 @@ htmx.on("htmx:beforeSwap", (e) => {
 	const container = htmx.find("#container")!;
 	const scrollToTopButton = htmx.find("#scroll-to-top")!;
 
-	let lastScrollTop = container.scrollTop;
 	htmx.on(
 		container,
 		"scroll",
 		debounce(() => {
 			const screenSize = container.clientHeight;
 			const scrolledEnough = container.scrollTop >= screenSize / 2;
-			const scrollingDown = container.scrollTop > lastScrollTop;
-			scrollToTopButton.classList.toggle(
-				"show",
-				scrolledEnough && scrollingDown,
-			);
-
-			lastScrollTop = container.scrollTop;
+			scrollToTopButton.classList.toggle("show", scrolledEnough);
 		}, 150),
 	);
 
