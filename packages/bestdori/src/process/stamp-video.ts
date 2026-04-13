@@ -2,6 +2,7 @@ import path from "path";
 
 import { CACHE_DIR } from "..";
 import { AUDIO_BITRATE } from "../preprocess/constants";
+import { fileResponse } from "../utilities";
 import { STAMP_VIDEO_FORMAT, STAMP_VIDEO_FORMAT_MIME } from "./constants";
 
 export const createStampVideo = async (
@@ -13,15 +14,8 @@ export const createStampVideo = async (
 		path.join(CACHE_DIR, [name, STAMP_VIDEO_FORMAT].join(".")),
 	);
 
-	const alreadyCompressed = await outputFile.exists();
-	if (alreadyCompressed) {
-		return new Response(outputFile, {
-			headers: {
-				"content-type": STAMP_VIDEO_FORMAT_MIME,
-				"content-length": outputFile.size.toString(),
-			},
-		});
-	}
+	const alreadyExists = await outputFile.exists();
+	if (alreadyExists) return fileResponse(outputFile);
 
 	const { default: sharp } = await import("sharp");
 	const imageWithBackground = await sharp(image.name)

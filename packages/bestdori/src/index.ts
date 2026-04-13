@@ -10,7 +10,7 @@ import {
 	IMAGE_FORMAT_ORIGINAL,
 } from "./preprocess/constants";
 import { compressImage } from "./preprocess/image";
-import { hashBuffer } from "./utilities";
+import { fileResponse, hashBuffer } from "./utilities";
 
 export const createDirectoryIfNotExists = async (path: string) =>
 	mkdir(path, { recursive: true }).then(() => path);
@@ -83,12 +83,7 @@ export const bestdori = async <T = never>(
 
 	let response: Response;
 	if (useCache) {
-		response = new Response(cacheFile, {
-			headers: {
-				"content-type": cacheFile.type,
-				"content-length": cacheFile.size.toString(),
-			},
-		});
+		response = fileResponse(cacheFile);
 	} else {
 		response = await fetchBestdori(pathname);
 	}

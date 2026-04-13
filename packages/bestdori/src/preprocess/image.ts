@@ -1,6 +1,7 @@
 import path from "node:path";
 
 import { CACHE_DIR } from "..";
+import { fileResponse } from "../utilities";
 import { IMAGE_FORMAT, IMAGE_FORMAT_MIME, MAX_IMAGE_WIDTH } from "./constants";
 
 export const compressImage = async (
@@ -11,15 +12,8 @@ export const compressImage = async (
 		path.join(CACHE_DIR, [name, IMAGE_FORMAT].join(".")),
 	);
 
-	const alreadyCompressed = await outputFile.exists();
-	if (alreadyCompressed) {
-		return new Response(outputFile, {
-			headers: {
-				"content-type": IMAGE_FORMAT_MIME,
-				"content-length": outputFile.size.toString(),
-			},
-		});
-	}
+	const alreadyExists = await outputFile.exists();
+	if (alreadyExists) return fileResponse(outputFile);
 
 	const { default: sharp } = await import("sharp");
 	const compressed = await sharp(buffer)

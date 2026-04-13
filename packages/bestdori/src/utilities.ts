@@ -17,6 +17,14 @@ export const hashBuffer = (...buffers: ArrayBuffer[]) =>
 		.digest("hex")
 		.slice(0, 6);
 
+export const fileResponse = (file: Bun.BunFile) =>
+	new Response(file, {
+		headers: {
+			"content-type": file.type,
+			"content-length": file.size.toString(),
+		},
+	});
+
 export const formatEventType = (type: z.infer<typeof EventType>) => {
 	if (type === "vs-live") return "VS Live";
 	else return startCase(type);

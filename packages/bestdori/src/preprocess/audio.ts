@@ -1,6 +1,7 @@
 import path from "node:path";
 
 import { CACHE_DIR } from "..";
+import { fileResponse } from "../utilities";
 import { AUDIO_BITRATE, AUDIO_FORMAT, AUDIO_FORMAT_MIME } from "./constants";
 
 export const compressAudio = async (
@@ -11,15 +12,8 @@ export const compressAudio = async (
 		path.join(CACHE_DIR, [name, AUDIO_FORMAT].join(".")),
 	);
 
-	const alreadyCompressed = await outputFile.exists();
-	if (alreadyCompressed) {
-		return new Response(outputFile, {
-			headers: {
-				"content-type": AUDIO_FORMAT_MIME,
-				"content-length": outputFile.size.toString(),
-			},
-		});
-	}
+	const alreadyExists = await outputFile.exists();
+	if (alreadyExists) return fileResponse(outputFile);
 
 	const ffmpeg = Bun.spawn(
 		[
