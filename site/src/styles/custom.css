@@ -1,0 +1,31 @@
+@utility scroll-gutter {
+	scrollbar-gutter: stable;
+}
+
+@utility center-horizontal {
+	@apply left-1/2 -translate-x-1/2;
+}
+
+@utility center-vertical {
+	@apply top-1/2 -translate-y-1/2;
+}
+
+@utility center {
+	@apply center-horizontal center-vertical;
+}
+
+@utility kv-list {
+	@apply divide-base-content/5 flex flex-col divide-y;
+
+	> .kv-list-item {
+		@apply flex items-center px-1 py-2 sm:px-2;
+
+		> .kv-list-item-icon {
+			@apply me-1 size-4 sm:me-1.5 sm:size-5;
+		}
+
+		> .kv-list-item-label {
+			@apply flex-1 font-medium sm:text-lg;
+		}
+	}
+}

@@ -15,14 +15,8 @@
 
 @custom-variant dark (&:where([data-theme="coffee"], [data-theme="coffee"] *));
 
-@utility .modal {
-	@apply max-sm:modal-bottom;
-}
-
-@utility .modal-box {
-	@apply max-h-4/5 w-full sm:max-w-xl;
-}
-
+@import "./custom.css";
+@import "./extends.css";
 @import "./bandori.css";
 
 :not(.htmx-request) > .htmx-indicator:not(.htmx-request),
@@ -31,22 +25,9 @@
 	@apply hidden;
 }
 
-@utility center-horizontal {
-	@apply left-1/2 -translate-x-1/2;
-}
-
-@utility center-vertical {
-	@apply top-1/2 -translate-y-1/2;
-}
-
-@utility center {
-	@apply center-horizontal center-vertical;
-}
-
 #background-image,
 #container {
-	@apply overflow-auto;
-	scrollbar-gutter: stable;
+	@apply scroll-gutter overflow-auto;
 }
 
 #container > :not(.dropdown) {

@@ -1,0 +1,11 @@
+@utility modal {
+	@apply max-sm:modal-bottom;
+}
+
+@utility modal-box {
+	@apply max-h-9/10 w-full sm:max-w-xl;
+}
+
+@utility tab-content {
+	@apply bg-base-100 border-base-300 px-4 py-2 sm:p-6;
+}

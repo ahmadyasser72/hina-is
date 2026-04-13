@@ -1,0 +1,200 @@
+---
+import { AUDIO_FORMAT, IMAGE_FORMAT } from "@hina-is/bestdori/constants";
+import { events } from "@hina-is/bestdori/data";
+
+import IconifyLoader from "~/components/loader/iconify-loader.astro";
+import BandoriStamp from "~/components/shared/bandori-stamp.astro";
+import CardIcon from "~/components/shared/card-icon.astro";
+import { dayjs } from "~/lib/date";
+
+export const partial = true;
+
+const event = events[Astro.params.slug!];
+if (!event) return new Response(null, { status: 404 });
+---
+
+<dialog class="modal">
+	<div class="modal-box scroll-gutter h-full">
+		<h3 class="mb-2 text-center text-xl font-medium">{event.name}</h3>
+
+		<div class="tabs max-sm:tabs-sm tabs-lift justify-center">
+			<label class="tab">
+				<input name={`details_${event.slug}`} type="radio" checked />
+				<iconify-icon
+					class="me-1 size-4 sm:me-2 sm:size-5"
+					icon="lucide:info"
+					width="none"></iconify-icon>
+				Info
+			</label>
+			<div class="tab-content">
+				<div class="kv-list">
+					<div class="kv-list-item">
+						<iconify-icon
+							class="kv-list-item-icon"
+							icon="lucide:smile"
+							width="none"></iconify-icon>
+						<span class="kv-list-item-label"> Stamp </span>
+
+						<BandoriStamp stamp={event.stamp} />
+					</div>
+				</div>
+			</div>
+
+			<label class="tab">
+				<input name={`details_${event.slug}`} type="radio" />
+				<iconify-icon
+					class="me-1 size-4 sm:me-2 sm:size-5"
+					icon="lucide:sparkle"
+					width="none"></iconify-icon>
+				Cards
+			</label>
+			<div class="tab-content">
+				<div
+					class="mx-auto flex max-w-xs flex-wrap justify-center gap-x-2 gap-y-1"
+				>
+					{event.cards.map((card) => <CardIcon {card} />)}
+				</div>
+			</div>
+
+			<label class="tab">
+				<input name={`details_${event.slug}`} type="radio" />
+				<iconify-icon
+					class="me-1 size-4 sm:me-2 sm:size-5"
+					icon="lucide:library"
+					width="none"></iconify-icon>
+				Assets
+			</label>
+			<div class="tab-content">
+				<div class="kv-list">
+					<div class="kv-list-item">
+						<iconify-icon
+							class="kv-list-item-icon"
+							icon="lucide:music"
+							width="none"></iconify-icon>
+						<div class="kv-list-item-label">BGM</div>
+
+						<div class="flex gap-1">
+							<button
+								class="btn btn-circle btn-primary btn-sm"
+								onclick={`playEventBGM(this, '${event.slug}')`}
+							>
+								<IconifyLoader icon="lucide:play" />
+							</button>
+
+							<button
+								class="btn btn-circle btn-secondary btn-sm"
+								onclick="stopEventBGM()"
+							>
+								<iconify-icon class="size-4" icon="lucide:square" width="none"
+								></iconify-icon>
+							</button>
+
+							<a
+								class="btn btn-circle btn-secondary btn-sm"
+								href={`/assets/events/${event.slug}-bgm.${AUDIO_FORMAT}`}
+								download
+							>
+								<iconify-icon class="size-4" icon="lucide:download" width="none"
+								></iconify-icon>
+							</a>
+						</div>
+					</div>
+
+					<div class="kv-list-item">
+						<iconify-icon
+							class="kv-list-item-icon"
+							icon="lucide:image"
+							width="none"></iconify-icon>
+						<span class="kv-list-item-label"> Banner </span>
+
+						<a
+							class="contents"
+							href={`/assets/events/${event.slug}-banner.${IMAGE_FORMAT}`}
+							download
+						>
+							<img
+								{...Astro.locals.useThumbhash(`${event.slug}-banner`)}
+								class="bg-base-content/67 rounded-field aspect-3/1 w-48 sm:w-72"
+								src={`/assets/events/${event.slug}-banner.${IMAGE_FORMAT}`}
+								alt={`${event.name} banner`}
+							/>
+						</a>
+					</div>
+
+					<div class="kv-list-item">
+						<iconify-icon
+							class="kv-list-item-icon"
+							icon="lucide:wallpaper"
+							width="none"></iconify-icon>
+						<span class="kv-list-item-label"> Background </span>
+
+						<a
+							class="contents"
+							href={`/assets/events/${event.slug}-background.${IMAGE_FORMAT}`}
+							download
+						>
+							<img
+								{...Astro.locals.useThumbhash(`${event.slug}-background`)}
+								class="bg-base-content/67 rounded-field aspect-4/3 w-32 sm:w-64"
+								src={`/assets/events/${event.slug}-background.${IMAGE_FORMAT}`}
+								alt={`${event.name} background`}
+							/>
+						</a>
+					</div>
+				</div>
+			</div>
+
+			<label class="tab">
+				<input name={`details_${event.slug}`} type="radio" />
+				<iconify-icon
+					class="me-1 size-4 sm:me-2 sm:size-5"
+					icon="lucide:external-link"
+					width="none"></iconify-icon>
+				Links
+			</label>
+			<div class="tab-content">
+				<ul class="menu bg-base-200/67 w-full">
+					<li>
+						<a
+							href={`https://bestdori.com/info/events/${event.id}`}
+							rel="noopener noreferrer"
+							target="_blank">Bestdori!: Event details</a
+						>
+					</li>
+					<li>
+						<a
+							href={`https://bestdori.com/tool/eventtracker/jp/t10/${event.id}`}
+							rel="noopener noreferrer"
+							target="_blank">Bestdori!: T10 Leaderboard on JP</a
+						>
+					</li>
+					{
+						dayjs(event.startAt.en).isBefore() && (
+							<li>
+								<a
+									href={`https://bestdori.com/tool/eventtracker/en/t10/${event.id}`}
+									rel="noopener noreferrer"
+									target="_blank"
+								>
+									Bestdori!: T10 Leaderboard on EN
+								</a>
+							</li>
+						)
+					}
+
+					<li>
+						<a
+							href={`https://bandori.party/event/${event.id}`}
+							rel="noopener noreferrer"
+							target="_blank">Bandori Party: Event details</a
+						>
+					</li>
+				</ul>
+			</div>
+		</div>
+	</div>
+
+	<form class="modal-backdrop" method="dialog">
+		<button>close</button>
+	</form>
+</dialog>

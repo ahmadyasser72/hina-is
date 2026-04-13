@@ -3,8 +3,8 @@ import { IMAGE_FORMAT } from "@hina-is/bestdori/constants";
 import type { Bandori } from "@hina-is/bestdori/data";
 import { formatEventType } from "@hina-is/bestdori/utilities";
 
+import IconifyLoader from "~/components/loader/iconify-loader.astro";
 import { dayjs } from "~/lib/date";
-import EventCardActions from "./_event-card-actions.astro";
 import EventCardBandIcon from "./_event-card-band-icon.astro";
 import EventCardCharacterIcon from "./_event-card-character-icon.astro";
 import EventCardProgress from "./_event-card-progress.astro";
@@ -133,5 +133,24 @@ const progress = (() => {
 		</div>
 	</div>
 
-	<EventCardActions {event} />
+	<div class="flex gap-1">
+		<a
+			class="btn btn-sm btn-info flex-1"
+			href={`https://bestdori.com/info/events/${event.id}`}
+			rel="noopener noreferrer"
+			target="_blank"
+		>
+			<iconify-icon class="size-4" icon="lucide:external-link" width="none"
+			></iconify-icon>
+			View on Bestdori!
+		</a>
+
+		<button
+			hx-get={`/partials/event/${event.slug}`}
+			class="btn tooltip tooltip-left btn-sm btn-square btn-soft"
+			data-tip="Extra details"
+		>
+			<IconifyLoader icon="lucide:ellipsis" size-class="size-4" />
+		</button>
+	</div>
 </div>
