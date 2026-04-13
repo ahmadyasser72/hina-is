@@ -65,7 +65,8 @@ export const getStaticPaths = (() => {
 						slug,
 						assets: mapValues(
 							groupBy(assets, ({ identifier }) => identifier),
-							([{ filename, format }]) => `/data/${type}/${filename}.${format}`,
+							([{ filename, format }]) =>
+								`/assets/${type}/${filename}.${format}`,
 						),
 					},
 				},
