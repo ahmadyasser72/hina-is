@@ -94,7 +94,7 @@ const data = await (async () => {
 		["birthdayspin", "limitedspin", "operationspin", "spin"].map((type) =>
 			get(
 				"gachaTypeVoiceList",
-				`api/explorer/jp/assets/sound/voice/gacha/${type}.json`,
+				`/api/explorer/jp/assets/sound/voice/gacha/${type}.json`,
 			).then((entries) => ({ type, entries })),
 		),
 	);
