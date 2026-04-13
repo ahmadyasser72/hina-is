@@ -7,7 +7,7 @@ htmx.onLoad((node) => {
 
 	// auto-open dialog element and auto self-remove on close
 	if (node instanceof HTMLDialogElement) {
-		node.show();
+		node.showModal();
 		node.addEventListener("close", () => setTimeout(() => node.remove(), 300));
 	}
 
