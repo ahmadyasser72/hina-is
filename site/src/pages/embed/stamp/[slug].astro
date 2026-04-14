@@ -19,12 +19,12 @@ export const getStaticPaths = (() =>
 			props: { stamp },
 		}))) satisfies GetStaticPaths;
 
-const url = new URL(Astro.site!);
 const { stamp } = Astro.props;
 const character = stamp.character!;
-const title = `${character.name.split(" ")[0]} | ${character.band.name}`;
+const title = `${character.name.split(" ")[0]} from (@${character.band.name})`;
 
-const redirectTo = new URL("/page/stamps", url);
+const url = new URL(Astro.site!);
+const pageUrl = new URL("/page/stamps", url);
 const image = new URL(
 	`/assets/stamps/${stamp.slug}-image.${IMAGE_FORMAT}`,
 	url,
@@ -38,29 +38,40 @@ const video = new URL(
 <!doctype html>
 <html lang="en">
 	<head>
-		<link href={redirectTo} rel="canonical" />
-		<meta content={redirectTo} property="og:url" />
-		<meta content={character.name} property="twitter:site" />
-		<meta content={character.name} property="twitter:creator" />
+		<meta charset="UTF-8" />
+		<meta content={`0;url=${pageUrl}`} http-equiv="refresh" />
+
+		<title>{character.name}</title>
+		<meta content="hina is ♥" property="og:site_name" />
+		<meta content={title} property="og:title" />
 		<meta content={character.color} property="theme-color" />
-		<meta content={title} property="twitter:title" />
-		<meta content={`0;url=${redirectTo}`} http-equiv="refresh" />
-		<meta content="320" property="twitter:player:height" />
-		<meta content="388" property="twitter:player:width" />
-		<meta content={video} property="twitter:player:stream" />
-		<meta
-			content={STAMP_VIDEO_FORMAT_MIME}
-			property="twitter:player:stream:content_type"
-		/>
+
+		<meta content={pageUrl} property="og:url" />
 		<meta content={video} property="og:video" />
 		<meta content={video} property="og:video:secure_url" />
+		<meta content={STAMP_VIDEO_FORMAT_MIME} property="og:video:type" />
 		<meta content="164" property="og:video:height" />
 		<meta content="200" property="og:video:width" />
-		<meta content={STAMP_VIDEO_FORMAT_MIME} property="og:video:type" />
 		<meta content={image} property="og:image" />
-		<meta content={image} property="twitter:image" />
-		<meta content="player" property="twitter:card" />
-		<meta content={title} property="og:title" />
+
+		<meta name="twitter:card" content="player" />
+
+		<link
+			type="image/png"
+			href={new URL("/favicon-96x96.png", url)}
+			rel="icon"
+			sizes="96x96"
+		/>
+
+		<!-- below is hax so discord will send request to /api/v1/statuses/$id -->
+		<link
+			type="application/activity+json"
+			href={new URL(
+				`/users/0/statuses/stamp${stamp.slug.replaceAll("-", "")}`,
+				url,
+			)}
+			rel="alternate"
+		/>
 	</head>
 
 	<body></body>
