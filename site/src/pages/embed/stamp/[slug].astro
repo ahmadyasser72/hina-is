@@ -23,7 +23,7 @@ const { stamp } = Astro.props;
 const { character } = stamp;
 const title = character
 	? `${character.name.split(" ")[0]} from (@${character.band.name})`
-	: `Stamp #${stamp.id}`;
+	: `Stamp (@#${stamp.id})`;
 
 const url = new URL(Astro.site!);
 const pageUrl = new URL("/page/stamps", url);
