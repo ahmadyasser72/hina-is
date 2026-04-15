@@ -1,4 +1,4 @@
-import path from "path";
+import path from "node:path";
 
 import { CACHE_DIR } from "..";
 import { AUDIO_BITRATE } from "../preprocess/constants";

@@ -1,4 +1,4 @@
-import * as path from "node:path";
+import path from "node:path";
 
 import { bestdori } from "@hina-is/bestdori";
 import {
