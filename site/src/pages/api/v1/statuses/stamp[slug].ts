@@ -45,9 +45,9 @@ export const GET: APIRoute = ({ params, site }) => {
 		media_attachments: [
 			{
 				id: "114163769487684704",
-				type: "video",
-				url: video,
-				preview_url: image,
+				...(stamp.voiced
+					? { type: "video", url: video, preview_url: image }
+					: { type: "image", url: image, preview_url: null }),
 				remote_url: null,
 				preview_remote_url: null,
 				text_url: null,

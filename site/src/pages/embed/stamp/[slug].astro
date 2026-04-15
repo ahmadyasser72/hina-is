@@ -12,12 +12,10 @@ export const partial = true;
 export const prerender = true;
 
 export const getStaticPaths = (() =>
-	Object.values(stamps)
-		.filter(({ voiced }) => voiced)
-		.map((stamp) => ({
-			params: { slug: stamp.slug },
-			props: { stamp },
-		}))) satisfies GetStaticPaths;
+	Object.values(stamps).map((stamp) => ({
+		params: { slug: stamp.slug },
+		props: { stamp },
+	}))) satisfies GetStaticPaths;
 
 const { stamp } = Astro.props;
 const character = stamp.character!;
@@ -47,14 +45,23 @@ const video = new URL(
 		<meta content={character.color} property="theme-color" />
 
 		<meta content={pageUrl} property="og:url" />
-		<meta content={video} property="og:video" />
-		<meta content={video} property="og:video:secure_url" />
-		<meta content={STAMP_VIDEO_FORMAT_MIME} property="og:video:type" />
-		<meta content="164" property="og:video:height" />
-		<meta content="200" property="og:video:width" />
 		<meta content={image} property="og:image" />
+		{
+			stamp.voiced && (
+				<>
+					<meta content={video} property="og:video" />
+					<meta content={video} property="og:video:secure_url" />
+					<meta content={STAMP_VIDEO_FORMAT_MIME} property="og:video:type" />
+					<meta content="164" property="og:video:height" />
+					<meta content="200" property="og:video:width" />
+				</>
+			)
+		}
 
-		<meta name="twitter:card" content="player" />
+		<meta
+			name="twitter:card"
+			content={stamp.voiced ? "player" : "summary_large_image"}
+		/>
 
 		<link
 			type="image/png"
