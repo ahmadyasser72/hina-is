@@ -1,16 +1,15 @@
-import path from "node:path";
-
-import { CACHE_DIR } from "..";
-import { fileResponse } from "../utilities";
+import { fileResponse, getOutputFile } from "../utilities";
 import { AUDIO_BITRATE, AUDIO_FORMAT, AUDIO_FORMAT_MIME } from "./constants";
 
 export const compressAudio = async (
 	name: string,
 	buffer: Buffer<ArrayBuffer>,
 ): Promise<Response> => {
-	const outputFile = Bun.file(
-		path.join(CACHE_DIR, [name, AUDIO_FORMAT].join(".")),
-	);
+	const outputFile = await getOutputFile({
+		script: import.meta.filename,
+		name,
+		extension: AUDIO_FORMAT,
+	});
 
 	const alreadyExists = await outputFile.exists();
 	if (alreadyExists) return fileResponse(outputFile);

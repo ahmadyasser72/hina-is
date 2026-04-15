@@ -1,16 +1,15 @@
-import path from "node:path";
-
-import { CACHE_DIR } from "..";
-import { fileResponse } from "../utilities";
+import { fileResponse, getOutputFile } from "../utilities";
 import { IMAGE_FORMAT, IMAGE_FORMAT_MIME, MAX_IMAGE_WIDTH } from "./constants";
 
 export const compressImage = async (
 	name: string,
 	buffer: Buffer<ArrayBuffer>,
 ): Promise<Response> => {
-	const outputFile = Bun.file(
-		path.join(CACHE_DIR, [name, IMAGE_FORMAT].join(".")),
-	);
+	const outputFile = await getOutputFile({
+		script: import.meta.filename,
+		name,
+		extension: IMAGE_FORMAT,
+	});
 
 	const alreadyExists = await outputFile.exists();
 	if (alreadyExists) return fileResponse(outputFile);

@@ -1,8 +1,5 @@
-import path from "node:path";
-
-import { CACHE_DIR } from "..";
 import { AUDIO_BITRATE } from "../preprocess/constants";
-import { fileResponse } from "../utilities";
+import { fileResponse, getOutputFile } from "../utilities";
 import { STAMP_VIDEO_FORMAT, STAMP_VIDEO_FORMAT_MIME } from "./constants";
 
 export const createStampVideo = async (
@@ -10,9 +7,11 @@ export const createStampVideo = async (
 	image: Bun.BunFile,
 	audio: Bun.BunFile,
 ) => {
-	const outputFile = Bun.file(
-		path.join(CACHE_DIR, [name, STAMP_VIDEO_FORMAT].join(".")),
-	);
+	const outputFile = await getOutputFile({
+		script: import.meta.filename,
+		name,
+		extension: STAMP_VIDEO_FORMAT,
+	});
 
 	const alreadyExists = await outputFile.exists();
 	if (alreadyExists) return fileResponse(outputFile);

@@ -1,13 +1,13 @@
 import { IMAGE_FORMAT } from "@hina-is/bestdori/constants";
 import * as data from "@hina-is/bestdori/data";
 import { type Bandori } from "@hina-is/bestdori/data";
-import { formatEventType, toArray } from "@hina-is/bestdori/utilities";
 
 import { create, insertMultiple, search } from "@orama/orama";
 import { uniq } from "es-toolkit";
 import type z from "zod";
 
 import { dayjs } from "~/lib/date";
+import { formatEventType, toArray } from "~/lib/utilities";
 import type { schema } from "./_params";
 
 export const filterEvents = async (
