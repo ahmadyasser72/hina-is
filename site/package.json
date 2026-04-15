@@ -36,7 +36,7 @@
 	},
 	"devDependencies": {
 		"@astrojs/check": "0.9.7",
-		"@takumi-rs/image-response": "0.71.7",
+		"@takumi-rs/image-response": "1.0.9",
 		"@types/bun": "1.3.10",
 		"@types/node": "25.4.0",
 		"sharp": "0.34.5",

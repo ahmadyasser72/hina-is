@@ -1,3 +1,5 @@
+import { SITE_NAME } from "astro:env/client";
+
 import { ImageResponse } from "@takumi-rs/image-response";
 
 const iconBuffer = await Bun.file(
@@ -20,7 +22,7 @@ export const createOgImage = async (title: string, link: URL) =>
 			<div class="flex items-end justify-between">
 				<div class="flex items-end gap-4">
 					<img class="size-20 rounded-lg" src="icon" />
-					<span class="text-4xl font-semibold">hina-is</span>
+					<span class="text-4xl font-semibold">{SITE_NAME}</span>
 				</div>
 
 				<div class="rounded-full bg-[#00AABB] px-8 py-2 text-2xl font-medium">
@@ -35,6 +37,7 @@ export const createOgImage = async (title: string, link: URL) =>
 
 			persistentImages: [{ data: iconBuffer, src: "icon" }],
 			fonts: [{ name: "Nunito Sans Variable", data: nunitoSansBuffer }],
+			emoji: "noto",
 			jsx: { tailwindClassesProperty: "class" },
 		},
 	);

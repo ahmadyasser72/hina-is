@@ -18,6 +18,8 @@ const config = {
 	overrides: [{ files: "*.astro", options: { parser: "astro" } }],
 
 	importOrder: [
+		"^astro:env/(.*)$",
+		"",
 		"^@hina-is/(.*)$",
 		"",
 		"<THIRD_PARTY_MODULES>",

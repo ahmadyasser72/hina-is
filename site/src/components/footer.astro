@@ -1,3 +1,7 @@
+---
+import { SITE_NAME } from "astro:env/client";
+---
+
 <footer
 	class="bg-base-200/67 text-base-content/67 border-base-content/5 bottom-0 z-80 border-t py-8 backdrop-blur-sm md:sticky md:py-6"
 >
@@ -9,7 +13,7 @@
 				<div class="flex items-center justify-center gap-2 md:justify-start">
 					<a
 						class="badge link link-hover badge-accent badge-sm font-medium"
-						href="/">hina-is</a
+						href="/">{SITE_NAME}</a
 					>
 					<a
 						class="link link-hover inline-flex items-center"
@@ -49,7 +53,7 @@
 				</p>
 
 				<p class="text-xs italic max-lg:max-w-xs">
-					hina-is is a fan site and is not affiliated with Bushiroad, Craft Egg,
+					{SITE_NAME} is a fan site and is not affiliated with Bushiroad, Craft Egg,
 					or the BanG Dream! franchise.
 				</p>
 			</div>

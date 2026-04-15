@@ -1,3 +1,5 @@
+import { SITE_NAME } from "astro:env/client";
+
 import { IMAGE_FORMAT, STAMP_VIDEO_FORMAT } from "@hina-is/bestdori/constants";
 import { stamps } from "@hina-is/bestdori/data";
 
@@ -41,7 +43,7 @@ export const GET: APIRoute = ({ params, site }) => {
 		content: "",
 		spoiler_text: "",
 		visibility: "public",
-		application: { name: "Hina is ♥", website: null },
+		application: { name: SITE_NAME, website: null },
 		media_attachments: [
 			{
 				id: "114163769487684704",

@@ -1,4 +1,6 @@
 ---
+import { SITE_NAME } from "astro:env/client";
+
 import { IMAGE_FORMAT } from "@hina-is/bestdori/constants";
 import { events } from "@hina-is/bestdori/data";
 
@@ -20,7 +22,9 @@ const randomEvent = sample(Object.values(events));
 >
 	<div class="absolute inset-0 grid place-items-center">
 		<div class="flex flex-col items-center gap-4">
-			<h2 class="badge badge-accent badge-xl w-48 font-medium">hina-is</h2>
+			<h2 class="badge badge-accent badge-xl w-48 font-medium">
+				{SITE_NAME}
+			</h2>
 
 			<div class="grid grid-cols-2 gap-1">
 				{

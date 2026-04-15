@@ -22,6 +22,12 @@ export default defineConfig({
 
 	env: {
 		schema: {
+			SITE_NAME: envField.string({
+				access: "public",
+				context: "client",
+				optional: true,
+				default: "hina is ♥",
+			}),
 			GOATCOUNTER_ENDPOINT: envField.string({
 				access: "public",
 				context: "server",

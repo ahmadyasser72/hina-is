@@ -1,6 +1,7 @@
 ---
-import { Font } from "astro:assets";
 import { GOATCOUNTER_ENDPOINT } from "astro:env/server";
+
+import { Font } from "astro:assets";
 import type { JSX } from "astro/jsx-runtime";
 
 import Footer from "~/components/footer.astro";
@@ -10,6 +11,8 @@ import type { PageMetadata } from "~/lib/page";
 
 import "~/styles/global.css";
 
+import { SITE_NAME } from "astro:env/client";
+
 interface Props {
 	background?: JSX.ImgHTMLAttributes;
 	metadata: PageMetadata;
@@ -17,7 +20,7 @@ interface Props {
 
 const { background, metadata } = Astro.props;
 
-const fullTitle = `Hina is ♥ ${metadata.title}`;
+const fullTitle = `${SITE_NAME} ${metadata.title}`;
 const url = new URL(Astro.url.pathname, Astro.url.origin);
 const route = metadata.path.replaceAll("/", "_");
 const image = new URL(`/open-graph/${route}.webp`, url.origin);
@@ -37,7 +40,7 @@ const image = new URL(`/open-graph/${route}.webp`, url.origin);
 		<link type="image/svg+xml" href="/favicon.svg" rel="icon" />
 		<link href="/favicon.ico" rel="shortcut icon" />
 		<link href="/apple-touch-icon.png" rel="apple-touch-icon" sizes="180x180" />
-		<meta name="apple-mobile-web-app-title" content="hina-is" />
+		<meta name="apple-mobile-web-app-title" content={SITE_NAME} />
 		<link href="/site.webmanifest" rel="manifest" />
 
 		<Font cssVariable="--font-nunito-sans" preload />
@@ -48,7 +51,7 @@ const image = new URL(`/open-graph/${route}.webp`, url.origin);
 		<title>{fullTitle}</title>
 		<meta name="description" content={metadata.description} />
 
-		<meta content="hina-is" property="og:site_name" />
+		<meta content={SITE_NAME} property="og:site_name" />
 		<meta content="website" property="og:type" />
 		<meta content={url} property="og:url" />
 		<meta content={fullTitle} property="og:title" />

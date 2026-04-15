@@ -1,3 +1,5 @@
+import { SITE_NAME } from "astro:env/client";
+
 import { useSignalEffect } from "@preact/signals";
 import { useSignalRef } from "@preact/signals/utils";
 import { actions } from "astro:actions";
@@ -130,7 +132,7 @@ export const CharacterSorterActions = ({
 			const text = sample(choices);
 			const data = {
 				title: document.title,
-				text: `${text}! Rank your own favorites on hina-is.`,
+				text: `${text}! Rank your own favorites on ${SITE_NAME}.`,
 				url: new URL(
 					`/page/character-sorter/${state.slug}`,
 					window.location.origin,

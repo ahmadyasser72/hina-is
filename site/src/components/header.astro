@@ -1,4 +1,6 @@
 ---
+import { SITE_NAME } from "astro:env/client";
+
 import { dayjs } from "~/lib/date";
 import NavigationMenu from "./navigation-menu.astro";
 
@@ -31,7 +33,7 @@ const BUILD_DATE = dayjs.tz(__BUILD_DATE__);
 			style="anchor-name: --anchor-header-site"
 		>
 			<a class="btn btn-ghost btn-sm text-base font-medium" href="/"
-				>hina-is ♥</a
+				>{SITE_NAME}</a
 			>
 
 			<button
