@@ -2,6 +2,7 @@ export interface PageMetadata {
 	title: string;
 	description: string;
 	path: `/${string}`;
+	route: string;
 }
 
 export const pageList = [
@@ -35,7 +36,10 @@ export const pageList = [
 		description:
 			"Rank your favorite characters from BanG Dream! Girls Band Party!.",
 	},
-] satisfies PageMetadata[];
+].map((page) => ({
+	...page,
+	route: page.path.slice(1) || "index",
+})) satisfies PageMetadata[];
 
 export const pages = Object.fromEntries(
 	pageList.map((page) => [page.path, page]),

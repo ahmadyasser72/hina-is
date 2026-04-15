@@ -22,8 +22,7 @@ const { background, metadata } = Astro.props;
 
 const fullTitle = `${SITE_NAME} ${metadata.title}`;
 const url = new URL(Astro.url.pathname, Astro.url.origin);
-const route = metadata.path.replaceAll("/", "_");
-const image = new URL(`/open-graph/${route}.webp`, url.origin);
+const image = new URL(`/open-graph/${metadata.route}.webp`, url.origin);
 ---
 
 <html lang="en">

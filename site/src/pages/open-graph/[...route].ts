@@ -15,7 +15,7 @@ export const GET: APIRoute<Props, Params> = ({ props, site }) =>
 
 export const getStaticPaths = (() =>
 	pageList.map((page) => ({
-		params: { route: `${page.path.replaceAll("/", "_")}.webp` },
+		params: { route: `${page.route}.webp` },
 		props: { page },
 	}))) satisfies GetStaticPaths;
 
