@@ -20,8 +20,10 @@ export const getStaticPaths = (() =>
 	}))) satisfies GetStaticPaths;
 
 const { stamp } = Astro.props;
-const character = stamp.character!;
-const title = `${character.name.split(" ")[0]} from (@${character.band.name})`;
+const { character } = stamp;
+const title = character
+	? `${character.name.split(" ")[0]} from (@${character.band.name})`
+	: `Stamp #${stamp.id}`;
 
 const url = new URL(Astro.site!);
 const pageUrl = new URL("/page/stamps", url);
@@ -41,10 +43,9 @@ const video = new URL(
 		<meta charset="UTF-8" />
 		<meta content={`0;url=${pageUrl}`} http-equiv="refresh" />
 
-		<title>{character.name}</title>
 		<meta content={SITE_NAME} property="og:site_name" />
 		<meta content={title} property="og:title" />
-		<meta content={character.color} property="theme-color" />
+		{character && <meta content={character.color} property="theme-color" />}
 
 		<meta content={pageUrl} property="og:url" />
 		<meta content={image} property="og:image" />
