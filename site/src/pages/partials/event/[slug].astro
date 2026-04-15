@@ -46,21 +46,28 @@ if (!event) return new Response(null, { status: 404 });
 				</div>
 			</div>
 
-			<label class="tab">
-				<input name={`details_${event.slug}`} type="radio" />
-				<iconify-icon
-					class="me-1 size-4 sm:me-2 sm:size-5"
-					icon="lucide:sparkle"
-					width="none"></iconify-icon>
-				Cards
-			</label>
-			<div class="tab-content">
-				<div
-					class="mx-auto flex max-w-xs flex-wrap justify-center gap-x-2 gap-y-1"
-				>
-					{event.cards.map((card) => <CardIcon {card} />)}
-				</div>
-			</div>
+			{
+				event.cards.length > 0 && (
+					<>
+						<label class="tab">
+							<input name={`details_${event.slug}`} type="radio" />
+							<iconify-icon
+								class="me-1 size-4 sm:me-2 sm:size-5"
+								icon="lucide:sparkle"
+								width="none"
+							/>
+							Cards
+						</label>
+						<div class="tab-content">
+							<div class="mx-auto flex max-w-xs flex-wrap justify-center gap-x-2 gap-y-1">
+								{event.cards.map((card) => (
+									<CardIcon {card} />
+								))}
+							</div>
+						</div>
+					</>
+				)
+			}
 
 			<label class="tab">
 				<input name={`details_${event.slug}`} type="radio" />
