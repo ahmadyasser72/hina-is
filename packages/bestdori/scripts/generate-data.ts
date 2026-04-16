@@ -467,18 +467,13 @@ const DATA_FILE = path.join(GIT_ROOT_PATH, "packages/bestdori/src/data.js");
 
 {
 	const { getAsset } = await import("~/assets");
-	const spinner = createSpinner("do OCR on stamps");
+	const spinner = createSpinner("extract text from stamps");
 
 	const stamps: typeof data.stamps = {};
 	for (const key in data.stamps) {
 		const stamp = data.stamps[key];
-		if (!stamp.voiced) {
-			stamps[key] = { ...stamp, text: "" };
-			continue;
-		}
-
 		const assets = getAsset("stamps", stamp);
-		spinner.text = `doing OCR for ${stamp.slug}`;
+		spinner.text = `extracting text from ${stamp.slug}`;
 		const text = await doStampOcr(assets[`${stamp.slug}-image`]);
 		stamps[key] = { ...stamp, text };
 	}
