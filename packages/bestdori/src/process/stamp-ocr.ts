@@ -42,11 +42,11 @@ export const doStampOcr = async ({
 		extension: "txt",
 	});
 
-	const alreadyExists = await outputFile.exists();
+	const alreadyExists = (await outputFile.exists()) && outputFile.size > 0;
 	if (alreadyExists && !redownload)
 		return outputFile.text().then(formatOcrResult);
 
-	const { text } = await retry(
+	const response = await retry(
 		() =>
 			ai.models.generateContent({
 				model: "gemini-3.1-flash-lite-preview", // 15 rpm limit on free tier
@@ -72,7 +72,7 @@ export const doStampOcr = async ({
 		},
 	);
 
-	const output = text!.trim().replace(/\s+/g, " ");
+	const output = (response.text ?? "").trim().replace(/\s+/g, " ");
 	await outputFile.write(output);
 	return formatOcrResult(output);
 };
