@@ -111,7 +111,7 @@ export const bestdori = async <T = never>(
 	const hash = hashBuffer(data);
 	return {
 		hash,
-		file: cacheFile,
+		file: Bun.file(cacheFile.name!),
 		response: await preprocess(
 			[cacheName.replace(path.extname(cacheName), ""), hash].join("."),
 			Buffer.from(data),

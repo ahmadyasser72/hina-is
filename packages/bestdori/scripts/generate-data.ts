@@ -2,7 +2,7 @@ import { appendFile, writeFile } from "node:fs/promises";
 import path from "node:path";
 
 import * as devalue from "devalue";
-import { deburr, groupBy, limitAsync, omit } from "es-toolkit";
+import { chunk, deburr, groupBy, limitAsync, omit } from "es-toolkit";
 import { findKey } from "es-toolkit/object";
 import yoctoSpinner from "yocto-spinner";
 import { z } from "zod";
@@ -470,12 +470,18 @@ const DATA_FILE = path.join(GIT_ROOT_PATH, "packages/bestdori/src/data.js");
 	const spinner = createSpinner("extract text from stamps");
 
 	const stamps: typeof data.stamps = {};
-	for (const key in data.stamps) {
-		const stamp = data.stamps[key];
-		const assets = getAsset("stamps", stamp);
-		spinner.text = `extracting text from ${stamp.slug}`;
-		const text = await doStampOcr(assets[`${stamp.slug}-image`]);
-		stamps[key] = { ...stamp, text };
+	const batches = chunk(Object.entries(data.stamps), 10);
+	for (const batch of batches) {
+		const keys = batch.map(([key]) => key);
+		const assets = batch.map(
+			([_, stamp]) => getAsset("stamps", stamp)[`${stamp.slug}-image`],
+		);
+
+		spinner.text = `extracting text from stamps (${keys.join(", ")})`;
+		const texts = await doStampOcr(assets);
+		batch.forEach(([key, stamp], subIndex) => {
+			stamps[key] = { ...stamp, text: texts[subIndex] };
+		});
 	}
 
 	spinner.text = "uneval (stamps)";
