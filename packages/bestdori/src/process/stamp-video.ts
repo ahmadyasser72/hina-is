@@ -30,7 +30,6 @@ export const createStampVideo = async (
 			"pipe:0",
 			"-i",
 			audio.name!,
-			...["-af", "adelay=444|444"], // temporary fix: audio starts late on mobile discord
 			"-c:v",
 			"libx264",
 			"-tune",
