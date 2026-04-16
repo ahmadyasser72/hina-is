@@ -65,7 +65,10 @@ export const doStampOcr = async ({
 		{
 			delay: 10_000,
 			retries: 3,
-			shouldRetry: (error) => error instanceof ApiError && error.status === 429,
+			shouldRetry: (error) =>
+				error instanceof ApiError &&
+				(error.status === 429 || // too many request
+					error.status === 503), // unavailable (server overload)
 		},
 	);
 
