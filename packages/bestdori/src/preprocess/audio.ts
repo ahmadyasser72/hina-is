@@ -6,7 +6,7 @@ export const compressAudio = async (
 	buffer: Buffer<ArrayBuffer>,
 ): Promise<Response> => {
 	const outputFile = await getOutputFile({
-		script: import.meta.filename,
+		script: "audio",
 		version: "20260416",
 		name,
 		extension: AUDIO_FORMAT,

@@ -33,7 +33,7 @@ export const doStampOcr = async (items: ReturnType<typeof asset>[]) => {
 
 			const name = path.basename(file.name!);
 			const outputFile = await getOutputFile({
-				script: import.meta.filename,
+				script: "stamp-ocr",
 				version: "20260416",
 				name: [name.replace(path.extname(name), ""), hash].join("."),
 				extension: "txt",

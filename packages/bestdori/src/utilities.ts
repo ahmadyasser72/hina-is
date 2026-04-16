@@ -10,15 +10,10 @@ export const getOutputFile = async ({
 	version,
 	name,
 	extension,
-}: Record<"script" | "version" | "name" | "extension", string>) => {
-	const scriptName = path.basename(script).replace(path.extname(script), "");
-	return Bun.file(
-		path.join(
-			CACHE_DIR,
-			[name, `${scriptName}@${version}`, extension].join("."),
-		),
+}: Record<"script" | "version" | "name" | "extension", string>) =>
+	Bun.file(
+		path.join(CACHE_DIR, [name, `${script}@${version}`, extension].join(".")),
 	);
-};
 
 export const hashBuffer = (...buffers: (BinaryLike | ArrayBuffer)[]) =>
 	buffers

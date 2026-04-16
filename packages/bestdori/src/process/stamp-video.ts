@@ -7,7 +7,7 @@ export const createStampVideo = async (
 	audio: Bun.BunFile,
 ) => {
 	const outputFile = await getOutputFile({
-		script: import.meta.filename,
+		script: "stamp-video",
 		version: "20260416",
 		name,
 		extension: STAMP_VIDEO_FORMAT,
