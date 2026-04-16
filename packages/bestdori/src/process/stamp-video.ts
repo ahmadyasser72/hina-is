@@ -1,4 +1,3 @@
-import { AUDIO_BITRATE } from "../preprocess/constants";
 import { fileResponse, getOutputFile } from "../utilities";
 import { STAMP_VIDEO_FORMAT, STAMP_VIDEO_FORMAT_MIME } from "./constants";
 
@@ -32,14 +31,10 @@ export const createStampVideo = async (
 			audio.name!,
 			"-c:v",
 			"libx264",
-			"-tune",
-			"stillimage",
 			"-vf",
 			"scale=trunc(iw/2)*2:trunc(ih/2)*2",
 			"-c:a",
-			"libopus",
-			"-b:a",
-			AUDIO_BITRATE,
+			"copy",
 			"-pix_fmt",
 			"yuv420p",
 			"-movflags",
