@@ -7,6 +7,7 @@ export const compressImage = async (
 ): Promise<Response> => {
 	const outputFile = await getOutputFile({
 		script: import.meta.filename,
+		version: "20260416",
 		name,
 		extension: IMAGE_FORMAT,
 	});

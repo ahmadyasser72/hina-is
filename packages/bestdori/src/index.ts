@@ -2,7 +2,7 @@ import { exec } from "node:child_process";
 import { mkdir } from "node:fs/promises";
 import path from "node:path";
 
-import { limitAsync, retry } from "es-toolkit";
+import { limitAsync, memoize, retry } from "es-toolkit";
 
 import { compressAudio } from "./preprocess/audio";
 import {
@@ -12,8 +12,9 @@ import {
 import { compressImage } from "./preprocess/image";
 import { fileResponse, hashBuffer } from "./utilities";
 
-export const createDirectoryIfNotExists = async (path: string) =>
-	mkdir(path, { recursive: true }).then(() => path);
+export const createDirectoryIfNotExists = memoize(async (path: string) =>
+	mkdir(path, { recursive: true }).then(() => path),
+);
 
 export const GIT_ROOT_PATH = await new Promise<string>((resolve, reject) => {
 	exec("git rev-parse --show-toplevel", (error, stdout) =>

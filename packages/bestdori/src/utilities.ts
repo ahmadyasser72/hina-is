@@ -1,34 +1,24 @@
 import { createHash, type BinaryLike } from "node:crypto";
 import path from "node:path";
 
-import { memoize } from "es-toolkit";
-
 import { CACHE_DIR } from ".";
 
 export const unwrap = <T>({ jp, en }: { jp: T; en: T | null }) => (en ?? jp)!;
 
 export const getOutputFile = async ({
 	script,
+	version,
 	name,
 	extension,
-}: {
-	script: string;
-	name: string;
-	extension: string;
-}) => {
-	const scriptHash = await hashFile(script);
+}: Record<"script" | "version" | "name" | "extension", string>) => {
+	const scriptName = path.basename(script).replace(path.extname(script), "");
 	return Bun.file(
-		path.join(CACHE_DIR, [name, scriptHash, extension].join(".")),
+		path.join(
+			CACHE_DIR,
+			[name, `${scriptName}@${version}`, extension].join("."),
+		),
 	);
 };
-
-export const hashFile = memoize(
-	(filename: string) =>
-		Bun.file(filename)
-			.text()
-			.then((text) => hashBuffer(text)),
-	{ getCacheKey: (filename) => path.basename(filename) },
-);
 
 export const hashBuffer = (...buffers: (BinaryLike | ArrayBuffer)[]) =>
 	buffers

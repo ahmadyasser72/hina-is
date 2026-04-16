@@ -8,6 +8,7 @@ export const createStampVideo = async (
 ) => {
 	const outputFile = await getOutputFile({
 		script: import.meta.filename,
+		version: "20260416",
 		name,
 		extension: STAMP_VIDEO_FORMAT,
 	});
