@@ -1,5 +1,5 @@
 import { fileResponse, getOutputFile } from "../utilities";
-import { STAMP_VIDEO_FORMAT, STAMP_VIDEO_FORMAT_MIME } from "./constants";
+import { STAMP_VIDEO_FORMAT } from "./constants";
 
 export const createStampVideo = async (
 	name: string,
@@ -23,6 +23,7 @@ export const createStampVideo = async (
 	const ffmpeg = Bun.spawn(
 		[
 			"ffmpeg",
+			"-y",
 			"-loop",
 			"1",
 			"-i",
@@ -37,14 +38,12 @@ export const createStampVideo = async (
 			"copy",
 			"-pix_fmt",
 			"yuv420p",
-			"-movflags",
-			"frag_keyframe+empty_moov",
 			"-shortest",
 			"-f",
 			STAMP_VIDEO_FORMAT,
-			"pipe:1",
+			outputFile.name!,
 		],
-		{ stdin: imageWithBackground, stdout: "pipe", stderr: "pipe" },
+		{ stdin: imageWithBackground, stdout: "ignore", stderr: "pipe" },
 	);
 
 	const exitCode = await ffmpeg.exited;
@@ -53,13 +52,5 @@ export const createStampVideo = async (
 		throw new Error(`failed to create stamp-video (${name})\n${error}`);
 	}
 
-	const created = await new Response(ffmpeg.stdout).arrayBuffer();
-	await outputFile.write(created);
-
-	return new Response(created, {
-		headers: {
-			"content-type": STAMP_VIDEO_FORMAT_MIME,
-			"content-length": created.byteLength.toString(),
-		},
-	});
+	return fileResponse(outputFile);
 };

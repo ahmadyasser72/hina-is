@@ -1,5 +1,5 @@
 import { fileResponse, getOutputFile } from "../utilities";
-import { AUDIO_BITRATE, AUDIO_FORMAT, AUDIO_FORMAT_MIME } from "./constants";
+import { AUDIO_BITRATE, AUDIO_FORMAT } from "./constants";
 
 export const compressAudio = async (
 	name: string,
@@ -17,6 +17,7 @@ export const compressAudio = async (
 	const ffmpeg = Bun.spawn(
 		[
 			"ffmpeg",
+			"-y",
 			"-i",
 			"pipe:0",
 			"-c:a",
@@ -25,9 +26,9 @@ export const compressAudio = async (
 			AUDIO_BITRATE,
 			"-f",
 			AUDIO_FORMAT,
-			"pipe:1",
+			outputFile.name!,
 		],
-		{ stdin: buffer, stdout: "pipe", stderr: "pipe" },
+		{ stdin: buffer, stdout: "ignore", stderr: "pipe" },
 	);
 
 	const exitCode = await ffmpeg.exited;
@@ -36,13 +37,5 @@ export const compressAudio = async (
 		throw new Error(`failed to compress audio (${name})\n${error}`);
 	}
 
-	const compressed = await new Response(ffmpeg.stdout).arrayBuffer();
-	await outputFile.write(compressed);
-
-	return new Response(compressed, {
-		headers: {
-			"content-type": AUDIO_FORMAT_MIME,
-			"content-length": compressed.byteLength.toString(),
-		},
-	});
+	return fileResponse(outputFile);
 };
