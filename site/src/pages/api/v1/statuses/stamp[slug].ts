@@ -40,7 +40,13 @@ export const GET: APIRoute = ({ params, site }) => {
 		edited_at: null,
 		reblog: null,
 		language: "en",
-		content: "",
+		content:
+			typeof stamp.text === "string"
+				? stamp.text
+				: [
+						stamp.text.translate,
+						`<blockquote>${stamp.text.japanese}<br>(${stamp.text.romaji})</blockquote>`,
+					].join("<br><br>"),
 		spoiler_text: "",
 		visibility: "public",
 		application: { name: SITE_NAME, website: null },

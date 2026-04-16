@@ -1,13 +1,14 @@
-import { writeFile } from "node:fs/promises";
+import { appendFile, writeFile } from "node:fs/promises";
 import path from "node:path";
 
 import * as devalue from "devalue";
-import { deburr, groupBy, limitAsync } from "es-toolkit";
+import { deburr, groupBy, limitAsync, omit } from "es-toolkit";
 import { findKey } from "es-toolkit/object";
 import yoctoSpinner from "yocto-spinner";
 import { z } from "zod";
 
 import { bestdoriJSON, GIT_ROOT_PATH } from "~/index";
+import { doStampOcr } from "~/process/stamp-ocr";
 import { Bands } from "~/schema/bands";
 import { Cards } from "~/schema/cards";
 import { Characters } from "~/schema/characters";
@@ -417,6 +418,9 @@ const data = await (async () => {
 								},
 								region,
 								voiced,
+								text: "PLACEHOLDER" as
+									| string
+									| Record<"japanese" | "romaji" | "translate", string>,
 							},
 						];
 					}),
@@ -437,24 +441,51 @@ const data = await (async () => {
 
 export type Data = typeof data;
 
-const lines = (() => {
-	const spinner = createSpinner("uneval data");
-	const output = Object.entries(data).map(([key, map]) => {
+const output = (() => {
+	const entries = Object.entries(omit(data, ["stamps"]));
+	const keys = entries.map(([key]) => key).join(", ");
+
+	const spinner = createSpinner(`uneval (${keys})`);
+	const lines = entries.map(([key, value]) => {
 		spinner.text = `uneval ${key}`;
-		const out = devalue.uneval(map);
-		return `export const ${key} = ${out}`;
+		const out = devalue.uneval(value);
+		return `export const ${key} = ${out};`;
 	});
 
-	spinner.success("done uneval");
-	return output;
+	spinner.success(`done uneval (${keys})`);
+	return { keys, lines };
 })();
 
-{
-	const spinner = createSpinner("write data.js");
-	await writeFile(
-		path.join(GIT_ROOT_PATH, "packages/bestdori/src/data.js"),
-		lines.join(";"),
-	);
+const DATA_FILE = path.join(GIT_ROOT_PATH, "packages/bestdori/src/data.js");
 
-	spinner.success("data.js written");
+{
+	const spinner = createSpinner(`write data.js (${output.keys})`);
+	await writeFile(DATA_FILE, output.lines.join(""));
+
+	spinner.success(`data.js written (${output.keys})`);
+}
+
+{
+	const { getAsset } = await import("~/assets");
+	const spinner = createSpinner("do OCR on stamps");
+
+	const stamps: typeof data.stamps = {};
+	for (const key in data.stamps) {
+		const stamp = data.stamps[key];
+		if (!stamp.voiced) {
+			stamps[key] = { ...stamp, text: "" };
+			continue;
+		}
+
+		const assets = getAsset("stamps", stamp);
+		spinner.text = `doing OCR for ${stamp.slug}`;
+		const text = await doStampOcr(assets[`${stamp.slug}-image`]);
+		stamps[key] = { ...stamp, text };
+	}
+
+	spinner.text = "uneval (stamps)";
+	const out = `export const stamps = ${devalue.uneval(stamps)};`;
+	spinner.text = "append data.js (stamps)";
+	await appendFile(DATA_FILE, out);
+	spinner.success("data.js appended (stamps)");
 }

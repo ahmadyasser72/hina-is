@@ -33,6 +33,7 @@ jobs:
         run: bun run build
         env:
           GOATCOUNTER_ENDPOINT: ${{ vars.GOATCOUNTER_ENDPOINT }}
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
 
       - name: Upload site build artifact
         uses: actions/upload-artifact@v7

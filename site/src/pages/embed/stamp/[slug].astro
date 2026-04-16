@@ -24,6 +24,10 @@ const { character } = stamp;
 const title = character
 	? `${character.name.split(" ")[0]} from (@${character.band.name})`
 	: `Stamp (@#${stamp.id})`;
+const description =
+	typeof stamp.text === "string"
+		? stamp.text
+		: `${stamp.text.japanese} (${stamp.text.translate})`;
 
 const url = new URL(Astro.site!);
 const pageUrl = new URL("/page/stamps", url);
@@ -46,6 +50,7 @@ const video = new URL(
 		<meta content={SITE_NAME} property="og:site_name" />
 		<meta content={title} property="og:title" />
 		{character && <meta content={character.color} property="theme-color" />}
+		{description && <meta content={description} property="og:description" />}
 
 		<meta content={pageUrl} property="og:url" />
 		<meta content={image} property="og:image" />

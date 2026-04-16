@@ -110,6 +110,7 @@ export const bestdori = async <T = never>(
 
 	const hash = hashBuffer(data);
 	return {
+		hash,
 		file: cacheFile,
 		response: await preprocess(
 			[cacheName.replace(path.extname(cacheName), ""), hash].join("."),

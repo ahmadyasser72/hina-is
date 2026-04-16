@@ -48,6 +48,7 @@ cp .env.example .env
 | `GOATCOUNTER_ENDPOINT`     | No       | URL to your [GoatCounter](https://www.goatcounter.com/) analytics endpoint (e.g. `https://yoursite.goatcounter.com/count`) |
 | `UPSTASH_REDIS_REST_URL`   | Yes      | REST URL for your [Upstash Redis](https://upstash.com/redis) database (used for sharing character sorter results)          |
 | `UPSTASH_REDIS_REST_TOKEN` | Yes      | REST token for your Upstash Redis database                                                                                 |
+| `GEMINI_API_KEY`           | Yes      | [Google Gemini API key](https://aistudio.google.com/app/api-keys) (required to extract text from voiced stamp images)      |
 
 ### 3. Run locally
 
@@ -88,6 +89,7 @@ Go to your repository → **Settings → Secrets and variables → Actions** and
 | `CLOUDFLARE_ACCOUNT_ID`    | Your Cloudflare account ID (found in the Cloudflare dashboard sidebar) |
 | `UPSTASH_REDIS_REST_URL`   | Your Upstash Redis REST URL                                            |
 | `UPSTASH_REDIS_REST_TOKEN` | Your Upstash Redis REST token                                          |
+| `GEMINI_API_KEY`           | Your Google Gemini API key                                             |
 
 #### Variables
 

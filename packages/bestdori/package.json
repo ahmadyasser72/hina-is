@@ -24,6 +24,7 @@
 		"typescript": "5.9.3"
 	},
 	"dependencies": {
+		"@google/genai": "1.50.1",
 		"colord": "2.9.3",
 		"devalue": "5.7.1",
 		"es-toolkit": "1.45.1",

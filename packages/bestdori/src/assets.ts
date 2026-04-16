@@ -11,11 +11,16 @@ const latestStamps = new Set(
 	data.recentNews.events.map(({ stamp }) => stamp.id),
 );
 
-const asset = (pathname: string, identifier: string, redownload = false) => ({
+export const asset = (
+	pathname: string,
+	identifier: string,
+	redownload = false,
+) => ({
 	pathname,
 	identifier,
 	redownload,
 });
+
 const regionAsset = (
 	pathname: string,
 	releasedAt: { en: number | null },

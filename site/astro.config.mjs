@@ -43,6 +43,11 @@ export default defineConfig({
 				access: "secret",
 				context: "server",
 			}),
+
+			GEMINI_API_KEY: envField.string({
+				access: "secret",
+				context: "server",
+			}),
 		},
 	},
 
