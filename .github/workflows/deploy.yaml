@@ -71,6 +71,8 @@ jobs:
           secrets: |
             UPSTASH_REDIS_REST_URL
             UPSTASH_REDIS_REST_TOKEN
+            GEMINI_API_KEY
         env:
           UPSTASH_REDIS_REST_URL: ${{ secrets.UPSTASH_REDIS_REST_URL }}
           UPSTASH_REDIS_REST_TOKEN: ${{ secrets.UPSTASH_REDIS_REST_TOKEN }}
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
