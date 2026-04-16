@@ -63,7 +63,7 @@ export const doStampOcr = async ({
 				},
 			}),
 		{
-			delay: 10_000,
+			delay: 33_333,
 			retries: 3,
 			shouldRetry: (error) =>
 				error instanceof ApiError &&
