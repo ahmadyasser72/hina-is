@@ -1,0 +1,48 @@
+name: Debug Cache
+
+on:
+  workflow_dispatch:
+
+jobs:
+  debug-cache:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      # Optional: Restore cache first (so you can compare)
+      - name: Restore cache
+        uses: actions/cache/restore@v5
+        id: cache-restore
+        with:
+          path: .bestdori-cache
+          key: bestdori-${{ github.run_id }}
+          restore-keys: |
+            bestdori-
+
+      - name: Show cache restore result
+        run: |
+          echo "Cache hit: ${{ steps.cache-restore.outputs.cache-hit }}"
+          echo "Matched key: ${{ steps.cache-restore.outputs.cache-matched-key }}"
+
+      - name: List files BEFORE save
+        run: |
+          echo "Listing .bestdori-cache before save:"
+          ls -lah .bestdori-cache || echo "Directory does not exist"
+
+      - name: Show disk usage
+        run: |
+          du -sh .bestdori-cache || echo "No cache dir"
+
+      - name: Save response cache
+        uses: actions/cache/save@v5
+        if: always()
+        with:
+          path: .bestdori-cache
+          key: bestdori-${{ github.run_id }}
+
+      - name: List files AFTER save
+        run: |
+          echo "Listing .bestdori-cache after save:"
+          ls -lah .bestdori-cache || echo "Directory does not exist"
