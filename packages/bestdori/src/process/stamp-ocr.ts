@@ -8,17 +8,36 @@ import type { asset } from "../assets";
 import { getOutputFile } from "../utilities";
 
 const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
-const DO_OCR_PROMPT = `Extract text from the images.
+const DO_OCR_PROMPT = `## Extract Text from Images
 
-Rules:
-- If the text is Japanese, convert to romaji then translate them and output all original, romaji, and translated separated by ";".
-- If the text is English, keep it as-is.
-- There can only be 1 language, if both Japanese and English exists skip Japanese.
-- Remove unusual space like in "I' m".
-- Treat separated text as one, read from right to left.
-- Output ONLY the final text, one line per image in order.
-- No explanations, no labels.
-- If nothing is readable for an image, return an empty line.`;
+Extract all text from each input image.
+
+### Processing Rules
+
+1. **Language Detection**
+   - If the text is Japanese only:
+     - Convert it to romaji.
+     - Translate it into English.
+     - Output format:
+       original_text;romaji;english_translation
+   - If the text is English only:
+     - Output it as-is.
+
+2. **Preservation**
+   - Keep all symbols, punctuation, and numbers exactly as they appear.
+
+3. **Spacing Normalization**
+   - Remove unnatural spacing (e.g., "I' m" → "I'm").
+
+4. **Text Structure**
+   - Merge fragmented or separated text into a single coherent line.
+   - Use right-to-left reading order if clearly applicable; otherwise use natural reading order.
+
+### Output Rules
+
+- Output one line per image, in the same order as input.
+- Do not include explanations or additional text.
+- If no readable text is found, output an empty line.`;
 
 const formatOcrResult = (text: string) => {
 	if (!text.includes(";")) return text;
@@ -34,7 +53,7 @@ export const doStampOcr = async (items: ReturnType<typeof asset>[]) => {
 			const name = path.basename(file.name!);
 			const outputFile = await getOutputFile({
 				script: "stamp-ocr",
-				version: "20260416",
+				version: "20260417",
 				name: [name.replace(path.extname(name), ""), hash].join("."),
 				extension: "txt",
 			});
@@ -94,6 +113,8 @@ export const doStampOcr = async (items: ReturnType<typeof asset>[]) => {
 	}
 
 	return Promise.all(
-		inputs.map(({ outputFile }) => outputFile.text().then(formatOcrResult)),
+		inputs.map(({ outputFile }) =>
+			Bun.file(outputFile.name!).text().then(formatOcrResult),
+		),
 	);
 };

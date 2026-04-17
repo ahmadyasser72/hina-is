@@ -470,7 +470,7 @@ const DATA_FILE = path.join(GIT_ROOT_PATH, "packages/bestdori/src/data.js");
 	const spinner = createSpinner("extract text from stamps");
 
 	const stamps: typeof data.stamps = {};
-	const batches = chunk(Object.entries(data.stamps), 10);
+	const batches = chunk(Object.entries(data.stamps), 5);
 	for (const batch of batches) {
 		const keys = batch.map(([key]) => key);
 		const assets = batch.map(
