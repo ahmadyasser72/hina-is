@@ -10,11 +10,13 @@ import type { schema } from "./_params";
 const UNKNOWN = "unknown";
 
 export const filterStamps = async (
-	{ voice_stamp, sort, ...params }: z.infer<typeof schema>,
+	{ voice_stamp, sort, query, ...params }: z.infer<typeof schema>,
 	stamps: Bandori.Stamp[],
 ) => {
 	const db = (() => {
-		const stampDB = create({ schema: { band: "enum", character: "enum" } });
+		const stampDB = create({
+			schema: { band: "enum", character: "enum", text: "string" },
+		});
 
 		const items = voice_stamp ? stamps.filter(({ voiced }) => voiced) : stamps;
 		if (sort === "event-release")
@@ -24,10 +26,11 @@ export const filterStamps = async (
 
 		insertMultiple(
 			stampDB,
-			items.map(({ id, character }) => ({
+			items.map(({ id, character, text }) => ({
 				id,
 				band: character?.band.slug ?? UNKNOWN,
 				character: character?.slug ?? UNKNOWN,
+				text: typeof text === "string" ? text : text.romaji,
 			})),
 		);
 
@@ -45,12 +48,18 @@ export const filterStamps = async (
 		},
 	};
 
-	const limit = stamps.length;
+	const options = {
+		term: query,
+		properties: ["text" as const],
+		tolerance: 1,
+		limit: stamps.length,
+	};
+
 	const [main, { facets: bandFacet }, { facets: characterFacet }] =
 		await Promise.all([
-			search(db, { limit, where: { and: Object.values(filter) } }),
-			search(db, { limit, facets: { band: {} }, where: filter.character }),
-			search(db, { limit, facets: { character: {} }, where: filter.band }),
+			search(db, { ...options, where: { and: Object.values(filter) } }),
+			search(db, { ...options, facets: { band: {} }, where: filter.character }),
+			search(db, { ...options, facets: { character: {} }, where: filter.band }),
 		]);
 
 	const selectedBands = new Set(params.band);

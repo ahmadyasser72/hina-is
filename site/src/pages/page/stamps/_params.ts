@@ -8,5 +8,6 @@ export const schema = z
 		sort: z.enum(["default", "event-release"]).catch("default"),
 		band: z.string().apply(alwaysArray),
 		character: z.string().apply(alwaysArray),
+		query: z.string().toLowerCase().optional(),
 	})
 	.partial({ band: true, character: true });

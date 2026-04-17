@@ -28,6 +28,7 @@ if (Astro.request.headers.get("hx-request") === "true" && page.current === 1) {
 	const replaceUrl = new URL(Astro.url);
 	replaceUrl.search = isDefault ? "" : Astro.url.search;
 	replaceUrl.searchParams.delete("page");
+	replaceUrl.searchParams.delete("query");
 	Astro.response.headers.set("hx-replace-url", replaceUrl.href);
 }
 ---
@@ -95,8 +96,25 @@ if (Astro.request.headers.get("hx-request") === "true" && page.current === 1) {
 			</div>
 		</div>
 
+		<label class="input w-64">
+			<iconify-icon class="size-4" icon="lucide:search" width="none"
+			></iconify-icon>
+			<input
+				hx-get
+				hx-trigger="input delay:300ms"
+				class="flex-1"
+				name="query"
+				type="search"
+				hx-select="#stamp-list"
+				hx-swap="outerHTML transition:true"
+				hx-target="#stamp-list"
+				placeholder="Search"
+			/>
+		</label>
+
 		<div
 			class="flex flex-wrap justify-center gap-x-0.5 gap-y-1"
+			id="stamp-list"
 			hx-indicator="#stamps-loader"
 		>
 			{
