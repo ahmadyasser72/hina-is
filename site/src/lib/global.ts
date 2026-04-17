@@ -1,6 +1,12 @@
 import { AUDIO_FORMAT } from "@hina-is/bestdori/constants";
 
-import { autoUpdate, computePosition, flip, hide } from "@floating-ui/dom";
+import {
+	autoPlacement,
+	autoUpdate,
+	computePosition,
+	hide,
+	offset,
+} from "@floating-ui/dom";
 
 {
 	let playEventBGMButton: HTMLButtonElement | undefined;
@@ -90,7 +96,14 @@ window.toggleFloating = async (reference, floatingElement) => {
 			floatingElement,
 			{
 				placement: "bottom-end",
-				middleware: [flip(), hide({ padding: 80 })],
+				middleware: [
+					offset({ crossAxis: -4 }),
+					autoPlacement({
+						padding: { left: 40, right: 40 },
+						alignment: "end",
+					}),
+					hide({ padding: 80 }),
+				],
 			},
 		);
 

@@ -22,66 +22,91 @@ const { stamp, class: className, ...props } = Astro.props;
 	class:list={["relative aspect-40/33 h-32", className]}
 	{...props}
 >
-	<div class="floating">
-		<ul
-			class:list={[
-				"menu rounded-field border-base-content/67 border p-0 [&_li>*]:rounded-none",
-				stamp.character
-					? "bg-character text-character-content"
-					: "text-neutral-content bg-neutral",
-			]}
-		>
-			<li>
-				<a href={`/assets/stamps/${stamp.slug}-image.${IMAGE_FORMAT}`} download>
-					<iconify-icon class="size-4" icon="lucide:file-image" width="none"
-					></iconify-icon>
-					image</a
-				>
-			</li>
-
+	<div
+		class:list={[
+			"floating rounded-field border-base-content/67 w-max max-w-48 border px-1 py-1 sm:px-2",
+			stamp.character
+				? "bg-character text-character-content"
+				: "text-neutral-content bg-neutral",
+		]}
+	>
+		<div class="flex flex-col items-center">
 			{
-				stamp.voiced && (
-					<>
-						<li>
-							<a
-								href={`/assets/stamps/${stamp.slug}-voice.${AUDIO_FORMAT}`}
-								download
-							>
-								<iconify-icon
-									class="size-4"
-									icon="lucide:audio-lines"
-									width="none"
-								/>
-								audio
-							</a>
-						</li>
-						<li>
-							<a
-								href={`/assets/stamps/${stamp.slug}.${STAMP_VIDEO_FORMAT}`}
-								download
-							>
-								<iconify-icon
-									class="size-4"
-									icon="lucide:file-play"
-									width="none"
-								/>
-								video
-							</a>
-						</li>
-					</>
+				typeof stamp.text === "string" ? (
+					<p class="text-center text-sm">{stamp.text}</p>
+				) : (
+					<div class="tooltip text-center text-sm">
+						<div
+							class="tooltip-content max-w-48"
+							set:html={[stamp.text.romaji, `(${stamp.text.translate})`].join(
+								"<br>",
+							)}
+						/>
+						{stamp.text.japanese}
+					</div>
 				)
 			}
 
-			<li>
-				<button
-					onclick={`navigator.share({ url: '${new URL(`/embed/stamp/${stamp.slug}`, Astro.site)}' })`}
-				>
-					<iconify-icon class="size-4" icon="lucide:link" width="none"
-					></iconify-icon>
-					share</button
-				>
-			</li>
-		</ul>
+			<ul class="menu menu-horizontal p-0">
+				<li>
+					<a
+						class="tooltip"
+						data-tip="Save image"
+						href={`/assets/stamps/${stamp.slug}-image.${IMAGE_FORMAT}`}
+						download
+					>
+						<iconify-icon class="size-4" icon="lucide:file-image" width="none"
+						></iconify-icon>
+					</a>
+				</li>
+
+				{
+					stamp.voiced && (
+						<>
+							<li>
+								<a
+									class="tooltip"
+									data-tip="Save audio"
+									href={`/assets/stamps/${stamp.slug}-voice.${AUDIO_FORMAT}`}
+									download
+								>
+									<iconify-icon
+										class="size-4"
+										icon="lucide:audio-lines"
+										width="none"
+									/>
+								</a>
+							</li>
+							<li>
+								<a
+									class="tooltip"
+									data-tip="Save video"
+									href={`/assets/stamps/${stamp.slug}.${STAMP_VIDEO_FORMAT}`}
+									download
+								>
+									<iconify-icon
+										class="size-4"
+										icon="lucide:file-play"
+										width="none"
+									/>
+								</a>
+							</li>
+						</>
+					)
+				}
+
+				<li>
+					<button
+						class="tooltip"
+						data-tip="Share stamp"
+						onclick={`navigator.share({ url: '${new URL(`/embed/stamp/${stamp.slug}`, Astro.site)}' })`}
+					>
+						<iconify-icon class="size-4" icon="lucide:link" width="none"
+						></iconify-icon>
+					</button>
+				</li>
+			</ul>
+		</div>
 	</div>
 
 	<img
