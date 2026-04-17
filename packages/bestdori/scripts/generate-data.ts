@@ -2,7 +2,7 @@ import { appendFile, writeFile } from "node:fs/promises";
 import path from "node:path";
 
 import * as devalue from "devalue";
-import { chunk, deburr, groupBy, limitAsync, omit } from "es-toolkit";
+import { chunk, deburr, groupBy, limitAsync, omit, pick } from "es-toolkit";
 import { findKey } from "es-toolkit/object";
 import yoctoSpinner from "yocto-spinner";
 import { z } from "zod";
@@ -441,8 +441,8 @@ const data = await (async () => {
 
 export type Data = typeof data;
 
-const output = (() => {
-	const entries = Object.entries(omit(data, ["stamps"]));
+const unevalObject = (o: object) => {
+	const entries = Object.entries(o);
 	const keys = entries.map(([key]) => key).join(", ");
 
 	const spinner = createSpinner(`uneval (${keys})`);
@@ -454,14 +454,14 @@ const output = (() => {
 
 	spinner.success(`done uneval (${keys})`);
 	return { keys, lines };
-})();
+};
 
 const DATA_FILE = path.join(GIT_ROOT_PATH, "packages/bestdori/src/data.js");
 
 {
+	const output = unevalObject(omit(data, ["events", "stamps"]));
 	const spinner = createSpinner(`write data.js (${output.keys})`);
 	await writeFile(DATA_FILE, output.lines.join(""));
-
 	spinner.success(`data.js written (${output.keys})`);
 }
 
@@ -484,9 +484,13 @@ const DATA_FILE = path.join(GIT_ROOT_PATH, "packages/bestdori/src/data.js");
 		});
 	}
 
-	spinner.text = "uneval (stamps)";
-	const out = `export const stamps = ${devalue.uneval(stamps)};`;
-	spinner.text = "append data.js (stamps)";
-	await appendFile(DATA_FILE, out);
-	spinner.success("data.js appended (stamps)");
+	Object.defineProperty(data, "stamps", { get: () => stamps });
+	spinner.success("done extracting text");
+}
+
+{
+	const output = unevalObject(pick(data, ["events", "stamps"]));
+	const spinner = createSpinner(`write data.js (${output.keys})`);
+	await appendFile(DATA_FILE, output.lines.join(""));
+	spinner.success(`data.js appended (${output.keys})`);
 }
