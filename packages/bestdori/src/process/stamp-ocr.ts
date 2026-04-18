@@ -8,40 +8,13 @@ import type { asset } from "../assets";
 import { getOutputFile } from "../utilities";
 
 const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
-const DO_OCR_PROMPT = `## Extract Text from Images
-
-Extract all text from each input image.
-
-### Processing Rules
-
-1. **Language Detection**
-   - If the text is Japanese only:
-     - Convert it to romaji.
-     - Translate it into English.
-     - Output format:
-       original_text;romaji;english_translation
-   - If the text is English only:
-     - Output it as-is.
-
-2. **Preservation**
-   - Keep all symbols, punctuation, and numbers exactly as they appear.
-
-3. **Spacing Normalization**
-   - Remove unnatural spacing (e.g., "I' m" → "I'm").
-
-4. **Text Structure**
-   - Merge fragmented or separated text into a single coherent line.
-   - Use right-to-left reading order if clearly applicable; otherwise use natural reading order.
-
-### Output Rules
-
-- Output one line per image, in the same order as input.
-- Do not include explanations or additional text.
-- If no readable text is found, output an empty line.`;
+const DO_OCR_PROMPT = await Bun.file(
+	path.join(import.meta.dir, "stamp-ocr.txt"),
+).text();
 
 const formatOcrResult = (text: string) => {
-	if (!text.includes(";")) return text;
-	const [japanese, romaji, translate] = text.split(";");
+	if (!text.includes("|")) return text;
+	const [japanese, romaji, translate] = text.split("|");
 	return { japanese, romaji, translate };
 };
 
@@ -53,7 +26,7 @@ export const doStampOcr = async (items: ReturnType<typeof asset>[]) => {
 			const name = path.basename(file.name!);
 			const outputFile = await getOutputFile({
 				script: "stamp-ocr",
-				version: "20260417",
+				version: "20260418",
 				name: [name.replace(path.extname(name), ""), hash].join("."),
 				extension: "txt",
 			});
@@ -94,8 +67,9 @@ export const doStampOcr = async (items: ReturnType<typeof asset>[]) => {
 					},
 				}),
 			{
-				delay: 33_333,
-				retries: 3,
+				delay: (attempts) =>
+					Math.min(Math.random() * 1000 * 2 ** attempts, 15000),
+				retries: 10,
 				shouldRetry: (error) =>
 					error instanceof ApiError &&
 					(error.status === 429 || // too many request
