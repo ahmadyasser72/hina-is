@@ -14,7 +14,11 @@ const DO_OCR_PROMPT = await Bun.file(
 
 const formatOcrResult = (text: string) => {
 	if (!text.includes("|")) return text;
-	const [japanese, romaji, translate] = text.split("|");
+
+	const parts = text.split("|");
+	if (!parts.every(Boolean)) return "";
+
+	const [japanese, romaji, translate] = parts;
 	return { japanese, romaji, translate };
 };
 
