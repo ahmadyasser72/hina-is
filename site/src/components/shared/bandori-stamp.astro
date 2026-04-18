@@ -24,7 +24,7 @@ const { stamp, class: className, ...props } = Astro.props;
 >
 	<div
 		class:list={[
-			"floating rounded-field border-base-content/67 w-max max-w-48 border px-1 py-1 sm:px-2",
+			"floating rounded-field border-base-content/67 w-max max-w-48 min-w-32 border px-1 py-1 sm:px-2",
 			stamp.character
 				? "bg-character text-character-content"
 				: "text-neutral-content bg-neutral",
@@ -38,11 +38,12 @@ const { stamp, class: className, ...props } = Astro.props;
 					<div class="tooltip text-center text-sm">
 						<div
 							class="tooltip-content max-w-48"
-							set:html={[stamp.text.romaji, `(${stamp.text.translate})`].join(
-								"<br>",
-							)}
+							set:html={(stamp.text.english
+								? [`(${stamp.text.romaji})`, stamp.text.japanese]
+								: [`(${stamp.text.translate})`, stamp.text.romaji]
+							).join("<br>")}
 						/>
-						{stamp.text.japanese}
+						{stamp.text.english ?? stamp.text.japanese}
 					</div>
 				)
 			}

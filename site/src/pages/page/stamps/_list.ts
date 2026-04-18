@@ -15,7 +15,7 @@ export const filterStamps = async (
 ) => {
 	const db = (() => {
 		const stampDB = create({
-			schema: { band: "enum", character: "enum", text: "string" },
+			schema: { band: "enum", character: "enum", text: "string[]" },
 		});
 
 		const items = voice_stamp ? stamps.filter(({ voiced }) => voiced) : stamps;
@@ -30,7 +30,10 @@ export const filterStamps = async (
 				id,
 				band: character?.band.slug ?? UNKNOWN,
 				character: character?.slug ?? UNKNOWN,
-				text: typeof text === "string" ? text : text.romaji,
+				text:
+					typeof text === "string"
+						? [text]
+						: [text.english ?? text.translate, text.romaji],
 			})),
 		);
 
@@ -50,7 +53,6 @@ export const filterStamps = async (
 
 	const options = {
 		term: query,
-		properties: ["text" as const],
 		tolerance: 1,
 		limit: stamps.length,
 	};

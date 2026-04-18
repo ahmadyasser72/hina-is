@@ -44,9 +44,9 @@ export const GET: APIRoute = ({ params, site }) => {
 			typeof stamp.text === "string"
 				? stamp.text
 				: [
-						stamp.text.translate,
+						stamp.text.english ?? stamp.text.translate,
 						`<blockquote>${stamp.text.japanese}<br>(${stamp.text.romaji})</blockquote>`,
-					].join("<br><br>"),
+					].join("<br>"),
 		spoiler_text: "",
 		visibility: "public",
 		application: { name: SITE_NAME, website: null },

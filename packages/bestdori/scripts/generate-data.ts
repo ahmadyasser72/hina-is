@@ -420,7 +420,12 @@ const data = await (async () => {
 								voiced,
 								text: "PLACEHOLDER" as
 									| string
-									| Record<"japanese" | "romaji" | "translate", string>,
+									| {
+											english?: string;
+											japanese: string;
+											romaji: string;
+											translate: string;
+									  },
 							},
 						];
 					}),
@@ -481,6 +486,34 @@ const DATA_FILE = path.join(GIT_ROOT_PATH, "packages/bestdori/src/data.js");
 		const texts = await doStampOcr(assets);
 		batch.forEach(([key, stamp], subIndex) => {
 			stamps[key] = { ...stamp, text: texts[subIndex] };
+		});
+	}
+
+	const englishVoicedStampBatches = chunk(
+		Object.entries(stamps).filter(
+			([, { voiced, region, text }]) =>
+				voiced && region === "en" && typeof text === "string" && text,
+		),
+		5,
+	);
+	for (const batch of englishVoicedStampBatches) {
+		const keys = batch.map(([key]) => key);
+		const assets = batch.map(
+			([_, stamp]) =>
+				getAsset("stamps", { ...stamp, region: "jp" })[`${stamp.slug}-image`],
+		);
+
+		spinner.text = `extracting japanese text from stamps (${keys.join(", ")})`;
+		const texts = await doStampOcr(assets);
+		batch.forEach(([key, stamp], subIndex) => {
+			const text = texts[subIndex];
+			stamps[key] = {
+				...stamp,
+				text:
+					typeof text === "string"
+						? stamp.text
+						: { ...text, english: stamp.text as string },
+			};
 		});
 	}
 

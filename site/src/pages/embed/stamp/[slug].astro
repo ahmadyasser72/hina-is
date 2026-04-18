@@ -27,7 +27,8 @@ const title = character
 const description =
 	typeof stamp.text === "string"
 		? stamp.text
-		: `${stamp.text.japanese} (${stamp.text.translate})`;
+		: (stamp.text.english ??
+			`${stamp.text.japanese} (${stamp.text.translate})`);
 
 const url = new URL(Astro.site!);
 const pageUrl = new URL("/page/stamps", url);
