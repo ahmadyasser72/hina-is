@@ -4,12 +4,10 @@ import { SITE_NAME } from "astro:env/client";
 import { IMAGE_FORMAT } from "@hina-is/bestdori/constants";
 import { events } from "@hina-is/bestdori/data";
 
-import { sample } from "es-toolkit";
-
 import BaseLayout from "~/layouts/base-layout.astro";
 import { pageList, pages } from "~/lib/page";
 
-const randomEvent = sample(Object.values(events));
+const randomEvent = Astro.locals.prng.choice(Object.values(events))!;
 ---
 
 <BaseLayout

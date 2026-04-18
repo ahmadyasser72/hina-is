@@ -2,8 +2,6 @@
 import { IMAGE_FORMAT } from "@hina-is/bestdori/constants";
 import { cardsByCharacter } from "@hina-is/bestdori/data";
 
-import { sample } from "es-toolkit";
-
 import BaseLayout from "~/layouts/base-layout.astro";
 import { pages } from "~/lib/page";
 import { sortLatestBirthday } from "./_birthday";
@@ -17,9 +15,8 @@ const characters = getCharacters();
 const { filtered } = await filterCharacters(params, characters);
 const entries = sortLatestBirthday(filtered);
 
-const randomCard =
-	entries.length > 0 && sample(cardsByCharacter[entries[0].slug]);
-const randomCardType = sample(["trained", "normal"]);
+const randomCard = Astro.locals.prng.choice(cardsByCharacter[entries[0].slug]);
+const randomCardType = Astro.locals.prng.choice(["trained", "normal"])!;
 ---
 
 <BaseLayout

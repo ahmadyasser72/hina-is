@@ -30,6 +30,7 @@
 		"htmx.org": "2.0.8",
 		"iconify-icon": "3.0.2",
 		"preact": "10.29.1",
+		"random": "5.4.1",
 		"tailwindcss": "4.2.2",
 		"thumbhash": "0.1.1",
 		"zod": "4.3.6"

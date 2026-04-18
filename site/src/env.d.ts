@@ -11,5 +11,7 @@ declare namespace App {
 		) => import("zod").output<S>;
 
 		useThumbhash: (id: string) => { "data-thumbhash": string } | undefined;
+
+		prng: import("random").Random;
 	}
 }

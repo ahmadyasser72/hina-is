@@ -1,5 +1,6 @@
 import { Redis } from "@upstash/redis";
 import { defineMiddleware } from "astro:middleware";
+import { Random } from "random";
 import z from "zod";
 
 import { dayjs } from "~/lib/date";
@@ -59,6 +60,8 @@ export const onRequest = defineMiddleware(
 			const hash = thumbhashMap.get(id);
 			if (hash) return { "data-thumbhash": hash };
 		};
+
+		locals.prng = new Random(dayjs.tz().startOf("day").unix());
 
 		return next();
 	},
