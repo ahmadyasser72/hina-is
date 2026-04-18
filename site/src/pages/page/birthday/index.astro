@@ -17,16 +17,21 @@ const characters = getCharacters();
 const { filtered } = await filterCharacters(params, characters);
 const entries = sortLatestBirthday(filtered);
 
-const randomCard = sample(cardsByCharacter[entries[0].slug]);
+const randomCard =
+	entries.length > 0 && sample(cardsByCharacter[entries[0].slug]);
 const randomCardType = sample(["trained", "normal"]);
 ---
 
 <BaseLayout
-	background={{
-		...Astro.locals.useThumbhash(`${randomCard.slug}-full-${randomCardType}`),
-		src: `/assets/cards/${randomCard.slug}-full-${randomCardType}.${IMAGE_FORMAT}`,
-		alt: `${randomCard.character.name} card`,
-	}}
+	background={randomCard
+		? {
+				...Astro.locals.useThumbhash(
+					`${randomCard.slug}-full-${randomCardType}`,
+				),
+				src: `/assets/cards/${randomCard.slug}-full-${randomCardType}.${IMAGE_FORMAT}`,
+				alt: `${randomCard.character.name} card`,
+			}
+		: undefined}
 	metadata={pages["/page/birthday"]}
 >
 	<div class="flex flex-col items-center gap-4">
@@ -56,7 +61,7 @@ const randomCardType = sample(["trained", "normal"]);
 				filtered.length > 0 ? (
 					<BirthdayTimeline {entries} />
 				) : (
-					<p class="text-base-content/50">No characters match your search.</p>
+					<p class="badge badge-warning">No characters match your search.</p>
 				)
 			}
 		</div>
