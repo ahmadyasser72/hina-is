@@ -13,14 +13,14 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v6.0.2
       - uses: ./.github/actions/setup-bun
-      - uses: AnimMouse/setup-ffmpeg@v1
+      - uses: AnimMouse/setup-ffmpeg@v1.2.3
         with:
           version: 7.1
 
       - name: Restore cached responses
-        uses: actions/cache/restore@v5
+        uses: actions/cache/restore@v5.0.5
         with:
           path: .bestdori-cache
           key: bestdori-${{ github.run_id }}
@@ -36,14 +36,14 @@ jobs:
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
 
       - name: Upload site build artifact
-        uses: actions/upload-artifact@v7
+        uses: actions/upload-artifact@v7.0.1
         with:
           name: site
           include-hidden-files: true
           path: site/dist/
 
       - name: Save response cache
-        uses: actions/cache/save@v5
+        uses: actions/cache/save@v5.0.5
         if: always()
         with:
           path: .bestdori-cache
@@ -58,18 +58,18 @@ jobs:
       url: ${{ steps.deploy-cloudflare-worker.outputs.deployment-url }}
 
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v6.0.2
       - uses: ./.github/actions/setup-bun
 
       - name: Download build artifact
-        uses: actions/download-artifact@v8
+        uses: actions/download-artifact@v8.0.1
         with:
           name: site
           path: site/dist/
 
       - name: Deploy to Cloudflare Workers
         id: deploy-cloudflare-worker
-        uses: cloudflare/wrangler-action@v3
+        uses: cloudflare/wrangler-action@v3.15.0
         with:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
