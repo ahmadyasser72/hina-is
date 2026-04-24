@@ -12,10 +12,11 @@ import EventCardTime from "./_event-card-time.astro";
 
 interface Props {
 	event: Bandori.Event;
-	predicted: boolean;
+	predicted?: boolean;
+	priorEvents?: number;
 }
 
-const { event, predicted, ...props } = Astro.props;
+const { event, predicted, priorEvents, ...props } = Astro.props;
 const { attribute, band, characters, startAt, endAt } = event;
 
 const progress = (() => {
@@ -47,7 +48,7 @@ const progress = (() => {
 
 			<EventCardTime {endAt} region="jp" {startAt} />
 
-			<EventCardTime {endAt} {predicted} region="en" {startAt} />
+			<EventCardTime {endAt} {predicted} {priorEvents} region="en" {startAt} />
 
 			<div class="flex flex-wrap justify-center gap-1">
 				<div class="badge dark:badge-primary dark:badge-soft font-medium">

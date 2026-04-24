@@ -6,9 +6,16 @@ import { dayjs, formatDuration } from "~/lib/date";
 interface Props extends Pick<Bandori.Event, "startAt" | "endAt"> {
 	region: Bandori.GameRegion;
 	predicted?: boolean;
+	priorEvents?: number;
 }
 
-const { startAt, endAt, region, predicted } = Astro.props;
+const {
+	startAt,
+	endAt,
+	region,
+	predicted = false,
+	priorEvents = 0,
+} = Astro.props;
 
 const from = dayjs(startAt[region]).tz();
 const to = dayjs(endAt[region]).tz();
@@ -35,12 +42,16 @@ const to = dayjs(endAt[region]).tz();
 		</div>
 	</span>
 
-	<div
-		class="tooltip tooltip-left flex-1"
-		data-tip={predicted
-			? "Predicted date, might be inaccurate"
-			: formatDuration(from, to)}
-	>
+	<div class="tooltip tooltip-left flex-1">
+		<div
+			class="tooltip-content"
+			set:html={predicted
+				? [
+						"Predicted date, possibly inaccurate",
+						`-- ${priorEvents > 1 ? `in ${priorEvents} events` : "next event"} / ${formatDuration(dayjs(), to)}`,
+					].join("<br>")
+				: formatDuration(from, to)}
+		/>
 		<span class="font-medium underline decoration-dotted">
 			{predicted ? "??" : `${Math.round(to.diff(from, "days", true))}D`}
 		</span>

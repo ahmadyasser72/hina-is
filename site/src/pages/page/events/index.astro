@@ -15,6 +15,7 @@ import { schema } from "./_params";
 const params = Astro.locals.parseQuery(schema);
 
 const events = getEvents(params);
+const lastEvent = events.available.at(0) ?? events.list[0];
 const { filtered } = await filterEvents(params, events.list);
 const page = paginate({
 	items: filtered,
@@ -53,9 +54,7 @@ if (Astro.request.headers.get("hx-request") === "true" && page.current === 1) {
 			<div class="flex flex-wrap justify-center gap-x-2 gap-y-4">
 				{
 					events.available.length > 0 ? (
-						events.available.map((event) => (
-							<EventCard {event} predicted={false} />
-						))
+						events.available.map((event) => <EventCard {event} />)
 					) : (
 						<p class="text-base-content/50">
 							No available event at the moment.
@@ -139,6 +138,11 @@ if (Astro.request.headers.get("hx-request") === "true" && page.current === 1) {
 							{...(page.isLastElement(idx) && page.props)}
 							{event}
 							predicted={params.list === "future"}
+							priorEvents={
+								params.list === "future"
+									? Number(event.id) - Number(lastEvent.id)
+									: undefined
+							}
 						/>
 					))
 				}
