@@ -1,13 +1,5 @@
 import { AUDIO_FORMAT } from "@hina-is/bestdori/constants";
 
-import {
-	autoPlacement,
-	autoUpdate,
-	computePosition,
-	hide,
-	offset,
-} from "@floating-ui/dom";
-
 {
 	let playEventBGMButton: HTMLButtonElement | undefined;
 	let eventBGM: HTMLAudioElement | undefined;
@@ -84,46 +76,4 @@ window.scrollKeepHistory = (targetId) => {
 
 	history.replaceState(null, "", selector);
 	document.querySelector(selector)?.scrollIntoView();
-};
-
-window.toggleFloating = async (reference, floatingElement) => {
-	if (floatingElement.style.display) return;
-
-	floatingElement.style.display = "block";
-	const updatePosition = async () => {
-		const { x, y, middlewareData } = await computePosition(
-			reference,
-			floatingElement,
-			{
-				placement: "bottom-end",
-				middleware: [
-					offset({ crossAxis: -4 }),
-					autoPlacement({
-						padding: { left: 40, right: 40 },
-						alignment: "end",
-					}),
-					hide({ padding: 80 }),
-				],
-			},
-		);
-
-		Object.assign(floatingElement.style, { left: `${x}px`, top: `${y}px` });
-		if (middlewareData.hide) {
-			Object.assign(floatingElement.style, {
-				visibility: middlewareData.hide.referenceHidden ? "hidden" : "visible",
-			});
-		}
-	};
-
-	const cleanup = autoUpdate(reference, floatingElement, updatePosition);
-	document.addEventListener("pointerdown", function hideOnClickOutside(event) {
-		if (
-			event.target instanceof HTMLElement &&
-			!reference.contains(event.target)
-		) {
-			cleanup();
-			floatingElement.style.display = "";
-			document.removeEventListener("pointerdown", hideOnClickOutside);
-		}
-	});
 };

@@ -1,3 +1,10 @@
+import {
+	autoPlacement,
+	autoUpdate,
+	computePosition,
+	hide,
+	offset,
+} from "@floating-ui/dom";
 import { debounce } from "es-toolkit";
 import htmx from "htmx.org";
 import { thumbHashToDataURL } from "thumbhash";
@@ -26,6 +33,86 @@ htmx.onLoad((node) => {
 		img.style.background = `center / cover url(${placeholderUrl})`;
 		img.addEventListener("load", () => {
 			img.style.removeProperty("background");
+		});
+	});
+
+	node.querySelectorAll<HTMLElement>("[data-floating]").forEach((element) => {
+		const reference = element.closest(element.dataset.floating!);
+		if (!(reference instanceof HTMLElement)) return;
+		const floating = reference.querySelector(".floating");
+		if (!(floating instanceof HTMLElement)) return;
+
+		const updatePosition = async () => {
+			const { x, y, middlewareData } = await computePosition(
+				reference,
+				floating,
+				{
+					placement: "bottom-end",
+					middleware: [
+						offset({ crossAxis: -4 }),
+						autoPlacement({
+							padding: { left: 40, right: 40 },
+							alignment: "end",
+						}),
+						hide({ padding: 80 }),
+					],
+				},
+			);
+
+			Object.assign(floating.style, { left: `${x}px`, top: `${y}px` });
+			if (middlewareData.hide) {
+				Object.assign(floating.style, {
+					visibility: middlewareData.hide.referenceHidden
+						? "hidden"
+						: "visible",
+				});
+			}
+		};
+
+		let hideFloatingTimeout: ReturnType<typeof setTimeout>;
+		const showFloating = () => {
+			clearTimeout(hideFloatingTimeout);
+			floating.style.display = "block";
+			const cleanup = autoUpdate(reference, floating, updatePosition);
+
+			const hideFloating = () => {
+				if (!floating.style.display) return;
+
+				cleanup();
+				floating.style.display = "";
+			};
+
+			// onblur-outside (ontabbed-out)
+			element.addEventListener("blur", function listener(event) {
+				const current = event.relatedTarget as HTMLElement;
+				if (!floating.contains(current)) {
+					hideFloating();
+					element.removeEventListener("blur", listener);
+				} else {
+					current.addEventListener("blur", listener, { once: true });
+				}
+			});
+
+			// onhover-outside
+			reference.addEventListener("mouseleave", function listener() {
+				hideFloatingTimeout = setTimeout(() => {
+					hideFloating();
+					reference.removeEventListener("mouseleave", listener);
+				}, 300);
+			});
+
+			// onclick-outside
+			document.addEventListener("click", function listener(event) {
+				if (!reference.contains(event.target as HTMLElement)) {
+					hideFloating();
+					document.removeEventListener("click", listener);
+				}
+			});
+		};
+
+		// onhover & onclick
+		(["mouseenter", "focus"] as const).forEach((event) => {
+			element.addEventListener(event, showFloating);
 		});
 	});
 });

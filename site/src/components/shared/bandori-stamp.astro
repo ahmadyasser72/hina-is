@@ -15,13 +15,25 @@ interface Props extends JSX.HTMLAttributes {
 }
 
 const { stamp, class: className, ...props } = Astro.props;
+const id = `stamp-${stamp.slug}`;
 ---
 
 <div
+	{id}
 	data-character={stamp.character?.slug}
 	class:list={["relative aspect-40/33 h-32", className]}
 	{...props}
 >
+	<img
+		class="w-full"
+		{...Astro.locals.useThumbhash(`${stamp.slug}-image`)}
+		data-floating={`#${id}`}
+		src={`/assets/stamps/${stamp.slug}-image.${IMAGE_FORMAT}`}
+		alt={`Stamp #${stamp.id}`}
+		loading="lazy"
+		tabindex="0"
+	/>
+
 	<div
 		class:list={[
 			"floating rounded-field border-base-content/67 w-max max-w-48 min-w-32 border px-1 py-1 sm:px-2",
@@ -109,16 +121,6 @@ const { stamp, class: className, ...props } = Astro.props;
 			</ul>
 		</div>
 	</div>
-
-	<img
-		class="w-full"
-		{...Astro.locals.useThumbhash(`${stamp.slug}-image`)}
-		src={`/assets/stamps/${stamp.slug}-image.${IMAGE_FORMAT}`}
-		alt={`Stamp #${stamp.id}`}
-		loading="lazy"
-		onclick="toggleFloating(this.parentElement, this.previousElementSibling)"
-		oncontextmenu="event.preventDefault(); toggleFloating(this.parentElement, this.previousElementSibling)"
-	/>
 
 	{
 		stamp.voiced && (
