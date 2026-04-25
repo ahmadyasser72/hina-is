@@ -51,12 +51,9 @@ const id = `stamp-${stamp.slug}`;
 					<div class="tooltip text-center text-sm">
 						<div
 							class="tooltip-content max-w-48"
-							set:html={(stamp.text.english
-								? [`(${stamp.text.romaji})`, stamp.text.japanese]
-								: [`(${stamp.text.translate})`, stamp.text.romaji]
-							).join("<br>")}
+							set:html={`(${stamp.text.romaji})<br>${stamp.text.japanese}`}
 						/>
-						{stamp.text.english ?? stamp.text.japanese}
+						{stamp.text.english ?? stamp.text.translate}
 					</div>
 				)
 			}
