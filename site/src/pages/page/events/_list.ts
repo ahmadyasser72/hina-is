@@ -218,18 +218,20 @@ export const getEvents = ({ list }: z.infer<typeof schema>) => {
 			list === "past"
 				? past.reverse()
 				: future.map(({ startAt, endAt, ...event }) => {
-						const eventDuration = dayjs(endAt.jp).diff(startAt.jp);
-						const startAtEn = lastEndAt
+						const enStartAt = lastEndAt
 							.utc()
-							.startOf("hours")
 							.add(2, "days")
+							.startOf("hours")
 							.set("hours", 1);
-						const endAtEn = startAtEn.add(eventDuration);
-						lastEndAt = endAtEn;
+						const enEndAt = enStartAt
+							.add(7, "days")
+							.endOf("hours")
+							.set("hours", 7);
+						lastEndAt = enEndAt;
 
 						return {
-							startAt: { ...startAt, en: startAtEn.valueOf() },
-							endAt: { ...endAt, en: endAtEn.valueOf() },
+							startAt: { ...startAt, en: enStartAt.valueOf() },
+							endAt: { ...endAt, en: enEndAt.valueOf() },
 							...event,
 						};
 					}),
