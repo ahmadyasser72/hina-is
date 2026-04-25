@@ -61,7 +61,7 @@ export const onRequest = defineMiddleware(
 			if (hash) return { "data-thumbhash": hash };
 		};
 
-		locals.prng = new Random(dayjs.tz().startOf("day").unix());
+		locals.prng = new Random(dayjs().startOf("day").unix());
 
 		return next();
 	},
