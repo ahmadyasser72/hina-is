@@ -69,9 +69,7 @@ htmx.onLoad((node) => {
 			}
 		};
 
-		let hideFloatingTimeout: ReturnType<typeof setTimeout>;
 		const showFloating = () => {
-			clearTimeout(hideFloatingTimeout);
 			floating.style.display = "block";
 			const cleanup = autoUpdate(reference, floating, updatePosition);
 
@@ -95,10 +93,8 @@ htmx.onLoad((node) => {
 
 			// onhover-outside
 			reference.addEventListener("mouseleave", function listener() {
-				hideFloatingTimeout = setTimeout(() => {
-					hideFloating();
-					reference.removeEventListener("mouseleave", listener);
-				}, 300);
+				hideFloating();
+				reference.removeEventListener("mouseleave", listener);
 			});
 
 			// onclick-outside
