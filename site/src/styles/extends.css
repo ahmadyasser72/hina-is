@@ -9,3 +9,15 @@
 @utility tab-content {
 	@apply bg-base-100 border-base-300 px-4 py-2 sm:p-6;
 }
+
+@utility menu {
+	:where(
+		li:not(.menu-title, .disabled) > *:not(ul, details, .menu-title),
+		li:not(.menu-title, .disabled) > details > summary:not(.menu-title)
+	):not(.menu-active, :active, .btn) {
+		&.menu-focus,
+		&:focus-visible {
+			color: currentColor;
+		}
+	}
+}
