@@ -48,7 +48,7 @@ const to = dayjs(endAt[region]).tz();
 			set:html={predicted
 				? [
 						"Predicted date, possibly inaccurate",
-						`-- ${priorEvents > 1 ? `in ${priorEvents} events` : "next event"} / ${formatDuration(dayjs(), to)}`,
+						`-- ${priorEvents > 1 ? `in ${priorEvents} events` : "next event"} / ${formatDuration(dayjs(), from)}`,
 					].join("<br>")
 				: formatDuration(from, to)}
 		/>
