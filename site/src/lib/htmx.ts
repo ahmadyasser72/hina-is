@@ -81,13 +81,13 @@ htmx.onLoad((node) => {
 			};
 
 			// onblur-outside (ontabbed-out)
-			element.addEventListener("blur", function listener(event) {
-				const current = event.relatedTarget as HTMLElement;
-				if (!floating.contains(current)) {
+			reference.addEventListener("focusout", function listener(event) {
+				if (
+					event.relatedTarget &&
+					!reference.contains(event.relatedTarget as HTMLElement)
+				) {
 					hideFloating();
-					element.removeEventListener("blur", listener);
-				} else {
-					current.addEventListener("blur", listener, { once: true });
+					reference.removeEventListener("focusout", listener);
 				}
 			});
 
