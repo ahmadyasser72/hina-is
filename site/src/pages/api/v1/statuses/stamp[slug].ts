@@ -23,6 +23,11 @@ export const GET: APIRoute = ({ params, site }) => {
 		: null;
 
 	const pageUrl = new URL("/page/stamps", site);
+	const characterPageUrl = new URL(pageUrl);
+	characterPageUrl.searchParams.set(
+		"character",
+		stamp.character?.slug ?? "unknown",
+	);
 	const image = new URL(
 		`/assets/stamps/${stamp.slug}-image.${IMAGE_FORMAT}`,
 		site,
@@ -68,8 +73,8 @@ export const GET: APIRoute = ({ params, site }) => {
 			display_name: "",
 			username: "",
 			acct: "",
-			url: site,
-			uri: site,
+			url: characterPageUrl,
+			uri: characterPageUrl,
 			created_at: null,
 			locked: false,
 			bot: false,
