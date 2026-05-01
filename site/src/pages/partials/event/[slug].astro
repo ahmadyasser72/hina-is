@@ -71,8 +71,9 @@ const titles = Object.entries(event.titles).filter(([, items]) =>
 											<div class="flex flex-wrap justify-center gap-x-0.5 gap-y-1.5 sm:gap-x-1">
 												{items!.map(({ slug }) => (
 													<img
-														class="aspect-23/5 w-24 rounded-2xl sm:w-28"
+														class="border-base-content/60 skeleton aspect-23/5 w-24 rounded-2xl border sm:w-28"
 														src={`/assets/title/${slug}.${IMAGE_FORMAT}`}
+														loading="lazy"
 													/>
 												))}
 											</div>

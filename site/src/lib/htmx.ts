@@ -36,6 +36,15 @@ htmx.onLoad((node) => {
 		});
 	});
 
+	// css-based skeleton placeholder
+	node
+		.querySelectorAll<HTMLImageElement>("img.skeleton.border")
+		.forEach((img) => {
+			const done = () => img.classList.remove("skeleton", "border");
+			if (img.complete) done();
+			else img.addEventListener("load", done, { once: true });
+		});
+
 	node.querySelectorAll<HTMLElement>("[data-floating]").forEach((element) => {
 		const reference = element.closest(element.dataset.floating!);
 		if (!(reference instanceof HTMLElement)) return;
