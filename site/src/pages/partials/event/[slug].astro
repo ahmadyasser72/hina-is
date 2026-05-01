@@ -128,14 +128,16 @@ const titles = Object.entries(event.titles).filter(([, items]) =>
 
 						<div class="flex gap-1">
 							<button
-								class="btn btn-circle btn-primary btn-sm"
+								class="btn btn-circle btn-primary btn-sm tooltip"
+								data-tip="Play"
 								onclick={`playEventBGM(this, '${event.slug}')`}
 							>
 								<IconifyLoader icon="lucide:play" />
 							</button>
 
 							<button
-								class="btn btn-circle btn-secondary btn-sm"
+								class="btn btn-circle btn-secondary btn-sm tooltip"
+								data-tip="Stop"
 								onclick="stopEventBGM()"
 							>
 								<iconify-icon class="size-4" icon="lucide:square" width="none"
@@ -143,7 +145,8 @@ const titles = Object.entries(event.titles).filter(([, items]) =>
 							</button>
 
 							<a
-								class="btn btn-circle btn-secondary btn-sm"
+								class="btn btn-circle btn-secondary btn-sm tooltip"
+								data-tip="Download"
 								href={`/assets/events/${event.slug}-bgm.${AUDIO_FORMAT}`}
 								download
 							>
