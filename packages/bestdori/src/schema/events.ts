@@ -28,7 +28,56 @@ export const Event = z
 		members: z.array(z.object({ situationId: Id })),
 
 		pointRewards: z.array(EventReward).apply(parseRegionTuple),
-		rankingRewards: z.array(EventReward).apply(parseRegionTuple),
+		rankingRewards: z
+			.array(
+				z.object({
+					toRank: z.coerce.number().positive(),
+					...EventReward.shape,
+				}),
+			)
+			.apply(parseRegionTuple),
+
+		musics: z
+			.array(
+				z.object({
+					musicId: Id,
+					musicRankingRewards: z.array(
+						z.object({
+							toRank: z.coerce.number().positive(),
+							resourceType: z.string(),
+							resourceId: z.coerce.number(),
+						}),
+					),
+				}),
+			)
+			.nullable()
+			.apply(parseRegionTuple)
+			.optional(),
+
+		masterLiveTryLevelRewardDifficultyMap: z
+			.object({
+				entries: z.record(
+					z.enum(["normal", "extra"]),
+					z.object({
+						entries: z.record(
+							Id,
+							z
+								.object({
+									resourceType: z.string(),
+									resourceId: z.coerce.number(),
+								})
+								.or(
+									z.object({
+										resourceType: z.literal("coin"),
+										quantity: z.coerce.number(),
+									}),
+								),
+						),
+					}),
+				),
+			})
+			.apply(parseRegionTuple)
+			.optional(),
 	})
 	.transform(
 		({

@@ -2,6 +2,8 @@
 import { AUDIO_FORMAT, IMAGE_FORMAT } from "@hina-is/bestdori/constants";
 import { events } from "@hina-is/bestdori/data";
 
+import { upperFirst, words } from "es-toolkit";
+
 import IconifyLoader from "~/components/loader/iconify-loader.astro";
 import BandoriStamp from "~/components/shared/bandori-stamp.astro";
 import CardIcon from "~/components/shared/card-icon.astro";
@@ -11,6 +13,10 @@ export const partial = true;
 
 const event = events[Astro.params.slug!];
 if (!event) return new Response(null, { status: 404 });
+
+const titles = Object.entries(event.titles).filter(([, items]) =>
+	Array.isArray(items),
+);
 ---
 
 <dialog class="modal">
@@ -42,6 +48,39 @@ if (!event) return new Response(null, { status: 404 });
 						<span class="kv-list-item-label"> Stamp </span>
 
 						<BandoriStamp stamp={event.stamp} />
+					</div>
+
+					<div class="kv-list-item">
+						<iconify-icon
+							class="kv-list-item-icon"
+							icon="lucide:crown"
+							width="none"></iconify-icon>
+						<span class="kv-list-item-label"> Titles </span>
+
+						<div class="join">
+							{
+								titles.map(([label, items]) => (
+									<div id={`titles-${event.slug}-${label}`}>
+										<button
+											class="btn btn-sm join-item"
+											data-floating={`#titles-${event.slug}-${label}`}
+										>
+											{upperFirst(words(label).join(" "))}
+										</button>
+										<div class="floating rounded-field border-base-300 bg-base-100 max-w-52 border px-1 py-2 sm:max-w-96 sm:px-2">
+											<div class="flex flex-wrap justify-center gap-x-0.5 gap-y-1.5 sm:gap-x-1">
+												{items!.map(({ slug }) => (
+													<img
+														class="aspect-23/5 w-24 rounded-2xl sm:w-28"
+														src={`/assets/title/${slug}.${IMAGE_FORMAT}`}
+													/>
+												))}
+											</div>
+										</div>
+									</div>
+								))
+							}
+						</div>
 					</div>
 				</div>
 			</div>

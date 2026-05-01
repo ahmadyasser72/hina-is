@@ -13,13 +13,14 @@ import { Bands } from "~/schema/bands";
 import { Cards } from "~/schema/cards";
 import { Characters } from "~/schema/characters";
 import { CardAttribute } from "~/schema/constants";
+import { Degrees } from "~/schema/degrees";
 import { Events } from "~/schema/events";
 import { GenericAssets } from "~/schema/extras/generic-assets";
 import { StampId } from "~/schema/extras/stamps";
 import { RecentNews } from "~/schema/recent-news";
 import { Skills } from "~/schema/skills";
 import { Stamps } from "~/schema/stamps";
-import { unwrap } from "~/utilities";
+import { unwrap, unwrapTuple } from "~/utilities";
 
 const createSpinner = (text: string) => yoctoSpinner({ text }).start();
 
@@ -42,6 +43,7 @@ const data = await (async () => {
 		bands: Bands,
 		cards: Cards,
 		characters: Characters,
+		degrees: Degrees,
 		events: Events,
 		stamps: Stamps,
 		skills: Skills,
@@ -69,6 +71,7 @@ const data = await (async () => {
 		bands,
 		cards,
 		characters,
+		degrees,
 		events,
 		stamps,
 		skills,
@@ -81,6 +84,7 @@ const data = await (async () => {
 		get("bands", "/api/bands/main.1.json"),
 		get("cards", "/api/cards/all.5.json"),
 		get("characters", "/api/characters/main.3.json"),
+		get("degrees", "/api/degrees/all.3.json"),
 		get("events", "/api/events/all.5.json"),
 		get("stamps", "/api/stamps/all.2.json"),
 		get("skills", "/api/skills/all.10.json"),
@@ -295,6 +299,8 @@ const data = await (async () => {
 							name,
 							pointRewards,
 							rankingRewards,
+							musics,
+							masterLiveTryLevelRewardDifficultyMap,
 							...entry
 						},
 					]) => {
@@ -348,6 +354,71 @@ const data = await (async () => {
 
 									const stampId = stamps.get(id)!.imageName;
 									return findValue(data.stamps, ({ id }) => id === stampId)!;
+								},
+								get titles() {
+									const resolveTitle = (id: number) => {
+										const {
+											degreeType,
+											iconImageName,
+											baseImageName,
+											rank,
+											degreeName,
+										} = degrees.get(id)!;
+
+										const name = unwrapTuple(degreeName);
+										return {
+											slug: createSlug("title", id, name),
+											degreeType: unwrapTuple(degreeType),
+											iconImageName: unwrapTuple(iconImageName),
+											baseImageName: unwrapTuple(baseImageName),
+											rank: unwrapTuple(rank),
+											degreeName: name,
+										};
+									};
+
+									const main = unwrap(rankingRewards)
+										.filter(
+											({ toRank, rewardType }) =>
+												rewardType === "degree" &&
+												(toRank <= 10 || toRank === 100 || toRank === 1000),
+										)
+										.map(({ rewardId }) => resolveTitle(rewardId!)!);
+
+									const songs = musics
+										? (entry.type === "medley-live"
+												? unwrap(musics).slice(0, 1)
+												: unwrap(musics)
+											)
+												.flatMap(({ musicRankingRewards }) =>
+													musicRankingRewards.filter(
+														({ toRank, resourceType }) =>
+															resourceType === "degree" &&
+															(toRank <= 10 ||
+																toRank === 100 ||
+																toRank === 1000),
+													),
+												)
+												.map(({ resourceId }) => resolveTitle(resourceId)!)
+										: null;
+
+									const liveGoals = masterLiveTryLevelRewardDifficultyMap
+										? Object.values(
+												unwrap(masterLiveTryLevelRewardDifficultyMap).entries,
+											)
+												.flatMap(({ entries }) =>
+													Object.values(entries).filter(
+														({ resourceType }) => resourceType === "degree",
+													),
+												)
+												.map(
+													(reward) =>
+														resolveTitle(
+															(reward as { resourceId: number }).resourceId,
+														)!,
+												)
+										: null;
+
+									return { main, songs, liveGoals };
 								},
 								...entry,
 
