@@ -28,6 +28,13 @@ export const GET: APIRoute = ({ params, site }) => {
 		"character",
 		stamp.character?.slug ?? "unknown",
 	);
+
+	[pageUrl, characterPageUrl].forEach((url) => {
+		url.searchParams.set("utm_source", "embed");
+		url.searchParams.set("utm_medium", "widget");
+		url.searchParams.set("utm_campaign", `stamp-embed-${stamp.slug}`);
+	});
+
 	const image = new URL(
 		`/assets/stamps/${stamp.slug}-image.${IMAGE_FORMAT}`,
 		site,
