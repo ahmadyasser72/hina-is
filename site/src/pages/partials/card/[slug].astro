@@ -80,6 +80,9 @@ const {
 
 				<button
 					class="btn not-disabled:bg-character btn-circle not-disabled:text-character-content size-12"
+					data-umami-event="play-card-voiceline"
+					data-umami-event-card={card.slug}
+					data-umami-event-id={card.id}
 					onclick={`playCardAudio(this, '${card.slug}')`}
 				>
 					<IconifyLoader icon="lucide:volume-2" size-class="size-8" />
@@ -143,6 +146,9 @@ const {
 
 		<a
 			class="btn btn-sm btn-info mt-2 w-full"
+			data-umami-event="view-card-on-bestdori"
+			data-umami-event-card={card.slug}
+			data-umami-event-id={card.id}
 			href={`https://bestdori.com/info/cards/${card.id}`}
 			rel="noopener noreferrer"
 			target="_blank"

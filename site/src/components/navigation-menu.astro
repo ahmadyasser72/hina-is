@@ -19,7 +19,13 @@ const { class: className, ...props } = Astro.props;
 							{title}
 						</a>
 					) : (
-						<a href={path}>{title}</a>
+						<a
+							data-umami-event="navigation-menu-link"
+							data-umami-event-path={path}
+							href={path}
+						>
+							{title}
+						</a>
 					)}
 				</li>
 			))

@@ -197,6 +197,12 @@ export const CharacterSorterActions = ({
 								(!output.blob || output.loading) && "tooltip tooltip-bottom",
 							)}
 							data-tip={output.loadingText ?? "Capture ranking results"}
+							data-umami-event="character-sorter-capture"
+							data-umami-event-step={state.step}
+							data-umami-event-top={state.rankings
+								.slice(0, 10)
+								.map(({ character }) => character.name)
+								.join(", ")}
 							onClick={output.capture}
 							popoverTarget="popover-capture"
 							style="anchor-name: --anchor-capture"
@@ -219,7 +225,11 @@ export const CharacterSorterActions = ({
 				style="position-anchor: --anchor-capture"
 			>
 				<div class="join join-vertical bg-base-100 rounded-field w-24">
-					<button class="btn btn-sm join-item btn-info" onClick={output.save}>
+					<button
+						class="btn btn-sm join-item btn-info"
+						data-umami-event="character-sorter-capture-save"
+						onClick={output.save}
+					>
 						<iconify-icon
 							class="size-4"
 							icon="lucide:save"
@@ -230,6 +240,7 @@ export const CharacterSorterActions = ({
 
 					<button
 						class="btn btn-sm join-item btn-success"
+						data-umami-event="character-sorter-capture-share"
 						onClick={output.share}
 					>
 						<iconify-icon

@@ -44,6 +44,7 @@ const randomCardType = Astro.locals.prng.choice(["trained", "normal"])!;
 				hx-trigger="input delay:300ms"
 				class="flex-1"
 				name="query"
+				data-umami-event="search-birthday"
 				type="search"
 				hx-on--before-request="history.replaceState(null, '', location.pathname)"
 				hx-select="#birthday-list"

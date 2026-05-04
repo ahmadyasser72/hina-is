@@ -40,6 +40,7 @@ if (Astro.request.headers.get("hx-request") === "true" && page.current === 1) {
 				hx-get="/page/stamps/filter"
 				class="btn btn-sm btn-circle tooltip tooltip-right btn-success"
 				data-tip="Filter stamps"
+				data-umami-event="filter-stamps"
 				hx-vals={JSON.stringify(params)}
 			>
 				<IconifyLoader icon="lucide:list-filter" />
@@ -69,6 +70,8 @@ if (Astro.request.headers.get("hx-request") === "true" && page.current === 1) {
 					<button
 						hx-get
 						name="sort"
+						data-umami-event="change-stamp-sort"
+						data-umami-event-show="default"
 						value="default"
 						class:list={[
 							"btn btn-sm join-item",
@@ -82,6 +85,8 @@ if (Astro.request.headers.get("hx-request") === "true" && page.current === 1) {
 					<button
 						hx-get
 						name="sort"
+						data-umami-event="change-stamp-sort"
+						data-umami-event-show="event-release"
 						value="event-release"
 						class:list={[
 							"btn btn-sm join-item",
@@ -104,6 +109,7 @@ if (Astro.request.headers.get("hx-request") === "true" && page.current === 1) {
 				hx-trigger="input delay:300ms"
 				class="flex-1"
 				name="query"
+				data-umami-event="search-stamps"
 				type="search"
 				hx-select="#stamp-list"
 				hx-swap="outerHTML transition:true"

@@ -29,7 +29,12 @@ const randomEvent = Astro.locals.prng.choice(Object.values(events))!;
 					pageList
 						.filter(({ path }) => path !== "/")
 						.map(({ path, title }) => (
-							<a class="link-hover btn btn-sm" href={path}>
+							<a
+								class="link-hover btn btn-sm"
+								data-umami-event="homepage-link"
+								data-umami-event-path={path}
+								href={path}
+							>
 								{title}
 							</a>
 						))

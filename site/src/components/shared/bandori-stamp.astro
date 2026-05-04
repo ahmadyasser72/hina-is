@@ -63,6 +63,9 @@ const id = `stamp-${stamp.slug}`;
 					<a
 						class="tooltip"
 						data-tip="Save image"
+						data-umami-event="save-stamp"
+						data-umami-event-download="image"
+						data-umami-event-stamp={stamp.slug}
 						href={`/assets/stamps/${stamp.slug}-image.${IMAGE_FORMAT}`}
 						download
 					>
@@ -78,6 +81,9 @@ const id = `stamp-${stamp.slug}`;
 								<a
 									class="tooltip"
 									data-tip="Save audio"
+									data-umami-event="save-stamp"
+									data-umami-event-download="audio"
+									data-umami-event-stamp={stamp.slug}
 									href={`/assets/stamps/${stamp.slug}-voice.${AUDIO_FORMAT}`}
 									download
 								>
@@ -92,6 +98,9 @@ const id = `stamp-${stamp.slug}`;
 								<a
 									class="tooltip"
 									data-tip="Save video"
+									data-umami-event="save-stamp"
+									data-umami-event-download="video"
+									data-umami-event-stamp={stamp.slug}
 									href={`/assets/stamps/${stamp.slug}.${STAMP_VIDEO_FORMAT}`}
 									download
 								>
@@ -110,6 +119,8 @@ const id = `stamp-${stamp.slug}`;
 					<button
 						class="tooltip"
 						data-tip="Share stamp"
+						data-umami-event="share-stamp"
+						data-umami-event-stamp={stamp.slug}
 						onclick={`navigator.share({ url: '${new URL(`/embed/stamp/${stamp.slug}`, Astro.site)}' })`}
 					>
 						<iconify-icon class="size-4" icon="lucide:link" width="none"
@@ -124,6 +135,8 @@ const id = `stamp-${stamp.slug}`;
 		stamp.voiced && (
 			<button
 				class="btn bg-base-100/80 btn-circle absolute right-1 bottom-1.5 size-8 border-0 backdrop-blur-sm"
+				data-umami-event="play-stamp-audio"
+				data-umami-event-stamp={stamp.slug}
 				onclick={`playStampAudio(this, '${stamp.slug}')`}
 			>
 				<IconifyLoader icon="lucide:volume-2" />

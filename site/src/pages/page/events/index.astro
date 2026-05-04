@@ -70,6 +70,7 @@ if (Astro.request.headers.get("hx-request") === "true" && page.current === 1) {
 					hx-get="/page/events/filter"
 					class="btn btn-sm btn-circle btn-success tooltip tooltip-right"
 					data-tip={`Filter events`}
+					data-umami-event="filter-events"
 					hx-vals={JSON.stringify(params)}
 				>
 					<IconifyLoader icon="lucide:list-filter" />
@@ -101,6 +102,8 @@ if (Astro.request.headers.get("hx-request") === "true" && page.current === 1) {
 						<button
 							hx-get={Astro.url.pathname}
 							name="list"
+							data-umami-event="switch-event-list"
+							data-umami-event-show="future"
 							value="future"
 							class:list={[
 								"btn btn-sm join-item",
@@ -114,6 +117,8 @@ if (Astro.request.headers.get("hx-request") === "true" && page.current === 1) {
 						<button
 							hx-get={Astro.url.pathname}
 							name="list"
+							data-umami-event="switch-event-list"
+							data-umami-event-show="past"
 							value="past"
 							class:list={[
 								"btn btn-sm join-item",

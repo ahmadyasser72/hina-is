@@ -32,12 +32,15 @@ const BUILD_DATE = dayjs.tz(__BUILD_DATE__);
 			class="max-md:navbar-start navbar-center"
 			style="anchor-name: --anchor-header-site"
 		>
-			<a class="btn btn-ghost btn-sm text-base font-medium" href="/"
-				>{SITE_NAME}</a
+			<a
+				class="btn btn-ghost btn-sm text-base font-medium"
+				data-umami-event="header-homepage-link"
+				href="/">{SITE_NAME}</a
 			>
 
 			<button
 				class="btn btn-square btn-sm btn-ghost"
+				data-umami-event="header-check-info"
 				popovertarget="header-site-dropdown"
 			>
 				<iconify-icon class="size-4" icon="lucide:info" width="none"

@@ -52,6 +52,7 @@ if (params.slug && !override) return Astro.redirect("/page/character-sorter");
 				hx-get="/page/character-sorter"
 				class="btn btn-sm btn-circle btn-error tooltip tooltip-right"
 				data-tip="Reset sorter"
+				data-umami-event="reset-character-sorter"
 				hx-confirm="Start over?"
 				hx-on--before-request={`delete localStorage["${CHARACTER_SORTER_STATE_KEY}"]`}
 			>
@@ -66,6 +67,7 @@ if (params.slug && !override) return Astro.redirect("/page/character-sorter");
 				hx-get="/page/character-sorter"
 				class="btn btn-sm btn-circle btn-warning tooltip tooltip-left"
 				data-tip="Reload sorter"
+				data-umami-event="reload-character-sorter"
 			>
 				<IconifyLoader icon="lucide:refresh-ccw" />
 			</button>
@@ -152,7 +154,11 @@ if (params.slug && !override) return Astro.redirect("/page/character-sorter");
 							hx-swap="outerHTML"
 							hx-target="#sorter"
 						>
-							<button hx-get class="btn btn-neutral join-item flex-1">
+							<button
+								hx-get
+								class="btn btn-neutral join-item flex-1"
+								data-umami-event="start-character-sorter"
+							>
 								<IconifyLoader icon="lucide:play" />
 								Start sorting
 							</button>
@@ -162,6 +168,7 @@ if (params.slug && !override) return Astro.redirect("/page/character-sorter");
 									hx-get
 									class="btn btn-info join-item"
 									name="continue"
+									data-umami-event="continue-character-sorter"
 									value="true"
 								>
 									<IconifyLoader icon="lucide:redo" />

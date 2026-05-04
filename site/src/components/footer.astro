@@ -13,10 +13,12 @@ import { SITE_NAME } from "astro:env/client";
 				<div class="flex items-center justify-center gap-2 md:justify-start">
 					<a
 						class="badge link link-hover badge-accent badge-sm font-medium"
+						data-umami-event="footer-homepage-link"
 						href="/">{SITE_NAME}</a
 					>
 					<a
 						class="link link-hover inline-flex items-center"
+						data-umami-event="footer-view-source"
 						href={__GITHUB_URL__}
 						rel="noopener noreferrer"
 						target="_blank"
@@ -30,6 +32,7 @@ import { SITE_NAME } from "astro:env/client";
 				<p>
 					Licensed under <a
 						class="link link-hover font-medium"
+						data-umami-event="footer-view-license"
 						href={new URL("blob/main/LICENSE", __GITHUB_URL__)}
 						rel="noopener noreferrer"
 						target="_blank">AGPL-3.0</a

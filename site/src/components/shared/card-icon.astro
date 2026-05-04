@@ -59,7 +59,13 @@ const {
 		</div>
 	</div>
 
-	<button hx-get={`/partials/card/${card.slug}`} class="cursor-pointer">
+	<button
+		hx-get={`/partials/card/${card.slug}`}
+		class="cursor-pointer"
+		data-umami-event="view-card"
+		data-umami-event-card={card.slug}
+		data-umami-event-id={card.id}
+	>
 		<figure
 			class="hover-gallery rounded-box bg-character/25 shadow-band hover:shadow-character htmx-indicator-replace size-20 shadow-md sm:size-24"
 		>

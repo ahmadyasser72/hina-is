@@ -137,6 +137,9 @@ const progress = (() => {
 	<div class="flex gap-1">
 		<a
 			class="btn btn-sm btn-info flex-1"
+			data-umami-event="view-event-on-bestdori"
+			data-umami-event-event={event.slug}
+			data-umami-event-id={event.id}
 			href={`https://bestdori.com/info/events/${event.id}`}
 			rel="noopener noreferrer"
 			target="_blank"
@@ -150,6 +153,9 @@ const progress = (() => {
 			hx-get={`/partials/event/${event.slug}`}
 			class="btn tooltip tooltip-left btn-sm btn-square btn-soft"
 			data-tip="Extra details"
+			data-umami-event="view-event-details"
+			data-umami-event-event={event.slug}
+			data-umami-event-id={event.id}
 		>
 			<IconifyLoader icon="lucide:ellipsis" size-class="size-4" />
 		</button>
