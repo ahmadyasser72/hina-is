@@ -32,7 +32,6 @@ export default defineConfig({
 				access: "public",
 				context: "server",
 				optional: true,
-				url: true,
 			}),
 
 			UPSTASH_REDIS_REST_URL: envField.string({
