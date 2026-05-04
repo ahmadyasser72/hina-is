@@ -1,5 +1,6 @@
 ---
-import { GOATCOUNTER_ENDPOINT } from "astro:env/server";
+import { SITE_NAME } from "astro:env/client";
+import { UMAMI_SITE_ID } from "astro:env/server";
 
 import { Font } from "astro:assets";
 import type { JSX } from "astro/jsx-runtime";
@@ -10,8 +11,6 @@ import NavigationMenu from "~/components/navigation-menu.astro";
 import type { PageMetadata } from "~/lib/page";
 
 import "~/styles/global.css";
-
-import { SITE_NAME } from "astro:env/client";
 
 interface Props {
 	background?: JSX.ImgHTMLAttributes;
@@ -66,6 +65,16 @@ const image = new URL(`/open-graph/${metadata.route}.webp`, url.origin);
 			name="google-site-verification"
 			content="KpTaI8oT4Be4mwkos6HvICOSM6jjgFnMrlo1iJ649iE"
 		/>
+		{
+			UMAMI_SITE_ID && (
+				<script
+					data-website-id={UMAMI_SITE_ID}
+					src="https://cloud.umami.is/script.js"
+					defer
+					is:inline
+				/>
+			)
+		}
 	</head>
 	<body>
 		{
@@ -126,17 +135,6 @@ const image = new URL(`/open-graph/${metadata.route}.webp`, url.origin);
 			<iconify-icon class="size-4" icon="lucide:chevrons-up" width="none"
 			></iconify-icon>
 		</button>
-
-		{
-			GOATCOUNTER_ENDPOINT && (
-				<script
-					data-goatcounter={GOATCOUNTER_ENDPOINT}
-					src="/goatcounter.js"
-					async
-					is:inline
-				/>
-			)
-		}
 	</body>
 </html>
 

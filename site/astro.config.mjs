@@ -28,7 +28,7 @@ export default defineConfig({
 				optional: true,
 				default: "hina is ♥",
 			}),
-			GOATCOUNTER_ENDPOINT: envField.string({
+			UMAMI_SITE_ID: envField.string({
 				access: "public",
 				context: "server",
 				optional: true,

@@ -43,12 +43,12 @@ Copy the example env file and fill in the values:
 cp .env.example .env
 ```
 
-| Variable                   | Required | Description                                                                                                                |
-| -------------------------- | -------- | -------------------------------------------------------------------------------------------------------------------------- |
-| `GOATCOUNTER_ENDPOINT`     | No       | URL to your [GoatCounter](https://www.goatcounter.com/) analytics endpoint (e.g. `https://yoursite.goatcounter.com/count`) |
-| `UPSTASH_REDIS_REST_URL`   | Yes      | REST URL for your [Upstash Redis](https://upstash.com/redis) database (used for sharing character sorter results)          |
-| `UPSTASH_REDIS_REST_TOKEN` | Yes      | REST token for your Upstash Redis database                                                                                 |
-| `GEMINI_API_KEY`           | Yes      | [Google Gemini API key](https://aistudio.google.com/app/api-keys) (required to extract text from voiced stamp images)      |
+| Variable                   | Required | Description                                                                                                           |
+| -------------------------- | -------- | --------------------------------------------------------------------------------------------------------------------- |
+| `UMAMI_SITE_ID`            | No       | [Umami Cloud](https://cloud.umami.is) website ID for analytics                                                        |
+| `UPSTASH_REDIS_REST_URL`   | Yes      | REST URL for your [Upstash Redis](https://upstash.com/redis) database (used for sharing character sorter results)     |
+| `UPSTASH_REDIS_REST_TOKEN` | Yes      | REST token for your Upstash Redis database                                                                            |
+| `GEMINI_API_KEY`           | Yes      | [Google Gemini API key](https://aistudio.google.com/app/api-keys) (required to extract text from voiced stamp images) |
 
 ### 3. Run locally
 
@@ -93,9 +93,9 @@ Go to your repository → **Settings → Secrets and variables → Actions** and
 
 #### Variables
 
-| Name                   | Required | Description                             |
-| ---------------------- | -------- | --------------------------------------- |
-| `GOATCOUNTER_ENDPOINT` | No       | Your GoatCounter analytics endpoint URL |
+| Name            | Required | Description                                           |
+| --------------- | -------- | ----------------------------------------------------- |
+| `UMAMI_SITE_ID` | No       | Your [Umami Cloud](https://cloud.umami.is) website ID |
 
 ### Deployment behaviour
 
