@@ -16,7 +16,7 @@
     "packages/bestdori": {
       "name": "@hina-is/bestdori",
       "dependencies": {
-        "@google/genai": "1.50.1",
+        "@google/genai": "2.0.0",
         "colord": "2.9.3",
         "devalue": "5.7.1",
         "es-toolkit": "1.45.1",
@@ -228,7 +228,7 @@
 
     "@floating-ui/utils": ["@floating-ui/utils@0.2.11", "", {}, "sha512-RiB/yIh78pcIxl6lLMG0CgBXAZ2Y0eVHqMPYugu+9U0AeT6YBeiJpf7lbdJNIugFP5SIjwNRgo4DhR1Qxi26Gg=="],
 
-    "@google/genai": ["@google/genai@1.50.1", "", { "dependencies": { "google-auth-library": "^10.3.0", "p-retry": "^4.6.2", "protobufjs": "^7.5.4", "ws": "^8.18.0" }, "peerDependencies": { "@modelcontextprotocol/sdk": "^1.25.2" }, "optionalPeers": ["@modelcontextprotocol/sdk"] }, "sha512-YbkX7H9+1Pt8wOt7DDREy8XSoiL6fRDzZQRyaVBarFf8MR3zHGqVdvM4cLbDXqPhxqvegZShgfxb8kw9C7YhAQ=="],
+    "@google/genai": ["@google/genai@2.0.0", "", { "dependencies": { "google-auth-library": "^10.3.0", "p-retry": "^4.6.2", "protobufjs": "^7.5.4", "ws": "^8.18.0" }, "peerDependencies": { "@modelcontextprotocol/sdk": "^1.25.2" }, "optionalPeers": ["@modelcontextprotocol/sdk"] }, "sha512-6XpO+YbGutXkm5QgR7NZktISxSz0dw3pSs9NtCUQwvhJc1eyA3KhdKhE/0Uaxp3a6eul3LC0SKau1bXymjOKUg=="],
 
     "@hina-is/bestdori": ["@hina-is/bestdori@workspace:packages/bestdori"],
 
