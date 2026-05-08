@@ -42,6 +42,14 @@ jobs:
           include-hidden-files: true
           path: site/dist/
 
+      - name: Upload generated data.js
+        uses: actions/upload-artifact@v7
+        if: always()
+        with:
+          path: packages/bestdori/src/data.js
+          archive: false
+          if-no-files-found: ignore
+
       - name: Save response cache
         uses: actions/cache/save@v5
         if: always()
