@@ -11,9 +11,10 @@ const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
 const STAMP_OCR_PROMPT = await Bun.file(
 	path.join(import.meta.dir, "stamp-ocr.md"),
 ).text();
+const EMPTY = "[[EMPTY]]";
 
 const formatOcrResult = (text: string) => {
-	if (!text.includes("|")) return text;
+	if (!text.includes("|")) return text === EMPTY ? "" : text;
 
 	const parts = text.split("|");
 	if (!parts.every(Boolean)) return "";
@@ -30,7 +31,7 @@ export const doStampOcr = async (items: ReturnType<typeof asset>[]) => {
 			const name = path.basename(file.name!);
 			const outputFile = await getOutputFile({
 				script: "stamp-ocr",
-				version: "20260418",
+				version: "20260508",
 				name: [name.replace(path.extname(name), ""), hash].join("."),
 				extension: "txt",
 			});
