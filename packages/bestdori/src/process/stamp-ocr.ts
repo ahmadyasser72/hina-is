@@ -73,7 +73,7 @@ export const doStampOcr = async (items: ReturnType<typeof asset>[]) => {
 			{
 				delay: (attempts) =>
 					Math.min(Math.random() * 1000 * 2 ** attempts, 15000),
-				retries: 10,
+				retries: 30,
 				shouldRetry: (error) =>
 					error instanceof ApiError &&
 					(error.status === 429 || // too many request
