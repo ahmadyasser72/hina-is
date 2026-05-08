@@ -8,8 +8,8 @@ import type { asset } from "../assets";
 import { getOutputFile } from "../utilities";
 
 const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
-const DO_OCR_PROMPT = await Bun.file(
-	path.join(import.meta.dir, "stamp-ocr.txt"),
+const STAMP_OCR_PROMPT = await Bun.file(
+	path.join(import.meta.dir, "stamp-ocr.md"),
 ).text();
 
 const formatOcrResult = (text: string) => {
@@ -66,7 +66,7 @@ export const doStampOcr = async (items: ReturnType<typeof asset>[]) => {
 					contents: {
 						parts: [
 							...images.map(({ inlineData }) => ({ inlineData })),
-							{ text: DO_OCR_PROMPT },
+							{ text: STAMP_OCR_PROMPT },
 						],
 					},
 				}),
