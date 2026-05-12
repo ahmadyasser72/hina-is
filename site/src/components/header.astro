@@ -85,8 +85,8 @@ const BUILD_DATE = dayjs.tz(__BUILD_DATE__);
 	Last updated
 	<span
 		class="tooltip tooltip-bottom underline decoration-dotted"
-		data-tip={BUILD_DATE.fromNow()}
+		data-tip={BUILD_DATE.format("MM/DD/YYYY hh:mm A")}
 	>
-		{BUILD_DATE.format("MM/DD/YYYY hh:mm A")}</span
+		{BUILD_DATE.fromNow()}</span
 	>
 </div>
