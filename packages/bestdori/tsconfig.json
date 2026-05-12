@@ -2,10 +2,9 @@
 	"extends": "../../tsconfig.base.json",
 	"include": ["./src/**/*.ts", "./scripts/*.ts"],
 	"compilerOptions": {
-		"baseUrl": ".",
 		"paths": {
-			"~/*": ["src/*"],
-			"@scripts/*": ["scripts/*"]
+			"~/*": ["./src/*"],
+			"@scripts/*": ["./scripts/*"]
 		}
 	}
 }

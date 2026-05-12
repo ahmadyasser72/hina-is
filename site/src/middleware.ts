@@ -4,7 +4,6 @@ import { Random } from "random";
 import z from "zod";
 
 import { dayjs } from "~/lib/date";
-import { maybeArray } from "./lib/schema";
 import { fetchThumbhashMap } from "./lib/thumbhash";
 
 export const onRequest = defineMiddleware(
@@ -26,21 +25,18 @@ export const onRequest = defineMiddleware(
 		locals.parseQuery = (schema) => {
 			const querySchema = z
 				.instanceof(URLSearchParams)
-				.pipe(
-					z.preprocess(
-						(searchParams) =>
-							[...searchParams.entries()].reduce<
-								Record<string, string | string[]>
-							>((acc, [key, value]) => {
-								if (!value) return acc;
+				.transform((searchParams) =>
+					[...searchParams.entries()].reduce<Record<string, string | string[]>>(
+						(acc, [key, value]) => {
+							if (!value) return acc;
 
-								if (!(key in acc)) acc[key] = value;
-								else if (Array.isArray(acc[key])) acc[key].push(value);
-								else acc[key] = [acc[key], value];
+							if (!(key in acc)) acc[key] = value;
+							else if (Array.isArray(acc[key])) acc[key].push(value);
+							else acc[key] = [acc[key], value];
 
-								return acc;
-							}, {}),
-						z.record(z.string(), z.string().nonempty().apply(maybeArray)),
+							return acc;
+						},
+						{},
 					),
 				)
 				.transform((query) => {

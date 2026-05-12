@@ -75,42 +75,37 @@ export const Gachas = z
 			type: GachaType,
 		}),
 	)
-	.pipe(
-		z.preprocess(
-			async (gachas) => {
-				const allowedGachas = new Set([
-					"permanent",
-					"limited",
-					"dreamfes",
-					"birthday",
-					"kirafes",
-				]);
+	.transform(async (gachas) => {
+		const allowedGachas = new Set([
+			"permanent",
+			"limited",
+			"dreamfes",
+			"birthday",
+			"kirafes",
+		]);
 
-				const entries = await Promise.all(
-					Object.entries(gachas)
-						.filter(
-							([, { gachaName, type }]) =>
-								!!gachaName[0] && allowedGachas.has(type),
-						)
-						.map(
-							async ([id, { gachaName, publishedAt }]) =>
-								[
-									id,
-									await bestdoriJSON<z.input<typeof Gacha>>(
-										`/api/gacha/${id}.json`,
-										(latest) =>
-											isEqual(gachaName, latest.gachaName) &&
-											isEqual(publishedAt, latest.publishedAt),
-									),
-								] as const,
-						),
-				);
+		const entries = await Promise.all(
+			Object.entries(gachas)
+				.filter(
+					([, { gachaName, type }]) =>
+						!!gachaName[0] && allowedGachas.has(type),
+				)
+				.map(
+					async ([id, { gachaName, publishedAt }]) =>
+						[
+							id,
+							await bestdoriJSON<z.input<typeof Gacha>>(
+								`/api/gacha/${id}.json`,
+								(latest) =>
+									isEqual(gachaName, latest.gachaName) &&
+									isEqual(publishedAt, latest.publishedAt),
+							),
+						] as const,
+				),
+		);
 
-				return new Map(entries);
-			},
-			z.map(Id, Gacha),
-		),
-	);
+		return z.map(Id, Gacha).parse(new Map(entries));
+	});
 
 export type Gachas = z.infer<typeof Gachas>;
 export type Gacha = z.infer<typeof Gacha>;

@@ -9,12 +9,7 @@ export const parseRegionTuple = <T extends z.ZodType>(schema: T) => {
 	const nullable = schema.nullable();
 	const tuple = z.tuple([schema, nullable, nullable, nullable, nullable]);
 
-	return tuple.pipe(
-		z.preprocess(
-			([jp, en]) => ({ jp, en }),
-			z.strictObject({ jp: schema, en: nullable }),
-		),
-	);
+	return tuple.transform(([jp, en]) => ({ jp, en }));
 };
 
 export const dateTimestamp = z.coerce.number();

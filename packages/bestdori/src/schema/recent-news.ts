@@ -14,16 +14,12 @@ export const RecentNews = z.object({
 				endAt: z.string().apply(parseRegionTuple),
 			}),
 		)
-		.pipe(
-			z.preprocess(
-				(events) =>
-					Object.entries(events)
-						.filter(
-							([, { eventName, startAt, endAt }]) =>
-								eventName.en && startAt.en && endAt.en,
-						)
-						.map(([id]) => id),
-				z.array(Id),
-			),
+		.transform((events) =>
+			Object.entries(events)
+				.filter(
+					([, { eventName, startAt, endAt }]) =>
+						eventName.en && startAt.en && endAt.en,
+				)
+				.map(([id]) => Id.parse(id)),
 		),
 });

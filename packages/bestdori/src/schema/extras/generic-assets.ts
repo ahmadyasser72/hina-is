@@ -7,12 +7,9 @@ export const GenericAssets = <T extends z.ZodType = z.ZodString>(
 	z
 		.array(z.string())
 		.nonempty()
-		.pipe(
-			z.preprocess(
-				(items) =>
-					items
-						.filter((it) => it.endsWith(`.${extension}`))
-						.map((it) => it.replace(`.${extension}`, "")),
-				z.array(item),
-			),
+		.transform((items) =>
+			items
+				.filter((it) => it.endsWith(`.${extension}`))
+				.map((it) => it.replace(`.${extension}`, ""))
+				.map((it) => item.parse(it)),
 		);

@@ -38,31 +38,26 @@ export const Cards = z
 			rarity: CardRarity,
 		}),
 	)
-	.pipe(
-		z.preprocess(
-			async (cards) => {
-				const entries = await Promise.all(
-					Object.entries(cards)
-						.filter(([, { prefix, rarity }]) => !!prefix[0] && rarity >= 4)
-						.map(
-							async ([id, { prefix, releasedAt }]) =>
-								[
-									id,
-									await bestdoriJSON<z.input<typeof Card>>(
-										`/api/cards/${id}.json`,
-										(latest) =>
-											isEqual(prefix, latest.prefix) &&
-											isEqual(releasedAt, latest.releasedAt),
-									),
-								] as const,
-						),
-				);
+	.transform(async (cards) => {
+		const entries = await Promise.all(
+			Object.entries(cards)
+				.filter(([, { prefix, rarity }]) => !!prefix[0] && rarity >= 4)
+				.map(
+					async ([id, { prefix, releasedAt }]) =>
+						[
+							id,
+							await bestdoriJSON<z.input<typeof Card>>(
+								`/api/cards/${id}.json`,
+								(latest) =>
+									isEqual(prefix, latest.prefix) &&
+									isEqual(releasedAt, latest.releasedAt),
+							),
+						] as const,
+				),
+		);
 
-				return new Map(entries);
-			},
-			z.map(Id, Card),
-		),
-	);
+		return z.map(Id, Card).parse(new Map(entries));
+	});
 
 export type Cards = z.infer<typeof Cards>;
 export type Card = z.infer<typeof Card>;

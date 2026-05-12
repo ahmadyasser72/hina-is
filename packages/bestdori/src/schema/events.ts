@@ -107,32 +107,27 @@ export const Events = z
 			endAt: z.string().apply(asRegionTuple),
 		}),
 	)
-	.pipe(
-		z.preprocess(
-			async (events) => {
-				const entries = await Promise.all(
-					Object.entries(events)
-						.filter(([, { eventName }]) => !!eventName[0])
-						.map(
-							async ([id, { eventName, startAt, endAt }]) =>
-								[
-									id,
-									await bestdoriJSON<z.input<typeof Event>>(
-										`/api/events/${id}.json`,
-										(latest) =>
-											isEqual(eventName, latest.eventName) &&
-											isEqual(startAt, latest.startAt) &&
-											isEqual(endAt, latest.endAt),
-									),
-								] as const,
-						),
-				);
+	.transform(async (events) => {
+		const entries = await Promise.all(
+			Object.entries(events)
+				.filter(([, { eventName }]) => !!eventName[0])
+				.map(
+					async ([id, { eventName, startAt, endAt }]) =>
+						[
+							id,
+							await bestdoriJSON<z.input<typeof Event>>(
+								`/api/events/${id}.json`,
+								(latest) =>
+									isEqual(eventName, latest.eventName) &&
+									isEqual(startAt, latest.startAt) &&
+									isEqual(endAt, latest.endAt),
+							),
+						] as const,
+				),
+		);
 
-				return new Map(entries);
-			},
-			z.map(Id, Event),
-		),
-	);
+		return z.map(Id, Event).parse(new Map(entries));
+	});
 
 export type Events = z.infer<typeof Events>;
 export type Event = z.infer<typeof Event>;

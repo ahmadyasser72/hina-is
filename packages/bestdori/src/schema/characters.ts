@@ -32,27 +32,22 @@ export const Characters = z
 			colorCode: z.templateLiteral(["#", z.hex()]),
 		}),
 	)
-	.pipe(
-		z.preprocess(
-			async (characters) => {
-				const entries = await Promise.all(
-					Object.keys(characters).map(
-						async (id) =>
-							[
-								id,
-								await bestdoriJSON<z.input<typeof Character>>(
-									`/api/characters/${id}.json`,
-									true,
-								),
-							] as const,
-					),
-				);
+	.transform(async (characters) => {
+		const entries = await Promise.all(
+			Object.keys(characters).map(
+				async (id) =>
+					[
+						id,
+						await bestdoriJSON<z.input<typeof Character>>(
+							`/api/characters/${id}.json`,
+							true,
+						),
+					] as const,
+			),
+		);
 
-				return new Map(entries);
-			},
-			z.map(Id, Character),
-		),
-	);
+		return z.map(Id, Character).parse(new Map(entries));
+	});
 
 export type Characters = z.infer<typeof Characters>;
 export type Character = z.infer<typeof Character>;

@@ -23,22 +23,21 @@ export const Song = z
 				}),
 			)
 			.pipe(
-				z.preprocess(
-					(difficultyMap) =>
-						Object.fromEntries(
-							Object.entries(difficultyMap).map(
-								([difficulty, { playLevel: level, publishedAt }]) => [
-									difficulty,
-									{ level, publishedAt },
-								],
-							),
+				z.transform((difficultyMap) =>
+					Object.fromEntries(
+						Object.entries(difficultyMap).map(
+							([difficulty, { playLevel: level, publishedAt }]) => [
+								SongDifficulty.parse(difficulty),
+								z
+									.object({
+										level: z.number().positive(),
+										publishedAt: dateTimestamp
+											.apply(parseRegionTuple)
+											.optional(),
+									})
+									.parse({ level, publishedAt }),
+							],
 						),
-					z.record(
-						SongDifficulty,
-						z.object({
-							level: z.number().positive(),
-							publishedAt: dateTimestamp.apply(parseRegionTuple).optional(),
-						}),
 					),
 				),
 			),
@@ -62,44 +61,41 @@ export const Songs = z
 		}),
 	)
 	.pipe(
-		z.preprocess(
-			async (songs) => {
-				const entries = await Promise.all(
-					Object.entries(songs)
-						.filter(([, { musicTitle }]) => !!musicTitle[0])
-						.map(
-							async ([id, { musicTitle, publishedAt, difficulty }]) =>
-								[
-									id,
-									await bestdoriJSON<z.input<typeof Song>>(
-										`/api/songs/${id}.json`,
-										(latest) => {
-											const latestDifficulty = Object.fromEntries(
-												Object.entries(latest.difficulty).map(
-													([id, { playLevel, publishedAt }]) => [
-														id,
-														publishedAt
-															? { playLevel, publishedAt }
-															: { playLevel },
-													],
-												),
-											);
+		z.transform(async (songs) => {
+			const entries = await Promise.all(
+				Object.entries(songs)
+					.filter(([, { musicTitle }]) => !!musicTitle[0])
+					.map(
+						async ([id, { musicTitle, publishedAt, difficulty }]) =>
+							[
+								id,
+								await bestdoriJSON<z.input<typeof Song>>(
+									`/api/songs/${id}.json`,
+									(latest) => {
+										const latestDifficulty = Object.fromEntries(
+											Object.entries(latest.difficulty).map(
+												([id, { playLevel, publishedAt }]) => [
+													id,
+													publishedAt
+														? { playLevel, publishedAt }
+														: { playLevel },
+												],
+											),
+										);
 
-											return (
-												isEqual(musicTitle, latest.musicTitle) &&
-												isEqual(publishedAt, latest.publishedAt) &&
-												isEqual(difficulty, latestDifficulty)
-											);
-										},
-									),
-								] as const,
-						),
-				);
+										return (
+											isEqual(musicTitle, latest.musicTitle) &&
+											isEqual(publishedAt, latest.publishedAt) &&
+											isEqual(difficulty, latestDifficulty)
+										);
+									},
+								),
+							] as const,
+					),
+			);
 
-				return new Map(entries);
-			},
-			z.map(Id, Song),
-		),
+			return z.map(Id, Song).parse(new Map(entries));
+		}),
 	);
 
 export type Songs = z.infer<typeof Songs>;

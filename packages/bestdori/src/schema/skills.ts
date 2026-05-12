@@ -21,38 +21,36 @@ export const Skills = z
 				unificationActivateConditionBandId: z.number().positive().optional(),
 				unificationActivateConditionType: z
 					.string()
-					.pipe(z.preprocess((it) => it.toLowerCase(), CardAttribute))
+					.transform((it) => CardAttribute.parse(it.toLowerCase()))
 					.optional(),
 
 				activateEffectTypes: z
 					.looseRecord(z.string(), SkillMultiplier.optional())
-					.pipe(
-						z.preprocess(
-							({
-								score,
-								score_over_life,
-								score_under_life,
-								score_under_great_half,
-								score_continued_note_judge,
-								score_only_perfect,
-							}) => ({
-								best:
+					.transform(
+						({
+							score,
+							score_over_life,
+							score_under_life,
+							score_under_great_half,
+							score_continued_note_judge,
+							score_only_perfect,
+						}) => ({
+							best: SkillMultiplier.extend({
+								activateEffectValue: z
+									.number()
+									.positive()
+									.apply(parseRegionTuple),
+							})
+								.optional()
+								.parse(
 									score_only_perfect ??
-									score_continued_note_judge ??
-									score_over_life ??
-									score ??
-									score_under_great_half ??
-									score_under_life,
-							}),
-							z.strictObject({
-								best: SkillMultiplier.extend({
-									activateEffectValue: z
-										.number()
-										.positive()
-										.apply(parseRegionTuple),
-								}).optional(),
-							}),
-						),
+										score_continued_note_judge ??
+										score_over_life ??
+										score ??
+										score_under_great_half ??
+										score_under_life,
+								),
+						}),
 					),
 			}),
 			onceEffect: z
