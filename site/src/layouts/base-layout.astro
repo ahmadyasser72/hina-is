@@ -66,7 +66,7 @@ const image = new URL(`/open-graph/${metadata.route}.webp`, url.origin);
 			content="KpTaI8oT4Be4mwkos6HvICOSM6jjgFnMrlo1iJ649iE"
 		/>
 		{
-			UMAMI_SITE_ID && (
+			import.meta.env.PROD && UMAMI_SITE_ID && (
 				<script
 					data-website-id={UMAMI_SITE_ID}
 					src="https://cloud.umami.is/script.js"
