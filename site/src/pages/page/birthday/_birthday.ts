@@ -3,15 +3,16 @@ import type { Bandori } from "@hina-is/bestdori/data";
 import { dayjs } from "~/lib/date";
 
 export const sortLatestBirthday = (characters: Bandori.Character[]) => {
-	const now = dayjs();
+	const now = dayjs.utc();
 	const thisYear = now.year();
 
 	return characters
 		.map(({ birthday, ...entry }) => {
 			const birthdayThisYear = dayjs(birthday)
-				.tz()
+				.utc()
 				.add(1, "days")
 				.startOf("days")
+				.set("hours", 8)
 				.set("years", thisYear);
 			const nextBirthday = now.isBefore(birthdayThisYear)
 				? birthdayThisYear
