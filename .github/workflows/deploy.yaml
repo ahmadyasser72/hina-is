@@ -47,7 +47,6 @@ jobs:
         if: always()
         with:
           path: packages/bestdori/src/data.js
-          archive: false
           if-no-files-found: ignore
 
       - name: Save response cache
