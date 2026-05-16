@@ -1,4 +1,4 @@
-name: deploy-cloudflare-worker
+name: deploy
 
 on:
   schedule:
@@ -6,7 +6,7 @@ on:
   workflow_dispatch:
 
 concurrency:
-  group: deploy-cloudflare-worker-${{ github.ref }}
+  group: deploy-${{ github.ref }}
 
 jobs:
   build:
@@ -61,10 +61,6 @@ jobs:
     needs: build
     runs-on: ubuntu-latest
 
-    environment:
-      name: cloudflare-worker/${{ github.ref_name }}
-      url: ${{ steps.deploy-cloudflare-worker.outputs.deployment-url }}
-
     steps:
       - uses: actions/checkout@v6
       - uses: ./.github/actions/setup-bun
@@ -79,7 +75,6 @@ jobs:
           path: site/dist/
 
       - name: Deploy to Cloudflare Workers
-        id: deploy-cloudflare-worker
         uses: cloudflare/wrangler-action@v4
         with:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
