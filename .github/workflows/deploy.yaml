@@ -46,6 +46,7 @@ jobs:
         uses: actions/upload-artifact@v7
         if: always()
         with:
+          name: data
           path: packages/bestdori/src/data.js
           if-no-files-found: ignore
 
