@@ -63,7 +63,7 @@ export const doStampOcr = async (items: ReturnType<typeof asset>[]) => {
 		const response = await retry(
 			() =>
 				ai.models.generateContent({
-					model: "gemini-3.1-flash-lite-preview", // 15 rpm limit on free tier
+					model: "gemini-3.1-flash-tier",
 					contents: {
 						parts: [
 							...images.map(({ inlineData }) => ({ inlineData })),
