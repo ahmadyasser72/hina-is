@@ -1,11 +1,14 @@
 import z from "zod";
 
+
+import { parseRegionTuple } from "./helpers";
+
 // /api/stamps/all.2.json
 export const Stamps = z
 	.record(
 		z.string(),
 		z.object({
-			imageName: z.templateLiteral([z.literal("stamp_"), z.string()]),
+			imageName: z.string().apply(parseRegionTuple),
 		}),
 	)
 	.transform((stamps) => {
