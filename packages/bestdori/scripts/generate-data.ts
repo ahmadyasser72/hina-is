@@ -46,8 +46,8 @@ const data = await (async () => {
 		events: Events,
 		stamps: Stamps,
 		skills: Skills,
-		stampImages: GenericAssets("png", z.templateLiteral(["stamp_", z.number()])),
-		stampVoices: GenericAssets("mp3", z.templateLiteral(["stamp_", z.number()])),
+		stampImages: GenericAssets("png", z.string()),
+		stampVoices: GenericAssets("mp3", z.string()),
 		recentNews: RecentNews,
 		gachaTypeVoiceList: GenericAssets("mp3", z.string()),
 	} as const;
