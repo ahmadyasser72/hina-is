@@ -355,7 +355,7 @@ const data = await (async () => {
 											rewardType === "stamp" && rewardId,
 									)!.rewardId!;
 
-									const stampId = unwrap(stamps.get(id)!.imageName);
+									const stampId = unwrapTuple(stamps.get(id)!.imageName);
 									return findValue(data.stamps, ({ id }) => id === stampId)!;
 								},
 								get titles() {
