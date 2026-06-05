@@ -16,7 +16,6 @@ import { CardAttribute } from "~/schema/constants";
 import { Degrees } from "~/schema/degrees";
 import { Events } from "~/schema/events";
 import { GenericAssets } from "~/schema/extras/generic-assets";
-import { StampId } from "~/schema/extras/stamps";
 import { RecentNews } from "~/schema/recent-news";
 import { Skills } from "~/schema/skills";
 import { Stamps } from "~/schema/stamps";
@@ -47,8 +46,8 @@ const data = await (async () => {
 		events: Events,
 		stamps: Stamps,
 		skills: Skills,
-		stampImages: GenericAssets("png", StampId),
-		stampVoices: GenericAssets("mp3", StampId),
+		stampImages: GenericAssets("png", z.templateLiteral(["stamp_", z.number()])),
+		stampVoices: GenericAssets("mp3", z.templateLiteral(["stamp_", z.number()])),
 		recentNews: RecentNews,
 		gachaTypeVoiceList: GenericAssets("mp3", z.string()),
 	} as const;
@@ -352,7 +351,7 @@ const data = await (async () => {
 											rewardType === "stamp" && rewardId,
 									)!.rewardId!;
 
-									const stampId = stamps.get(id)!.imageName;
+									const stampId = unwrap(stamps.get(id)!.imageName);
 									return findValue(data.stamps, ({ id }) => id === stampId)!;
 								},
 								get titles() {
@@ -481,7 +480,7 @@ const data = await (async () => {
 													rewardType === "stamp" && rewardId,
 											)!.rewardId!;
 
-											return stamps.get(stampId)!.imageName === id;
+											return unwrap(stamps.get(stampId)!.imageName) === id;
 										},
 									);
 
