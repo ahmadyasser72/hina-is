@@ -4,10 +4,10 @@ description: setup/install bun dependencies
 runs:
   using: composite
   steps:
-    - uses: oven-sh/setup-bun@v2
+    - uses: oven-sh/setup-bun@v2.2.0
 
     - name: Cache bun dependencies
-      uses: actions/cache@v5
+      uses: actions/cache@v5.0.5
       with:
         path: |
           ~/.bun/install/cache
