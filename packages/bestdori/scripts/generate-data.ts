@@ -76,8 +76,10 @@ const data = await (async () => {
 		skills,
 		jpStampImages,
 		enStampImages,
+		cnStampImages,
 		jpStampVoices,
 		enStampVoices,
+		cnStampVoices,
 		recentNews,
 	] = await Promise.all([
 		get("bands", "/api/bands/main.1.json"),
@@ -89,8 +91,10 @@ const data = await (async () => {
 		get("skills", "/api/skills/all.10.json"),
 		get("stampImages", "/api/explorer/jp/assets/stamp/01.json"),
 		get("stampImages", "/api/explorer/en/assets/stamp/01.json"),
+		get("stampImages", "/api/explorer/cn/assets/stamp/01.json"),
 		get("stampVoices", "/api/explorer/jp/assets/sound/voice_stamp.json"),
 		get("stampVoices", "/api/explorer/en/assets/sound/voice_stamp.json"),
+		get("stampVoices", "/api/explorer/cn/assets/sound/voice_stamp.json"),
 		get("recentNews", "/api/news/dynamic/recent.json"),
 	]);
 
@@ -433,6 +437,7 @@ const data = await (async () => {
 			const stampsMap = [
 				{ region: "en" as const, stamps: enStampImages, voices: enStampVoices },
 				{ region: "jp" as const, stamps: jpStampImages, voices: jpStampVoices },
+				{ region: "cn" as const, stamps: cnStampImages, voices: cnStampVoices },
 			]
 				.flatMap(({ region, stamps, voices }) =>
 					stamps.map((id) => ({ id, region, voiced: voices.includes(id) })),
@@ -443,7 +448,7 @@ const data = await (async () => {
 						map.set(stamp.id, stamp);
 
 					return map;
-				}, new Map<string, { id: string; region: "jp" | "en"; voiced: boolean }>());
+				}, new Map<string, { id: string; region: "jp" | "en" | "cn"; voiced: boolean }>());
 
 			const characters = { ...data.characters };
 			return Object.fromEntries(
@@ -480,7 +485,7 @@ const data = await (async () => {
 													rewardType === "stamp" && rewardId,
 											)!.rewardId!;
 
-											return unwrap(stamps.get(stampId)!.imageName) === id;
+											return unwrapTuple(stamps.get(stampId)!.imageName) === id;
 										},
 									);
 
