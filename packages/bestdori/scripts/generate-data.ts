@@ -464,13 +464,15 @@ const data = await (async () => {
 							findValue(characters, ({ id }) => Number(id) === characterId) ??
 							null;
 
-						const slug = createSlug(
-							"stamp",
-							character?.slug ?? `${characterId}-unknown`,
-							stampId,
-						);
+						const slug = id.startsWith("stamp_bilibili")
+							? createSlug("stamp", id.replace("stamp_", ""))
+							: createSlug(
+									"stamp",
+									character?.slug ?? `${characterId}-unknown`,
+									stampId,
+								);
 
-						return [
+							return [
 							slug,
 							{
 								id,
