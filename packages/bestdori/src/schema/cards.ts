@@ -41,7 +41,7 @@ export const Cards = z
 	.transform(async (cards) => {
 		const entries = await Promise.all(
 			Object.entries(cards)
-				.filter(([, { prefix, rarity }]) => !!prefix[0] && rarity >= 4)
+				.filter(([, { prefix, rarity }]) => !!prefix[0] && rarity >= 3)
 				.map(
 					async ([id, { prefix, releasedAt }]) =>
 						[

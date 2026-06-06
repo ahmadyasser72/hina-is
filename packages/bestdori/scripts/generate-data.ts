@@ -4,6 +4,7 @@ import path from "node:path";
 import * as devalue from "devalue";
 import { chunk, deburr, groupBy, limitAsync, omit, pick } from "es-toolkit";
 import { findKey } from "es-toolkit/object";
+import { filter as filterMap } from "es-toolkit/map";
 import yoctoSpinner from "yocto-spinner";
 import { z } from "zod";
 
@@ -16,6 +17,7 @@ import { CardAttribute } from "~/schema/constants";
 import { Degrees } from "~/schema/degrees";
 import { Events } from "~/schema/events";
 import { GenericAssets } from "~/schema/extras/generic-assets";
+import { Gachas } from "~/schema/gachas";
 import { RecentNews } from "~/schema/recent-news";
 import { Skills } from "~/schema/skills";
 import { Stamps } from "~/schema/stamps";
@@ -50,6 +52,7 @@ const data = await (async () => {
 		stampVoices: GenericAssets("mp3", z.string()),
 		recentNews: RecentNews,
 		gachaTypeVoiceList: GenericAssets("mp3", z.string()),
+		gacha: Gachas,
 	} as const;
 
 	const get = limitAsync(
@@ -81,6 +84,7 @@ const data = await (async () => {
 		enStampVoices,
 		cnStampVoices,
 		recentNews,
+		gacha,
 	] = await Promise.all([
 		get("bands", "/api/bands/main.1.json"),
 		get("cards", "/api/cards/all.5.json"),
@@ -96,6 +100,7 @@ const data = await (async () => {
 		get("stampVoices", "/api/explorer/en/assets/sound/voice_stamp.json"),
 		get("stampVoices", "/api/explorer/cn/assets/sound/voice_stamp.json"),
 		get("recentNews", "/api/news/dynamic/recent.json"),
+		get("gacha", "/api/gacha/all.5.json"),
 	]);
 
 	const gachaTypeVoiceList = await Promise.all(
@@ -344,6 +349,25 @@ const data = await (async () => {
 									);
 								},
 								get cards() {
+									if (cards.length === 0) {
+										const matchingGacha = filterMap(
+											gacha,
+											({ publishedAt: { jp } }) => jp === entry.startAt.jp,
+										);
+										if (matchingGacha.size > 0) {
+											return [...matchingGacha.values()]
+												.flatMap(({ newCards }) => newCards)
+												.map((cardId) =>
+													findValue(data.cards, ({ id }) => id === cardId)!,
+												)
+												.filter(
+													(card) =>
+														card !== undefined &&
+														card.attribute === attribute &&
+														characters.some(({ id }) => id === card.character.id),
+												);
+										}
+									}
 									return cards.map(
 										(cardId) =>
 											findValue(data.cards, ({ id }) => id === cardId)!,
