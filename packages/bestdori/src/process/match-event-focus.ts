@@ -83,11 +83,14 @@ export const matchEventFocus = async (
 							model: "gemini-3.1-flash-lite",
 							contents: {
 								parts: [
-									{ inlineData: { mimeType: "image/jpeg", data: bannerData }, text: `banner: ${banner.pathname}` },
-									...cardImages.map(({ pathname, data }) => ({
-										inlineData: { mimeType: "image/jpeg", data },
-										text: `card: ${pathname}`,
-									})),
+									{
+										inlineData: { mimeType: "image/jpeg", data: bannerData },
+									},
+									{ text: `banner: ${banner.pathname}` },
+									...cardImages.flatMap(({ pathname, data }) => [
+										{ inlineData: { mimeType: "image/jpeg", data } },
+										{ text: `card: ${pathname}` },
+									]),
 									{ text: MATCH_EVENT_FOCUS_PROMPT },
 								],
 							},
@@ -111,6 +114,9 @@ export const matchEventFocus = async (
 	);
 
 	return Promise.all(
-		inputs.map(({ outputFile }) => Bun.file(outputFile.name!).text().then(JSON.parse)),
+		inputs.map(({ outputFile }) => {
+			if (!outputFile.name) throw new Error(`Missing output file name for input`);
+			return Bun.file(outputFile.name).text().then(JSON.parse);
+		}),
 	).then((results) => Object.assign({}, ...results));
 };

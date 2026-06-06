@@ -359,11 +359,11 @@ const data = await (async () => {
 											return [...matchingGacha.values()]
 												.flatMap(({ newCards }) => newCards)
 												.map((cardId) =>
-													findValue(data.cards, ({ id }) => id === cardId)!,
+													findValue(data.cards, ({ id }) => id === cardId),
 												)
+												.filter(Boolean)
 												.filter(
 													(card) =>
-														card !== undefined &&
 														card.attribute.slug === attribute &&
 														characters.includes(card.character.id),
 												);
@@ -635,23 +635,30 @@ const DATA_FILE = path.join(GIT_ROOT_PATH, "packages/bestdori/src/data.js");
 		const keys = batch.map(([key]) => key);
 		spinner.text = `matching event focus (${keys.join(", ")})`;
 
-		const payloads = batch.map(([_key, event]) => ({
-			banner: getAsset("events", event)[`${event.slug}-banner`],
-			cards: event.cards.map((card) => getAsset("cards", card)[`${card.slug}-full-normal`]),
-		}));
+		try {
+			const payloads = batch.map(([_key, event]) => ({
+				banner: getAsset("events", event)[`${event.slug}-banner`],
+				cards: event.cards.map((card) => getAsset("cards", card)[`${card.slug}-full-normal`]),
+			}));
 
-		const matches = await matchEventFocus(payloads);
-		batch.forEach(([key, event]) => {
-			const bannerPathname = getAsset("events", event)[`${event.slug}-banner`].pathname;
-			const cardPathname = matches[bannerPathname];
-			const focus = cardPathname
-				? findValue(data.cards, (card) => {
-						const asset = getAsset("cards", card)[`${card.slug}-card`];
-						return asset.pathname === cardPathname;
-					})
-				: undefined;
-			eventsFocus[key] = { ...event, focus: focus ?? null };
-		});
+			const matches = await matchEventFocus(payloads);
+			batch.forEach(([key, event]) => {
+				const bannerPathname = getAsset("events", event)[`${event.slug}-banner`].pathname;
+				const cardPathname = matches[bannerPathname];
+				const focus = cardPathname
+					? findValue(data.cards, (card) => {
+							const asset = getAsset("cards", card)[`${card.slug}-full-normal`];
+							return asset?.pathname === cardPathname;
+						})
+					: undefined;
+				eventsFocus[key] = { ...event, focus: focus ?? null };
+			});
+		} catch (error) {
+			spinner.fail(`failed to match event focus for [${keys.join(", ")}]: ${error}`);
+			batch.forEach(([key, event]) => {
+				eventsFocus[key] = { ...event, focus: null };
+			});
+		}
 	}
 
 	Object.defineProperty(data, "events", { get: () => eventsFocus });
