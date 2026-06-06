@@ -9,6 +9,7 @@ import { z } from "zod";
 
 import { bestdoriJSON, GIT_ROOT_PATH } from "~/index";
 import { doStampOcr } from "~/process/stamp-ocr";
+import { matchEventFocus } from "~/process/match-event-focus";
 import { Bands } from "~/schema/bands";
 import { Cards } from "~/schema/cards";
 import { Characters } from "~/schema/characters";
@@ -426,6 +427,7 @@ const data = await (async () => {
 								...entry,
 
 								name: unwrap(name),
+								focus: null as (typeof data.cards)[keyof typeof data.cards] | null,
 							},
 						];
 					},
@@ -596,6 +598,37 @@ const DATA_FILE = path.join(GIT_ROOT_PATH, "packages/bestdori/src/data.js");
 
 	Object.defineProperty(data, "stamps", { get: () => stamps });
 	spinner.success("done extracting text");
+}
+
+{
+	const { getAsset } = await import("~/assets");
+	const spinner = createSpinner("match event focus");
+
+	const eventsFocus: typeof data.events = {};
+	const eventEntries = Object.entries(data.events);
+	const batches = chunk(eventEntries, 3);
+	for (const batch of batches) {
+		const keys = batch.map(([key]) => key);
+		spinner.text = `matching event focus (${keys.join(", ")})`;
+
+		const payloads = batch.map(([key, event]) => ({
+			banner: getAsset("events", event)[`${event.slug}-banner`],
+			cards: event.cards.map((card) => getAsset("cards", card)[`${card.slug}-full-normal`]),
+		}));
+
+		const matches = await matchEventFocus(payloads);
+		batch.forEach(([key, event]) => {
+			const bannerPathname = getAsset("events", event)[`${event.slug}-banner`].pathname;
+			const cardPathname = matches[bannerPathname];
+			const focus = cardPathname
+				? findValue(data.cards, ({ pathname }) => pathname === cardPathname)
+				: undefined;
+			eventsFocus[key] = { ...event, focus: focus ?? null };
+		});
+	}
+
+	Object.defineProperty(data, "events", { get: () => eventsFocus });
+	spinner.success("done matching event focus");
 }
 
 {
