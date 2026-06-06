@@ -361,7 +361,7 @@ const data = await (async () => {
 												.map((cardId) =>
 													findValue(data.cards, ({ id }) => id === cardId),
 												)
-												.filter(Boolean)
+												.filter((c): c is NonNullable<typeof c> => Boolean(c))
 												.filter(
 													(card) =>
 														card.attribute.slug === attribute &&
@@ -635,16 +635,21 @@ const DATA_FILE = path.join(GIT_ROOT_PATH, "packages/bestdori/src/data.js");
 		const keys = batch.map(([key]) => key);
 		spinner.text = `matching event focus (${keys.join(", ")})`;
 
-		try {
-			const payloads = batch.map(([_key, event]) => ({
-				banner: getAsset("events", event)[`${event.slug}-banner`],
-				cards: event.cards.map((card) => getAsset("cards", card)[`${card.slug}-full-normal`]),
-			}));
+		const results = await Promise.allSettled(
+			batch.map(([_key, event]) => {
+				const payload = {
+					banner: getAsset("events", event)[`${event.slug}-banner`],
+					cards: event.cards.map((card) => getAsset("cards", card)[`${card.slug}-full-normal`]),
+				};
+				return matchEventFocus([payload]);
+			}),
+		);
 
-			const matches = await matchEventFocus(payloads);
-			batch.forEach(([key, event]) => {
+		batch.forEach(([key, event], index) => {
+			const result = results[index];
+			if (result.status === "fulfilled") {
 				const bannerPathname = getAsset("events", event)[`${event.slug}-banner`].pathname;
-				const cardPathname = matches[bannerPathname];
+				const cardPathname = result.value[bannerPathname];
 				const focus = cardPathname
 					? findValue(data.cards, (card) => {
 							const asset = getAsset("cards", card)[`${card.slug}-full-normal`];
@@ -652,13 +657,11 @@ const DATA_FILE = path.join(GIT_ROOT_PATH, "packages/bestdori/src/data.js");
 						})
 					: undefined;
 				eventsFocus[key] = { ...event, focus: focus ?? null };
-			});
-		} catch (error) {
-			spinner.fail(`failed to match event focus for [${keys.join(", ")}]: ${error}`);
-			batch.forEach(([key, event]) => {
+			} else {
+				spinner.error(`failed to match event focus for ${key}: ${result.reason}`);
 				eventsFocus[key] = { ...event, focus: null };
-			});
-		}
+			}
+		});
 	}
 
 	Object.defineProperty(data, "events", { get: () => eventsFocus });
