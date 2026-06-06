@@ -39,9 +39,11 @@ export const Cards = z
 		}),
 	)
 	.transform(async (cards) => {
+		const filteredEntries = Object.entries(cards)
+			.filter(([, { prefix, rarity }]) => !!prefix[0] && rarity >= 3);
+		console.log(`Fetching details for ${filteredEntries.length} cards (rarity >= 3)`);
 		const entries = await Promise.all(
-			Object.entries(cards)
-				.filter(([, { prefix, rarity }]) => !!prefix[0] && rarity >= 3)
+			filteredEntries
 				.map(
 					async ([id, { prefix, releasedAt }]) =>
 						[

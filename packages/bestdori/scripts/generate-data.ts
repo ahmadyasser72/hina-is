@@ -364,8 +364,8 @@ const data = await (async () => {
 												.filter(
 													(card) =>
 														card !== undefined &&
-														card.attribute === attribute &&
-														characters.some(({ id }) => id === card.character.id),
+														card.attribute.slug === attribute &&
+														characters.includes(card.character.id),
 												);
 										}
 									}
@@ -635,7 +635,7 @@ const DATA_FILE = path.join(GIT_ROOT_PATH, "packages/bestdori/src/data.js");
 		const keys = batch.map(([key]) => key);
 		spinner.text = `matching event focus (${keys.join(", ")})`;
 
-		const payloads = batch.map(([key, event]) => ({
+		const payloads = batch.map(([_key, event]) => ({
 			banner: getAsset("events", event)[`${event.slug}-banner`],
 			cards: event.cards.map((card) => getAsset("cards", card)[`${card.slug}-full-normal`]),
 		}));
@@ -645,7 +645,10 @@ const DATA_FILE = path.join(GIT_ROOT_PATH, "packages/bestdori/src/data.js");
 			const bannerPathname = getAsset("events", event)[`${event.slug}-banner`].pathname;
 			const cardPathname = matches[bannerPathname];
 			const focus = cardPathname
-				? findValue(data.cards, ({ pathname }) => pathname === cardPathname)
+				? findValue(data.cards, (card) => {
+						const asset = getAsset("cards", card)[`${card.slug}-card`];
+						return asset.pathname === cardPathname;
+					})
 				: undefined;
 			eventsFocus[key] = { ...event, focus: focus ?? null };
 		});

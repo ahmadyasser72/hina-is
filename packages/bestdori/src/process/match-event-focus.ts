@@ -46,14 +46,14 @@ export const matchEventFocus = async (
 				return { outputFile, alreadyExists: true };
 			}
 
-			const bannerBuffer = Buffer.from(file.arrayBuffer());
+			const bannerBuffer = Buffer.from(await file.arrayBuffer());
 			const cardBuffers = await Promise.all(
 				cards.map(async (card) => {
 					const { file } = await bestdori(
 						getCardTrimPathname(card.pathname),
 						!card.redownload,
 					);
-					return { pathname: card.pathname, buffer: Buffer.from(file.arrayBuffer()) };
+					return { pathname: card.pathname, buffer: Buffer.from(await file.arrayBuffer()) };
 				}),
 			);
 
@@ -63,7 +63,7 @@ export const matchEventFocus = async (
 
 	await Promise.all(
 		inputs
-			.filter(({ alreadyExists }) => !alreadyExists)
+			.filter((input): input is Extract<typeof inputs[number], { alreadyExists: false }> => !input.alreadyExists)
 			.map(async ({ banner, cards, outputFile }) => {
 				const bannerImage = await optimizeForVisionAPI(banner.pathname, banner.buffer);
 				const bannerBlob = await bannerImage.blob();
@@ -102,7 +102,10 @@ export const matchEventFocus = async (
 					},
 				);
 
-				const result = JSON.parse(response.text ?? "{}");
+				if (!response.text) {
+					throw new Error("Empty response from Gemini API");
+				}
+				const result = JSON.parse(response.text);
 				await outputFile.write(JSON.stringify(result));
 			}),
 	);
