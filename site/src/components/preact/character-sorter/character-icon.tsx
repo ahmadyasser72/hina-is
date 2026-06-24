@@ -18,7 +18,7 @@ export const CharacterIcon = ({
 
 	return (
 		<img
-			class={clsx("rounded-field size-10 bg-white/67", className)}
+			class={clsx("size-10 rounded-field bg-white/67", className)}
 			src={`/assets/cards/${character.card}-icon-${cardType}.${IMAGE_FORMAT}`}
 			alt={`${character.name} icon`}
 			key={`${character.slug}-icon-${cardType}`}

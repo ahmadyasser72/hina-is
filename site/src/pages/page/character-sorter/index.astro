@@ -50,7 +50,7 @@ if (params.slug && !override) return Astro.redirect("/page/character-sorter");
 		>
 			<button
 				hx-get="/page/character-sorter"
-				class="btn btn-sm btn-circle btn-error tooltip tooltip-right"
+				class="tooltip btn tooltip-right btn-circle btn-sm btn-error"
 				data-tip="Reset sorter"
 				data-umami-event="reset-character-sorter"
 				hx-confirm="Start over?"
@@ -59,13 +59,13 @@ if (params.slug && !override) return Astro.redirect("/page/character-sorter");
 				<IconifyLoader icon="lucide:rotate-ccw" />
 			</button>
 
-			<h2 class="badge badge-accent badge-xl w-48 font-medium">
+			<h2 class="badge w-48 badge-xl font-medium badge-accent">
 				Character Sorter
 			</h2>
 
 			<button
 				hx-get="/page/character-sorter"
-				class="btn btn-sm btn-circle btn-warning tooltip tooltip-left"
+				class="tooltip btn tooltip-left btn-circle btn-sm btn-warning"
 				data-tip="Reload sorter"
 				data-umami-event="reload-character-sorter"
 			>
@@ -82,12 +82,12 @@ if (params.slug && !override) return Astro.redirect("/page/character-sorter");
 							slot="fallback"
 						>
 							<iconify-icon
-								class="text-accent center bg-accent-content/80 absolute size-32 rounded-full"
+								class="absolute center size-32 rounded-full bg-accent-content/80 text-accent"
 								icon="svg-spinners:90-ring-with-bg"
 								width="none"
 							/>
 
-							<span class="badge center badge-lg badge-accent absolute w-max font-medium">
+							<span class="absolute center badge w-max badge-lg font-medium badge-accent">
 								loading sorter component...
 							</span>
 						</div>
@@ -96,7 +96,7 @@ if (params.slug && !override) return Astro.redirect("/page/character-sorter");
 			) : (
 				<form class="flex flex-col gap-2 px-8" id="sorter">
 					<fieldset
-						class="fieldset border-base-300 bg-base-200 rounded-box max-w-lg border p-4 pt-2"
+						class="fieldset max-w-lg rounded-box border border-base-300 bg-base-200 p-4 pt-2"
 						id="select-band"
 					>
 						<legend class="fieldset-legend">Bands</legend>
@@ -120,7 +120,7 @@ if (params.slug && !override) return Astro.redirect("/page/character-sorter");
 											checked={!params.band || params.band.includes(value)}
 										/>
 										<label
-											class="btn max-sm:btn-sm peer-[&:not(:checked):not(:disabled)]:btn-outline peer-checked:btn-band peer-disabled:btn-disabled peer-disabled:btn-neutral"
+											class="btn peer-checked:btn-band peer-disabled:btn-disabled peer-disabled:btn-neutral peer-[&:not(:checked):not(:disabled)]:btn-outline max-sm:btn-sm"
 											for={id}
 										>
 											<img class="size-6" src={icon} alt={`${label} icon`} />
@@ -140,7 +140,7 @@ if (params.slug && !override) return Astro.redirect("/page/character-sorter");
 							hx-swap="outerHTML"
 							hx-vals={`js:{ continue: "${CHARACTER_SORTER_STATE_KEY}" in localStorage }`}
 						>
-							<button class="btn btn-neutral btn-disabled w-full">
+							<button class="btn btn-disabled w-full btn-neutral">
 								Loading...
 							</button>
 						</div>
@@ -156,7 +156,7 @@ if (params.slug && !override) return Astro.redirect("/page/character-sorter");
 						>
 							<button
 								hx-get
-								class="btn btn-neutral join-item flex-1"
+								class="btn join-item flex-1 btn-neutral"
 								data-umami-event="start-character-sorter"
 							>
 								<IconifyLoader icon="lucide:play" />
@@ -166,7 +166,7 @@ if (params.slug && !override) return Astro.redirect("/page/character-sorter");
 							{params.continue && (
 								<button
 									hx-get
-									class="btn btn-info join-item"
+									class="btn join-item btn-info"
 									name="continue"
 									data-umami-event="continue-character-sorter"
 									value="true"

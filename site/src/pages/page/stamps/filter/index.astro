@@ -14,7 +14,7 @@ const { facets } = await filterStamps(params, stamps);
 <dialog class="modal" id="filter_modal">
 	<div class="modal-box">
 		<form method="dialog">
-			<button class="btn btn-sm btn-circle btn-ghost absolute top-2 right-2"
+			<button class="btn absolute top-2 right-2 btn-circle btn-ghost btn-sm"
 				>✕</button
 			>
 		</form>
@@ -32,7 +32,7 @@ const { facets } = await filterStamps(params, stamps);
 			hx-target="this"
 			hx-vals={JSON.stringify({ sort: params.sort })}
 		>
-			<label class="label mx-auto">
+			<label class="mx-auto label">
 				<input
 					hx-get="/page/stamps/filter"
 					class="toggle toggle-sm"
@@ -48,12 +48,12 @@ const { facets } = await filterStamps(params, stamps);
 		</form>
 
 		<div
-			class="bg-base-100 join sticky bottom-0 w-full px-1 py-2"
+			class="sticky bottom-0 join w-full bg-base-100 px-1 py-2"
 			id="filter-actions"
 		>
 			<button
 				hx-get="/page/stamps"
-				class="btn btn-neutral join-item flex-1"
+				class="btn join-item flex-1 btn-neutral"
 				hx-on--after-request="event.detail.successful && filter_modal.close()"
 				hx-select="#stamps"
 				hx-swap="outerHTML show:top"
@@ -66,7 +66,7 @@ const { facets } = await filterStamps(params, stamps);
 
 			<button
 				hx-get="/page/stamps/filter"
-				class="btn btn-error join-item"
+				class="btn join-item btn-error"
 				hx-swap="outerHTML transition:true"
 				hx-target="closest dialog"
 				hx-vals={JSON.stringify(schema.parse({}))}

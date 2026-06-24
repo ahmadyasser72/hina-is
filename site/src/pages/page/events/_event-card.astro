@@ -31,7 +31,7 @@ const progress = (() => {
 ---
 
 <div class="event-card flex flex-col gap-1" {...props} hx-disinherit="*">
-	<div class="card bg-base-100 w-90 flex-1 shadow-sm">
+	<div class="card w-90 flex-1 bg-base-100 shadow-sm">
 		<figure>
 			<img
 				class="aspect-3/1 h-32"
@@ -51,7 +51,7 @@ const progress = (() => {
 			<EventCardTime {endAt} {predicted} {priorEvents} region="en" {startAt} />
 
 			<div class="flex flex-wrap justify-center gap-1">
-				<div class="badge dark:badge-primary dark:badge-soft font-medium">
+				<div class="badge font-medium dark:badge-soft dark:badge-primary">
 					<div
 						class="tooltip tooltip-attribute"
 						data-attribute={attribute.slug}
@@ -70,13 +70,13 @@ const progress = (() => {
 
 				{
 					Array.isArray(band) ? (
-						<div class="badge dark:badge-primary dark:badge-soft">
+						<div class="badge dark:badge-soft dark:badge-primary">
 							{band.map((band) => (
 								<EventCardBandIcon {band} />
 							))}
 						</div>
 					) : (
-						<div class="badge badge-band font-medium" data-band={band.slug}>
+						<div class="badge font-medium badge-band" data-band={band.slug}>
 							<img
 								class="size-5"
 								src={`/assets/bands/${band.slug}.svg`}
@@ -101,15 +101,15 @@ const progress = (() => {
 								/>
 							))}
 
-							<details class="dropdown dropdown-top dropdown-end z-0">
-								<summary class="btn btn-circle btn-outline size-10">
+							<details class="dropdown dropdown-end dropdown-top z-0">
+								<summary class="btn btn-circle size-10 btn-outline">
 									<iconify-icon
 										class="size-4"
 										icon="lucide:chevron-up"
 										width="none"
 									/>
 								</summary>
-								<div class="dropdown-content bg-base-100 rounded-box mb-2 flex w-60 flex-wrap justify-center gap-1 p-2 shadow-sm">
+								<div class="dropdown-content mb-2 flex w-60 flex-wrap justify-center gap-1 rounded-box bg-base-100 p-2 shadow-sm">
 									{characters.slice(4).map((character) => (
 										<EventCardCharacterIcon
 											{character}
@@ -136,7 +136,7 @@ const progress = (() => {
 
 	<div class="flex gap-1">
 		<a
-			class="btn btn-sm btn-info flex-1"
+			class="btn flex-1 btn-sm btn-info"
 			data-umami-event="view-event-on-bestdori"
 			data-umami-event-event={event.slug}
 			data-umami-event-id={event.id}
@@ -151,7 +151,7 @@ const progress = (() => {
 
 		<button
 			hx-get={`/partials/event/${event.slug}`}
-			class="btn tooltip tooltip-left btn-sm btn-square btn-soft"
+			class="tooltip btn tooltip-left btn-square btn-soft btn-sm"
 			data-tip="Extra details"
 			data-umami-event="view-event-details"
 			data-umami-event-event={event.slug}

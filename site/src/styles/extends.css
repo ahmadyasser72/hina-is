@@ -7,7 +7,7 @@
 }
 
 @utility tab-content {
-	@apply bg-base-100 border-base-300 px-4 py-2 sm:p-6;
+	@apply border-base-300 bg-base-100 px-4 py-2 sm:p-6;
 }
 
 @utility menu {

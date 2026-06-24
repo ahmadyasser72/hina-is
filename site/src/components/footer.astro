@@ -3,7 +3,7 @@ import { SITE_NAME } from "astro:env/client";
 ---
 
 <footer
-	class="bg-base-200/67 text-base-content/67 border-base-content/5 bottom-0 z-80 border-t py-8 backdrop-blur-sm md:sticky md:py-6"
+	class="bottom-0 z-80 border-t border-base-content/5 bg-base-200/67 py-8 text-base-content/67 backdrop-blur-sm md:sticky md:py-6"
 >
 	<div class="container mx-auto px-4 md:px-8">
 		<div
@@ -12,12 +12,12 @@ import { SITE_NAME } from "astro:env/client";
 			<div class="flex flex-col gap-2 text-center text-sm md:text-left">
 				<div class="flex items-center justify-center gap-2 md:justify-start">
 					<a
-						class="badge link link-hover badge-accent badge-sm font-medium"
+						class="badge link badge-sm font-medium link-hover badge-accent"
 						data-umami-event="footer-homepage-link"
 						href="/">{SITE_NAME}</a
 					>
 					<a
-						class="link link-hover inline-flex items-center"
+						class="inline-flex link items-center link-hover"
 						data-umami-event="footer-view-source"
 						href={__GITHUB_URL__}
 						rel="noopener noreferrer"
@@ -31,7 +31,7 @@ import { SITE_NAME } from "astro:env/client";
 
 				<p>
 					Licensed under <a
-						class="link link-hover font-medium"
+						class="link font-medium link-hover"
 						data-umami-event="footer-view-license"
 						href={new URL("blob/main/LICENSE", __GITHUB_URL__)}
 						rel="noopener noreferrer"

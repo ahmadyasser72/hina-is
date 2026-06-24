@@ -158,7 +158,7 @@ export const CharacterSorterActions = ({
 				)}
 			>
 				<div class={clsx("join", state.done ? "w-72" : "w-64")}>
-					<button class="btn btn-xs btn-primary join-item pointer-events-none flex-1">
+					<button class="btn pointer-events-none join-item flex-1 btn-xs btn-primary">
 						{state.done
 							? `Sorted in ${state.step}x`
 							: `Sort #${state.step + 1} (${state.progress}%)`}
@@ -173,7 +173,7 @@ export const CharacterSorterActions = ({
 						onChange={state.toggleCardType}
 					/>
 					<label
-						class="btn btn-xs tooltip tooltip-bottom join-item btn-neutral peer-checked:btn-accent flex-1"
+						class="tooltip btn tooltip-bottom join-item flex-1 btn-xs btn-neutral peer-checked:btn-accent"
 						data-tip="Toggle card type"
 						for="toggle_card_type"
 					>
@@ -192,7 +192,7 @@ export const CharacterSorterActions = ({
 					{state.done && (
 						<button
 							class={clsx(
-								"btn btn-xs btn-secondary join-item flex-1",
+								"btn join-item flex-1 btn-xs btn-secondary",
 								output.loading && "tooltip-open",
 								(!output.blob || output.loading) && "tooltip tooltip-bottom",
 							)}
@@ -224,9 +224,9 @@ export const CharacterSorterActions = ({
 				popover
 				style="position-anchor: --anchor-capture"
 			>
-				<div class="join join-vertical bg-base-100 rounded-field w-24">
+				<div class="join join-vertical w-24 rounded-field bg-base-100">
 					<button
-						class="btn btn-sm join-item btn-info"
+						class="btn join-item btn-sm btn-info"
 						data-umami-event="character-sorter-capture-save"
 						onClick={output.save}
 					>
@@ -239,7 +239,7 @@ export const CharacterSorterActions = ({
 					</button>
 
 					<button
-						class="btn btn-sm join-item btn-success"
+						class="btn join-item btn-sm btn-success"
 						data-umami-event="character-sorter-capture-share"
 						onClick={output.share}
 					>

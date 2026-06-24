@@ -23,7 +23,7 @@ const {
 >
 	<div class="modal-box max-h-none">
 		<form method="dialog">
-			<button class="btn btn-sm btn-circle btn-ghost absolute top-2 right-2"
+			<button class="btn absolute top-2 right-2 btn-circle btn-ghost btn-sm"
 				>✕</button
 			>
 		</form>
@@ -31,7 +31,7 @@ const {
 		<div class="flex w-full items-center gap-y-4 max-sm:flex-col-reverse">
 			<div class="flex gap-1 font-medium">
 				<figure
-					class="hover-gallery rounded-box bg-character/25 border-character size-12 border"
+					class="hover-gallery size-12 rounded-box border border-character bg-character/25"
 				>
 					<img
 						{...Astro.locals.useThumbhash(`${card.slug}-icon-normal`)}
@@ -79,7 +79,7 @@ const {
 				</div>
 
 				<button
-					class="btn not-disabled:bg-character btn-circle not-disabled:text-character-content size-12"
+					class="btn btn-circle size-12 not-disabled:bg-character not-disabled:text-character-content"
 					data-umami-event="play-card-voiceline"
 					data-umami-event-card={card.slug}
 					data-umami-event-id={card.id}
@@ -94,10 +94,10 @@ const {
 			>
 				<h3 class="text-center sm:text-end">{card.name}</h3>
 				<div
-					class="tooltip tooltip-bottom after:bg-base-200 inline-flex items-center gap-1 max-sm:flex-row-reverse"
+					class="tooltip tooltip-bottom inline-flex items-center gap-1 after:bg-base-200 max-sm:flex-row-reverse"
 				>
 					<div
-						class="tooltip-content divide-base-content rounded-box bg-base-200/90 shadow-attribute text-base-content flex w-max max-w-90 flex-col space-y-1 divide-y text-center shadow-sm sm:max-w-64"
+						class="tooltip-content flex w-max max-w-90 flex-col space-y-1 divide-y divide-base-content rounded-box bg-base-200/90 text-center text-base-content shadow-sm shadow-attribute sm:max-w-64"
 					>
 						<span class="line-clamp-1">{card.skill.name}</span>
 						<span class="font-normal">{card.skill.description}</span>
@@ -117,7 +117,7 @@ const {
 
 		<div class="relative mt-2">
 			<figure
-				class="hover-gallery bg-character/5 rounded-box shadow-band hover:shadow-character aspect-60/45 w-full shadow-md"
+				class="hover-gallery aspect-60/45 w-full rounded-box bg-character/5 shadow-md shadow-band hover:shadow-character"
 			>
 				<img
 					{...Astro.locals.useThumbhash(`${card.slug}-full-normal`)}
@@ -137,7 +137,7 @@ const {
 			</figure>
 
 			<div
-				class="bg-character/90 text-character-content rounded-box center-horizontal absolute top-2 w-max max-w-64 px-2 py-1 text-center opacity-0 transition-opacity select-none"
+				class="absolute top-2 center-horizontal w-max max-w-64 rounded-box bg-character/90 px-2 py-1 text-center text-character-content opacity-0 transition-opacity select-none"
 				id={`${card.slug}-gacha-text`}
 			>
 				{card.gachaText}
@@ -145,7 +145,7 @@ const {
 		</div>
 
 		<a
-			class="btn btn-sm btn-info mt-2 w-full"
+			class="btn mt-2 w-full btn-sm btn-info"
 			data-umami-event="view-card-on-bestdori"
 			data-umami-event-card={card.slug}
 			data-umami-event-id={card.id}

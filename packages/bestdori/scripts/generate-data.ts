@@ -472,7 +472,7 @@ const data = await (async () => {
 									stampId,
 								);
 
-							return [
+						return [
 							slug,
 							{
 								id,

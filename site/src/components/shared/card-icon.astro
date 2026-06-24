@@ -25,13 +25,13 @@ const {
 		</div>
 
 		<div class="join!">
-			<div class="btn join-item btn-xs btn-accent border border-white">
+			<div class="btn join-item border border-white btn-xs btn-accent">
 				<iconify-icon class="size-4" icon="lucide:zap" width="none"
 				></iconify-icon>
 				{card.skill.multiplier}
 			</div>
 			<div
-				class="btn join-item btn-xs bg-attribute border border-white text-white"
+				class="btn join-item border border-white bg-attribute text-white btn-xs"
 			>
 				{card.type} &starf;{card.rarity}
 			</div>
@@ -67,7 +67,7 @@ const {
 		data-umami-event-id={card.id}
 	>
 		<figure
-			class="hover-gallery rounded-box bg-character/25 shadow-band hover:shadow-character htmx-indicator-replace size-20 shadow-md sm:size-24"
+			class="htmx-indicator-replace hover-gallery size-20 rounded-box bg-character/25 shadow-md shadow-band hover:shadow-character sm:size-24"
 		>
 			<img
 				{...Astro.locals.useThumbhash(`${card.slug}-icon-normal`)}

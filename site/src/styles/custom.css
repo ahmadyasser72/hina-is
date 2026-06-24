@@ -11,11 +11,11 @@
 }
 
 @utility center {
-	@apply center-horizontal center-vertical;
+	@apply center-vertical center-horizontal;
 }
 
 @utility kv-list {
-	@apply divide-base-content/5 flex flex-col divide-y;
+	@apply flex flex-col divide-y divide-base-content/5;
 
 	> .kv-list-item {
 		@apply flex items-center px-1 py-2 sm:px-2;

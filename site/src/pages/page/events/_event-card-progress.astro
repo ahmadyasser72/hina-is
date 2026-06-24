@@ -28,11 +28,11 @@ if (now.isBefore(start)) {
 <div class="tooltip relative w-full">
 	<div class="tooltip-content" set:html={tooltip.join("<br>")} />
 
-	<progress class="progress progress-primary w-full" value={progress} max="100"
+	<progress class="progress w-full progress-primary" value={progress} max="100"
 	></progress>
 
 	<span
-		class="center bg-secondary rounded-field text-secondary-content absolute w-14 font-medium"
+		class="absolute center w-14 rounded-field bg-secondary font-medium text-secondary-content"
 	>
 		{progress ? `${progress.toFixed(1)}%` : "~"}
 	</span>

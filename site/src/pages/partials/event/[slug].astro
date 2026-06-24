@@ -20,16 +20,16 @@ const titles = Object.entries(event.titles).filter(([, items]) =>
 ---
 
 <dialog class="modal">
-	<div class="modal-box scroll-gutter min-h-3/4 sm:h-full">
+	<div class="modal-box min-h-3/4 scroll-gutter sm:h-full">
 		<form method="dialog">
-			<button class="btn btn-sm btn-circle btn-ghost absolute top-2 right-2"
+			<button class="btn absolute top-2 right-2 btn-circle btn-ghost btn-sm"
 				>✕</button
 			>
 		</form>
 
 		<h3 class="mb-2 text-center text-xl font-medium">{event.name}</h3>
 
-		<div class="tabs max-sm:tabs-sm tabs-lift justify-center">
+		<div class="tabs-lift tabs justify-center max-sm:tabs-sm">
 			<label class="tab">
 				<input name={`details_${event.slug}`} type="radio" checked />
 				<iconify-icon
@@ -38,7 +38,7 @@ const titles = Object.entries(event.titles).filter(([, items]) =>
 					width="none"></iconify-icon>
 				Info
 			</label>
-			<div class="tab-content z-10">
+			<div class="z-10 tab-content">
 				<div class="kv-list">
 					<div class="kv-list-item">
 						<iconify-icon
@@ -62,16 +62,16 @@ const titles = Object.entries(event.titles).filter(([, items]) =>
 								titles.map(([label, items]) => (
 									<div id={`titles-${event.slug}-${label}`}>
 										<button
-											class="btn btn-sm join-item"
+											class="btn join-item btn-sm"
 											data-floating={`#titles-${event.slug}-${label}`}
 										>
 											{upperFirst(words(label).join(" "))}
 										</button>
-										<div class="floating rounded-field border-base-300 bg-base-100 max-w-52 border px-1 py-2 sm:max-w-96 sm:px-2">
+										<div class="floating max-w-52 rounded-field border border-base-300 bg-base-100 px-1 py-2 sm:max-w-96 sm:px-2">
 											<div class="flex flex-wrap justify-center gap-x-0.5 gap-y-1.5 sm:gap-x-1">
 												{items!.map(({ slug }) => (
 													<img
-														class="border-base-content/60 skeleton aspect-23/5 w-24 rounded-2xl border sm:w-28"
+														class="aspect-23/5 w-24 skeleton rounded-2xl border border-base-content/60 sm:w-28"
 														src={`/assets/title/${slug}.${IMAGE_FORMAT}`}
 														loading="lazy"
 													/>
@@ -128,7 +128,7 @@ const titles = Object.entries(event.titles).filter(([, items]) =>
 
 						<div class="flex gap-1">
 							<button
-								class="btn btn-circle btn-primary btn-sm tooltip"
+								class="tooltip btn btn-circle btn-sm btn-primary"
 								data-tip="Play"
 								data-umami-event="play-event-bgm"
 								data-umami-event-event={event.slug}
@@ -139,7 +139,7 @@ const titles = Object.entries(event.titles).filter(([, items]) =>
 							</button>
 
 							<button
-								class="btn btn-circle btn-secondary btn-sm tooltip"
+								class="tooltip btn btn-circle btn-sm btn-secondary"
 								data-tip="Stop"
 								onclick="stopEventBGM()"
 							>
@@ -148,7 +148,7 @@ const titles = Object.entries(event.titles).filter(([, items]) =>
 							</button>
 
 							<a
-								class="btn btn-circle btn-secondary btn-sm tooltip"
+								class="tooltip btn btn-circle btn-sm btn-secondary"
 								data-tip="Download"
 								data-umami-event="download-event-bgm"
 								data-umami-event-event={event.slug}
@@ -176,7 +176,7 @@ const titles = Object.entries(event.titles).filter(([, items]) =>
 						>
 							<img
 								{...Astro.locals.useThumbhash(`${event.slug}-banner`)}
-								class="bg-base-content/67 rounded-field aspect-3/1 w-48 sm:w-72"
+								class="aspect-3/1 w-48 rounded-field bg-base-content/67 sm:w-72"
 								src={`/assets/events/${event.slug}-banner.${IMAGE_FORMAT}`}
 								alt={`${event.name} banner`}
 							/>
@@ -197,7 +197,7 @@ const titles = Object.entries(event.titles).filter(([, items]) =>
 						>
 							<img
 								{...Astro.locals.useThumbhash(`${event.slug}-background`)}
-								class="bg-base-content/67 rounded-field aspect-4/3 w-32 sm:w-64"
+								class="aspect-4/3 w-32 rounded-field bg-base-content/67 sm:w-64"
 								src={`/assets/events/${event.slug}-background.${IMAGE_FORMAT}`}
 								alt={`${event.name} background`}
 							/>
@@ -215,7 +215,7 @@ const titles = Object.entries(event.titles).filter(([, items]) =>
 				Links
 			</label>
 			<div class="tab-content">
-				<ul class="menu bg-base-200/67 w-full">
+				<ul class="menu w-full bg-base-200/67">
 					<li>
 						<a
 							href={`https://bestdori.com/info/events/${event.id}`}

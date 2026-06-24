@@ -12,11 +12,11 @@ const { id, thing, class: className, ...props } = Astro.props;
 	{...props}
 >
 	<iconify-icon
-		class="text-accent center bg-accent-content/80 absolute size-32 rounded-full"
+		class="absolute center size-32 rounded-full bg-accent-content/80 text-accent"
 		icon="svg-spinners:90-ring-with-bg"
 		width="none"></iconify-icon>
 
-	<span class="badge center badge-lg badge-accent absolute w-max font-medium"
+	<span class="absolute center badge w-max badge-lg font-medium badge-accent"
 		>Loading more {thing}...</span
 	>
 </div>

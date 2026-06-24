@@ -36,10 +36,10 @@ const id = `stamp-${stamp.slug}`;
 
 	<div
 		class:list={[
-			"floating rounded-field border-base-content/67 w-max max-w-48 min-w-32 border px-1 py-1 sm:px-2",
+			"floating w-max max-w-48 min-w-32 rounded-field border border-base-content/67 px-1 py-1 sm:px-2",
 			stamp.character
 				? "bg-character text-character-content"
-				: "text-neutral-content bg-neutral",
+				: "bg-neutral text-neutral-content",
 		]}
 		tabindex="-1"
 	>
@@ -134,7 +134,7 @@ const id = `stamp-${stamp.slug}`;
 	{
 		stamp.voiced && (
 			<button
-				class="btn bg-base-100/80 btn-circle absolute right-1 bottom-1.5 size-8 border-0 backdrop-blur-sm"
+				class="btn absolute right-1 bottom-1.5 btn-circle size-8 border-0 bg-base-100/80 backdrop-blur-sm"
 				data-umami-event="play-stamp-audio"
 				data-umami-event-stamp={stamp.slug}
 				onclick={`playStampAudio(this, '${stamp.slug}')`}

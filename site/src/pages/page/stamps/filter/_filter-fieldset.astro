@@ -16,7 +16,7 @@ const values = facets[name];
 ---
 
 <fieldset
-	class="fieldset border-base-300 bg-base-200 rounded-box w-full border p-4 pt-2"
+	class="fieldset w-full rounded-box border border-base-300 bg-base-200 p-4 pt-2"
 >
 	<legend class="fieldset-legend">{upperFirst(name.replace("_", " "))}</legend>
 
@@ -37,7 +37,7 @@ const values = facets[name];
 					<label
 						hx-get="/page/stamps/filter"
 						hx-trigger="input from:previous"
-						class="btn max-sm:btn-sm peer-[&:not(:checked):not(:disabled)]:btn-outline peer-checked:btn-accent peer-disabled:btn-disabled peer-disabled:btn-neutral"
+						class="btn peer-checked:btn-accent peer-disabled:btn-disabled peer-disabled:btn-neutral peer-[&:not(:checked):not(:disabled)]:btn-outline max-sm:btn-sm"
 						for={id}
 					>
 						{icon && (

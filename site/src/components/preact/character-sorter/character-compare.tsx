@@ -30,7 +30,7 @@ const CharacterCompareImage = ({
 
 			<div
 				class={clsx(
-					"rounded-field bg-character/80 text-character-content max-sm:btn-sm absolute bottom-1.5 flex items-center gap-2 px-4 py-1 text-sm",
+					"absolute bottom-1.5 flex items-center gap-2 rounded-field bg-character/80 px-4 py-1 text-sm text-character-content max-sm:btn-sm",
 					side === "left" && "left-1.5 pl-1",
 					side === "right" && "right-1.5 flex-row-reverse pr-1 text-end",
 				)}
@@ -107,7 +107,7 @@ export const CharacterCompare = () => {
 	return (
 		<>
 			<figure
-				class="diff sm:rounded-box aspect-4/3 cursor-pointer max-sm:w-full sm:h-80"
+				class="diff aspect-4/3 cursor-pointer max-sm:w-full sm:h-80 sm:rounded-box"
 				ref={containerElement}
 			>
 				<div class="diff-item-1">
@@ -126,7 +126,7 @@ export const CharacterCompare = () => {
 
 			<div class="mt-2 flex items-center justify-between max-sm:mx-2">
 				<button
-					class="btn btn-character btn-square"
+					class="btn btn-square btn-character"
 					data-character={left.slug}
 					onClick={() => choose("left")}
 				>
@@ -139,7 +139,7 @@ export const CharacterCompare = () => {
 
 				<div class="join w-36">
 					<button
-						class="btn btn-warning btn-sm join-item flex-1"
+						class="btn join-item flex-1 btn-sm btn-warning"
 						onClick={() => choose("tie")}
 					>
 						Tie
@@ -150,7 +150,7 @@ export const CharacterCompare = () => {
 						></iconify-icon>
 					</button>
 					<button
-						class="btn btn-error btn-sm join-item flex-1"
+						class="btn join-item flex-1 btn-sm btn-error"
 						disabled={!canUndo}
 						onClick={undo}
 					>
@@ -164,7 +164,7 @@ export const CharacterCompare = () => {
 				</div>
 
 				<button
-					class="btn btn-character btn-square"
+					class="btn btn-square btn-character"
 					data-character={right.slug}
 					onClick={() => choose("right")}
 				>

@@ -4,7 +4,8 @@ import path from "node:path";
 import { CACHE_DIR } from ".";
 
 export const unwrap = <T>({ jp, en }: { jp: T; en: T | null }) => (en ?? jp)!;
-export const unwrapTuple = <T>([jp, en, , cn]: (T | null)[]) => (en ?? jp ?? cn)!;
+export const unwrapTuple = <T>([jp, en, , cn]: (T | null)[]) =>
+	(en ?? jp ?? cn)!;
 
 export const getOutputFile = async ({
 	script,

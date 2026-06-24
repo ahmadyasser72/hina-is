@@ -12,15 +12,15 @@ export const RankingResult = () => {
 			<ol class="grid grid-cols-4 gap-x-2 gap-y-4 md:grid-cols-5">
 				{rankings.map(({ rank, character }) => (
 					<li
-						class="indicator indicator-center group w-full max-md:col-span-2 max-md:first:col-start-2"
+						class="group indicator w-full indicator-center max-md:col-span-2 max-md:first:col-start-2"
 						key={character.slug}
 					>
-						<div class="badge badge-sm indicator-item group-nth-[-n+5]:badge-lg badge-accent px-2">
+						<div class="indicator-item badge px-2 badge-sm badge-accent group-nth-[-n+5]:badge-lg">
 							#{rank}
 						</div>
 
 						<div
-							class="bg-character rounded-box flex w-full items-center gap-2 p-2 px-4 group-nth-[-n+5]:flex-col group-nth-[-n+5]:justify-center group-nth-[-n+5]:pt-5"
+							class="flex w-full items-center gap-2 rounded-box bg-character p-2 px-4 group-nth-[-n+5]:flex-col group-nth-[-n+5]:justify-center group-nth-[-n+5]:pt-5"
 							data-character={character.slug}
 						>
 							<CharacterIcon
@@ -30,7 +30,7 @@ export const RankingResult = () => {
 
 							<span
 								class={clsx(
-									"text-character-content font-medium group-nth-[-n+5]:text-center group-nth-[n+6]:whitespace-pre",
+									"font-medium text-character-content group-nth-[-n+5]:text-center group-nth-[n+6]:whitespace-pre",
 									character.name.includes(" ") ? "text-xs" : "text-sm",
 								)}
 							>

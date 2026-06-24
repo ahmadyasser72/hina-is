@@ -20,7 +20,7 @@ const randomEvent = Astro.locals.prng.choice(Object.values(events))!;
 >
 	<div class="absolute inset-0 grid place-items-center">
 		<div class="flex flex-col items-center gap-4">
-			<h2 class="badge badge-accent badge-xl w-48 font-medium">
+			<h2 class="badge w-48 badge-xl font-medium badge-accent">
 				{SITE_NAME}
 			</h2>
 
@@ -30,7 +30,7 @@ const randomEvent = Astro.locals.prng.choice(Object.values(events))!;
 						.filter(({ path }) => path !== "/")
 						.map(({ path, title }) => (
 							<a
-								class="link-hover btn btn-sm"
+								class="btn link-hover btn-sm"
 								data-umami-event="homepage-link"
 								data-umami-event-path={path}
 								href={path}

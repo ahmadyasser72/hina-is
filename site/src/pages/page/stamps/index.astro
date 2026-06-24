@@ -38,7 +38,7 @@ if (Astro.request.headers.get("hx-request") === "true" && page.current === 1) {
 		<div class="inline-flex gap-2">
 			<button
 				hx-get="/page/stamps/filter"
-				class="btn btn-sm btn-circle tooltip tooltip-right btn-success"
+				class="tooltip btn tooltip-right btn-circle btn-sm btn-success"
 				data-tip="Filter stamps"
 				data-umami-event="filter-stamps"
 				hx-vals={JSON.stringify(params)}
@@ -46,10 +46,10 @@ if (Astro.request.headers.get("hx-request") === "true" && page.current === 1) {
 				<IconifyLoader icon="lucide:list-filter" />
 			</button>
 
-			<h2 class="badge badge-accent badge-xl w-48 font-medium">Stamps</h2>
+			<h2 class="badge w-48 badge-xl font-medium badge-accent">Stamps</h2>
 
 			<button
-				class="btn btn-sm btn-circle btn-success tooltip tooltip-left"
+				class="tooltip btn tooltip-left btn-circle btn-sm btn-success"
 				data-tip="Sort stamps"
 				popovertarget="choose-sort-stamps"
 				style="anchor-name: --anchor-choose-sort-stamps"
@@ -58,7 +58,7 @@ if (Astro.request.headers.get("hx-request") === "true" && page.current === 1) {
 				></iconify-icon>
 			</button>
 			<div
-				class="dropdown dropdown-end bg-base-100/80 rounded-field mt-1 w-max overflow-hidden shadow-sm"
+				class="dropdown dropdown-end mt-1 w-max overflow-hidden rounded-field bg-base-100/80 shadow-sm"
 				id="choose-sort-stamps"
 				hx-select="#stamps"
 				hx-swap="outerHTML transition:true"
@@ -74,9 +74,9 @@ if (Astro.request.headers.get("hx-request") === "true" && page.current === 1) {
 						data-umami-event-show="default"
 						value="default"
 						class:list={[
-							"btn btn-sm join-item",
+							"btn join-item btn-sm",
 							params.sort === "default" &&
-								"btn-secondary btn-active pointer-events-none",
+								"pointer-events-none btn-active btn-secondary",
 						]}
 					>
 						<IconifyLoader icon="lucide:list" />
@@ -89,9 +89,9 @@ if (Astro.request.headers.get("hx-request") === "true" && page.current === 1) {
 						data-umami-event-show="event-release"
 						value="event-release"
 						class:list={[
-							"btn btn-sm join-item",
+							"btn join-item btn-sm",
 							params.sort === "event-release" &&
-								"btn-secondary btn-active pointer-events-none",
+								"pointer-events-none btn-active btn-secondary",
 						]}
 					>
 						<IconifyLoader icon="lucide:calendar" />

@@ -8,18 +8,18 @@ const BUILD_DATE = dayjs.tz(__BUILD_DATE__);
 ---
 
 <header
-	class="bg-base-200/67 border-base-content/5 sticky top-0 z-100 border-b backdrop-blur-sm"
+	class="sticky top-0 z-100 border-b border-base-content/5 bg-base-200/67 backdrop-blur-sm"
 	id="header"
 >
 	<div class="navbar container mx-auto">
 		<div class="md:navbar-start">
-			<label class="btn btn-ghost btn-square md:hidden" for="drawer-menu">
+			<label class="btn btn-square btn-ghost md:hidden" for="drawer-menu">
 				<iconify-icon class="size-6" icon="lucide:menu" width="none"
 				></iconify-icon>
 			</label>
 
 			<button
-				class="btn btn-ghost btn-square max-md:hidden"
+				class="btn btn-square btn-ghost max-md:hidden"
 				popovertarget="header-menu"
 				style="anchor-name: --anchor-header-menu"
 			>
@@ -29,17 +29,17 @@ const BUILD_DATE = dayjs.tz(__BUILD_DATE__);
 		</div>
 
 		<div
-			class="max-md:navbar-start navbar-center"
+			class="navbar-center max-md:navbar-start"
 			style="anchor-name: --anchor-header-site"
 		>
 			<a
-				class="btn btn-ghost btn-sm text-base font-medium"
+				class="btn text-base font-medium btn-ghost btn-sm"
 				data-umami-event="header-homepage-link"
 				href="/">{SITE_NAME}</a
 			>
 
 			<button
-				class="btn btn-square btn-sm btn-ghost"
+				class="btn btn-square btn-ghost btn-sm"
 				data-umami-event="header-check-info"
 				popovertarget="header-site-dropdown"
 			>
@@ -50,7 +50,7 @@ const BUILD_DATE = dayjs.tz(__BUILD_DATE__);
 
 		<div class="navbar-end">
 			<label
-				class="swap swap-rotate btn btn-ghost btn-circle"
+				class="btn swap btn-circle swap-rotate btn-ghost"
 				title="Toggle theme"
 			>
 				<input
@@ -70,14 +70,14 @@ const BUILD_DATE = dayjs.tz(__BUILD_DATE__);
 </header>
 
 <NavigationMenu
-	class="dropdown rounded-box bg-base-200/80 mt-2 w-max shadow-sm max-md:hidden"
+	class="dropdown mt-2 w-max rounded-box bg-base-200/80 shadow-sm max-md:hidden"
 	id="header-menu"
 	popover
 	style="position-anchor: --anchor-header-menu"
 />
 
 <div
-	class="dropdown bg-base-200 rounded-box md:dropdown-center mt-1 w-max overflow-visible px-4 py-2 shadow-sm"
+	class="dropdown mt-1 w-max overflow-visible rounded-box bg-base-200 px-4 py-2 shadow-sm md:dropdown-center"
 	id="header-site-dropdown"
 	popover
 	style="position-anchor: --anchor-header-site"

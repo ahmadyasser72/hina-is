@@ -13,7 +13,7 @@ const { entries } = Astro.props;
 ---
 
 <ul
-	class="timeline timeline-snap-icon max-md:timeline-compact timeline-vertical mx-8"
+	class="timeline timeline-vertical mx-8 timeline-snap-icon max-md:timeline-compact"
 >
 	{
 		entries.map(({ id, ...character }, idx) => (
@@ -26,14 +26,14 @@ const { entries } = Astro.props;
 				<hr class="bg-character group-first:hidden" />
 
 				<div class="timeline-middle">
-					<div class="bg-character text-character-content rounded-box border-base-content/20 flex size-8 items-center justify-center border">
+					<div class="flex size-8 items-center justify-center rounded-box border border-base-content/20 bg-character text-character-content">
 						<iconify-icon class="size-6" icon="lucide:cake" width="none" />
 					</div>
 				</div>
 				<div
 					role="button"
 					class:list={[
-						"bg-character/67 text-character-content rounded-box mt-3 mb-6 flex cursor-pointer flex-col gap-1 p-4 pt-2 group-odd:md:items-end",
+						"mt-3 mb-6 flex cursor-pointer flex-col gap-1 rounded-box bg-character/67 p-4 pt-2 text-character-content group-odd:md:items-end",
 						idx % 2 === 0 ? "timeline-start" : "timeline-end",
 					]}
 					onclick={`scrollKeepHistory('${id}')`}
@@ -45,7 +45,7 @@ const { entries } = Astro.props;
 						<p class="font-light">
 							(
 							<span
-								class="tooltip tooltip-left tooltip-character group-odd:md:tooltip-right -mx-1.5 cursor-default underline decoration-dotted before:font-sans before:font-normal after:hidden"
+								class="tooltip tooltip-left -mx-1.5 cursor-default tooltip-character underline decoration-dotted before:font-sans before:font-normal after:hidden group-odd:md:tooltip-right"
 								data-tip={formatDuration(now, character.nextBirthday)}
 								onclick="event.stopPropagation()"
 								set:text={character.nextBirthday.from(now)}
@@ -65,7 +65,7 @@ const { entries } = Astro.props;
 					</div>
 
 					<div
-						class="badge badge-band font-medium"
+						class="badge font-medium badge-band"
 						data-band={character.band.slug}
 					>
 						<img
@@ -79,7 +79,7 @@ const { entries } = Astro.props;
 					</div>
 				</div>
 
-				<hr class="from-character to-band bg-linear-to-b from-25% to-50%" />
+				<hr class="bg-linear-to-b from-character from-25% to-band to-50%" />
 			</li>
 		))
 	}
