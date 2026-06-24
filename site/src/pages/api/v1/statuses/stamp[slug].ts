@@ -109,12 +109,5 @@ export const GET: APIRoute = ({ params, site }) => {
 	};
 
 	const body = JSON.stringify(json);
-	const encoder = new TextEncoder();
-
-	return new Response(body, {
-		headers: {
-			"content-length": encoder.encode(body).length.toString(),
-			"content-type": "application/json",
-		},
-	});
+	return new Response(new Blob([body], { type: "application/json" }));
 };

@@ -143,11 +143,10 @@ htmx.on("htmx:beforeSwap", (e) => {
 
 // logic for show/hide header and scroll-to-top
 {
-	const container = htmx.find("#container")!;
-	const scrollToTopButton = htmx.find("#scroll-to-top")!;
+	const container = document.getElementById("container")!;
+	const scrollToTopButton = document.getElementById("scroll-to-top")!;
 
-	htmx.on(
-		container,
+	container.addEventListener(
 		"scroll",
 		debounce(() => {
 			const screenSize = container.clientHeight;
@@ -156,7 +155,7 @@ htmx.on("htmx:beforeSwap", (e) => {
 		}, 150),
 	);
 
-	htmx.on(scrollToTopButton, "click", () => {
+	scrollToTopButton.addEventListener("click", () => {
 		scrollToTopButton.classList.remove("active");
 
 		container.scroll({ top: 0 });
@@ -171,7 +170,9 @@ htmx.on("htmx:beforeSwap", (e) => {
 	const lastTheme = localStorage.getItem("theme");
 	const systemIsDark = window.matchMedia("(prefers-color-scheme: dark)");
 
-	const darkToggle = htmx.find(".theme-controller") as HTMLInputElement;
+	const darkToggle = document.querySelector(
+		".theme-controller",
+	) as HTMLInputElement;
 	darkToggle.checked =
 		lastTheme === DARK_THEME || (!lastTheme && systemIsDark.matches);
 
@@ -181,10 +182,10 @@ htmx.on("htmx:beforeSwap", (e) => {
 		document.documentElement.dataset.theme = theme;
 	};
 
-	htmx.on(darkToggle, "input", () => {
+	darkToggle.addEventListener("input", () => {
 		setTheme(darkToggle.checked);
 	});
-	htmx.on(systemIsDark, "change", () => {
+	systemIsDark.addEventListener("change", () => {
 		darkToggle.checked = systemIsDark.matches;
 		setTheme(systemIsDark.matches);
 	});
