@@ -20,7 +20,7 @@ jobs:
           version: 7.1
 
       - name: Restore cached responses
-        uses: actions/cache/restore@v5.0.5
+        uses: actions/cache/restore@v6.1.0
         with:
           path: .bestdori-cache
           key: bestdori-${{ github.run_id }}
@@ -62,7 +62,7 @@ jobs:
           if-no-files-found: ignore
 
       - name: Save response cache
-        uses: actions/cache/save@v5.0.5
+        uses: actions/cache/save@v6.1.0
         if: always()
         with:
           path: .bestdori-cache
