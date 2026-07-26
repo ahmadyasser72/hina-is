@@ -370,6 +370,7 @@ const data = await (async () => {
 
 										const name = unwrapTuple(degreeName);
 										return {
+											id: id.toString(),
 											slug: createSlug("title", id, name),
 											degreeType: unwrapTuple(degreeType),
 											iconImageName: unwrapTuple(iconImageName),
@@ -383,7 +384,10 @@ const data = await (async () => {
 										.filter(
 											({ toRank, rewardType }) =>
 												rewardType === "degree" &&
-												(toRank <= 10 || toRank === 100 || toRank === 1000),
+												(toRank <= 10 ||
+													toRank === 100 ||
+													toRank === 1000 ||
+													toRank === 10_000),
 										)
 										.map(({ rewardId }) => resolveTitle(rewardId!)!);
 
@@ -398,7 +402,8 @@ const data = await (async () => {
 															resourceType === "degree" &&
 															(toRank <= 10 ||
 																toRank === 100 ||
-																toRank === 1000),
+																toRank === 1000 ||
+																toRank === 10_000),
 													),
 												)
 												.map(({ resourceId }) => resolveTitle(resourceId)!)
