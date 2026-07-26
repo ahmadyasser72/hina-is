@@ -384,10 +384,7 @@ const data = await (async () => {
 										.filter(
 											({ toRank, rewardType }) =>
 												rewardType === "degree" &&
-												(toRank <= 10 ||
-													toRank === 100 ||
-													toRank === 1000 ||
-													toRank === 10_000),
+												(toRank <= 10 || toRank === 100 || toRank === 1000),
 										)
 										.map(({ rewardId }) => resolveTitle(rewardId!)!);
 
@@ -402,8 +399,7 @@ const data = await (async () => {
 															resourceType === "degree" &&
 															(toRank <= 10 ||
 																toRank === 100 ||
-																toRank === 1000 ||
-																toRank === 10_000),
+																toRank === 1000),
 													),
 												)
 												.map(({ resourceId }) => resolveTitle(resourceId)!)
@@ -426,7 +422,36 @@ const data = await (async () => {
 												)
 										: null;
 
-									return { main, songs, liveGoals };
+									const raw = [
+										...unwrap(rankingRewards)
+											.filter(({ rewardType }) => rewardType === "degree")
+											.map(({ rewardId }) => rewardId!),
+										...(musics
+											? unwrap(musics)
+													.flatMap(({ musicRankingRewards }) =>
+														musicRankingRewards.filter(
+															({ resourceType }) => resourceType === "degree",
+														),
+													)
+													.map(({ resourceId }) => resourceId)
+											: []),
+										...(masterLiveTryLevelRewardDifficultyMap
+											? Object.values(
+													unwrap(masterLiveTryLevelRewardDifficultyMap).entries,
+												)
+													.flatMap(({ entries }) =>
+														Object.values(entries).filter(
+															({ resourceType }) => resourceType === "degree",
+														),
+													)
+													.map(
+														(reward) =>
+															(reward as { resourceId: number }).resourceId,
+													)
+											: []),
+									];
+
+									return { main, songs, liveGoals, raw };
 								},
 								...entry,
 

@@ -23,9 +23,12 @@ export const GET: APIRoute<Props, Params> = async ({ props }) => {
 export const getStaticPaths = (() => {
 	const degrees = Object.values(data.events).map(({ titles, startAt }) => ({
 		startAt,
-		titles: Object.values(titles)
-			.filter((it) => Array.isArray(it))
-			.flatMap((items) => items),
+		titles: Object.keys(titles)
+			.filter(
+				(key): key is Exclude<keyof typeof titles, "raw"> =>
+					key !== "raw" && Array.isArray(titles[key as keyof typeof titles]),
+			)
+			.flatMap((key) => titles[key]!),
 	}));
 
 	return degrees.flatMap(({ startAt, titles }) => {

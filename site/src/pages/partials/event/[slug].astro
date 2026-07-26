@@ -14,9 +14,13 @@ export const partial = true;
 const event = events[Astro.params.slug!];
 if (!event) return new Response(null, { status: 404 });
 
-const titles = Object.entries(event.titles).filter(([, items]) =>
-	Array.isArray(items),
-);
+const titles = Object.keys(event.titles)
+	.filter(
+		(key): key is Exclude<keyof typeof event.titles, "raw"> =>
+			key !== "raw" &&
+			Array.isArray(event.titles[key as keyof typeof event.titles]),
+	)
+	.map((key) => [key, event.titles[key]!] as const);
 ---
 
 <dialog class="modal">
