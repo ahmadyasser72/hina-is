@@ -1,5 +1,12 @@
 import { exec } from "node:child_process";
-import { mkdir } from "node:fs/promises";
+import {
+	access,
+	constants,
+	mkdir,
+	readFile,
+	stat,
+	writeFile,
+} from "node:fs/promises";
 import path from "node:path";
 
 import { limitAsync, memoize, retry } from "es-toolkit";
@@ -71,26 +78,35 @@ const fetchBestdori: (
 export const bestdori = async <T = never>(
 	pathname: string,
 	useCachedIf: ((cached: T) => boolean) | boolean,
-) => {
+): Promise<{
+	file: string;
+	response: Response;
+	hash?: string;
+}> => {
 	const cacheName = pathname.slice(1).replaceAll("/", "_");
-	const cacheFile = Bun.file(path.join(CACHE_DIR, cacheName));
+	const cachePath = path.join(CACHE_DIR, cacheName);
 
-	const cacheExists = await cacheFile.exists();
-	const useCache =
-		cacheExists &&
-		(useCachedIf === true ||
-			(typeof useCachedIf === "function" &&
-				useCachedIf(await cacheFile.json())));
+	const cacheExists = await exists(cachePath);
+	let useCache = false;
+	if (cacheExists) {
+		if (useCachedIf === true) useCache = true;
+		else if (typeof useCachedIf === "function") {
+			const existing = await readFile(cachePath);
+			try {
+				useCache = useCachedIf(JSON.parse(existing.toString()));
+			} catch {}
+		}
+	}
 
 	let response: Response;
 	if (useCache) {
-		response = fileResponse(cacheFile);
+		response = await fileResponse(cachePath);
 	} else {
 		response = await fetchBestdori(pathname);
 	}
 
 	const data = await response.arrayBuffer();
-	if (!useCache) await cacheFile.write(data);
+	if (!useCache) await writeFile(cachePath, Buffer.from(data));
 
 	let preprocess: typeof compressAudio | typeof compressImage;
 	const extension = path.extname(pathname).slice(1);
@@ -98,7 +114,7 @@ export const bestdori = async <T = never>(
 	else if (extension === IMAGE_FORMAT_ORIGINAL) preprocess = compressImage;
 	else {
 		return {
-			file: cacheFile,
+			file: cachePath,
 			response: new Response(data, {
 				headers: {
 					"content-type": response.headers.get("content-type")!,
@@ -111,7 +127,7 @@ export const bestdori = async <T = never>(
 	const hash = hashBuffer(data);
 	return {
 		hash,
-		file: Bun.file(cacheFile.name!),
+		file: cachePath,
 		response: await preprocess(
 			[cacheName.replace(path.extname(cacheName), ""), hash].join("."),
 			Buffer.from(data),
@@ -122,3 +138,15 @@ export const bestdori = async <T = never>(
 export const bestdoriJSON = <T = unknown>(
 	...args: Parameters<typeof bestdori<T>>
 ) => bestdori(...args).then(({ response }) => response.json() as Promise<T>);
+
+export const exists = async (path: string, notEmpty = false) => {
+	try {
+		await access(path, constants.F_OK);
+		if (!notEmpty) return true;
+
+		const { size } = await stat(path);
+		return size > 0;
+	} catch {
+		return false;
+	}
+};

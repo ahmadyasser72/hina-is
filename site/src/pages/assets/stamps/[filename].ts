@@ -1,3 +1,5 @@
+import { readFile } from "fs/promises";
+
 import { bestdori } from "@hina-is/bestdori";
 import { getAsset } from "@hina-is/bestdori/assets";
 import { STAMP_VIDEO_FORMAT } from "@hina-is/bestdori/constants";
@@ -18,8 +20,8 @@ export const GET: APIRoute<Props, Params> = async ({ props }) => {
 	const image = await bestdori(props.image.pathname, !props.image.redownload);
 	const audio = await bestdori(props.audio.pathname, !props.audio.redownload);
 	const hash = hashBuffer(
-		await image.file.arrayBuffer(),
-		await audio.file.arrayBuffer(),
+		await readFile(image.file),
+		await readFile(audio.file),
 	);
 
 	const name = [props.stamp.slug, hash].join(".");

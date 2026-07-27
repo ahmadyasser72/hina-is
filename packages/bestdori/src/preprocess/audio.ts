@@ -1,3 +1,6 @@
+import { spawnSync } from "node:child_process";
+
+import { exists } from "..";
 import { fileResponse, getOutputFile } from "../utilities";
 import { AUDIO_BITRATE, AUDIO_FORMAT } from "./constants";
 
@@ -5,19 +8,19 @@ export const compressAudio = async (
 	name: string,
 	buffer: Buffer<ArrayBuffer>,
 ): Promise<Response> => {
-	const outputFile = await getOutputFile({
+	const outputPath = await getOutputFile({
 		script: "audio",
 		version: "20260416",
 		name,
 		extension: AUDIO_FORMAT,
 	});
 
-	const alreadyExists = await outputFile.exists();
-	if (alreadyExists) return fileResponse(outputFile);
+	const alreadyExists = await exists(outputPath);
+	if (alreadyExists) return fileResponse(outputPath);
 
-	const ffmpeg = Bun.spawn(
+	const ffmpeg = spawnSync(
+		"ffmpeg",
 		[
-			"ffmpeg",
 			"-y",
 			"-i",
 			"pipe:0",
@@ -27,16 +30,15 @@ export const compressAudio = async (
 			AUDIO_BITRATE,
 			"-f",
 			AUDIO_FORMAT,
-			outputFile.name!,
+			outputPath,
 		],
-		{ stdin: buffer, stdout: "ignore", stderr: "pipe" },
+		{ input: buffer },
 	);
 
-	const exitCode = await ffmpeg.exited;
-	if (exitCode !== 0) {
-		const error = await ffmpeg.stderr.text();
+	if (ffmpeg.status !== 0) {
+		const error = ffmpeg.stderr.toString();
 		throw new Error(`failed to compress audio (${name})\n${error}`);
 	}
 
-	return fileResponse(outputFile);
+	return fileResponse(outputPath);
 };

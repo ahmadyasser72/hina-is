@@ -1,36 +1,39 @@
+import { spawnSync } from "node:child_process";
+
+import { exists } from "..";
 import { fileResponse, getOutputFile } from "../utilities";
 import { STAMP_VIDEO_FORMAT } from "./constants";
 
 export const createStampVideo = async (
 	name: string,
-	image: Bun.BunFile,
-	audio: Bun.BunFile,
+	image: string,
+	audio: string,
 ) => {
-	const outputFile = await getOutputFile({
+	const outputPath = await getOutputFile({
 		script: "stamp-video",
 		version: "20260416",
 		name,
 		extension: STAMP_VIDEO_FORMAT,
 	});
 
-	const alreadyExists = await outputFile.exists();
-	if (alreadyExists) return fileResponse(outputFile);
+	const alreadyExists = await exists(outputPath);
+	if (alreadyExists) return fileResponse(outputPath);
 
 	const { default: sharp } = await import("sharp");
-	const imageWithBackground = await sharp(image.name)
+	const imageWithBackground = await sharp(image)
 		.flatten({ background: "#FFF" })
 		.toBuffer();
 
-	const ffmpeg = Bun.spawn(
+	const ffmpeg = spawnSync(
+		"ffmpeg",
 		[
-			"ffmpeg",
 			"-y",
 			"-loop",
 			"1",
 			"-i",
 			"pipe:0",
 			"-i",
-			audio.name!,
+			audio,
 			"-c:v",
 			"libx264",
 			"-vf",
@@ -42,16 +45,14 @@ export const createStampVideo = async (
 			"-shortest",
 			"-f",
 			STAMP_VIDEO_FORMAT,
-			outputFile.name!,
+			outputPath,
 		],
-		{ stdin: imageWithBackground, stdout: "ignore", stderr: "pipe" },
+		{ input: imageWithBackground },
 	);
-
-	const exitCode = await ffmpeg.exited;
-	if (exitCode !== 0) {
-		const error = await ffmpeg.stderr.text();
+	if (ffmpeg.status !== 0) {
+		const error = ffmpeg.stderr.toString();
 		throw new Error(`failed to create stamp-video (${name})\n${error}`);
 	}
 
-	return fileResponse(outputFile);
+	return fileResponse(outputPath);
 };

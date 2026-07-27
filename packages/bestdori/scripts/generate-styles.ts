@@ -1,3 +1,4 @@
+import { writeFile } from "node:fs/promises";
 import { join } from "node:path";
 
 import { colord } from "colord";
@@ -73,7 +74,7 @@ for (const { name } of groups) {
 
 const styles = rules.map((rule) => rule.trim()).join("\n\n");
 
-await Bun.write(
+await writeFile(
 	join(GIT_ROOT_PATH, "site/src/styles/bandori.css"),
 	styles + "\n",
 );

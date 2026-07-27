@@ -1,16 +1,18 @@
+import { openAsBlob } from "node:fs";
+import { readFile, writeFile } from "node:fs/promises";
 import path from "node:path";
 
 import { ApiError, GoogleGenAI } from "@google/genai";
 import { retry } from "es-toolkit";
 
-import { bestdori } from "..";
+import { bestdori, exists } from "..";
 import type { asset } from "../assets";
 import { getOutputFile } from "../utilities";
 
 const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
-const STAMP_OCR_PROMPT = await Bun.file(
-	path.join(import.meta.dir, "stamp-ocr.md"),
-).text();
+const STAMP_OCR_PROMPT = (
+	await readFile(path.join(import.meta.dirname, "stamp-ocr.md"))
+).toString();
 const EMPTY = "[[EMPTY]]";
 
 const formatOcrResult = (text: string) => {
@@ -28,19 +30,19 @@ export const doStampOcr = async (items: ReturnType<typeof asset>[]) => {
 		items.map(async ({ pathname, redownload }) => {
 			const { file, hash } = await bestdori(pathname, !redownload);
 
-			const name = path.basename(file.name!);
-			const outputFile = await getOutputFile({
+			const name = path.basename(file);
+			const outputPath = await getOutputFile({
 				script: "stamp-ocr",
 				version: "20260508",
 				name: [name.replace(path.extname(name), ""), hash].join("."),
 				extension: "txt",
 			});
 
-			const alreadyExists = (await outputFile.exists()) && outputFile.size > 0;
+			const alreadyExists = await exists(outputPath, true);
 
 			return {
 				file,
-				outputFile,
+				outputPath,
 				alreadyExists,
 				redownload,
 			};
@@ -50,11 +52,12 @@ export const doStampOcr = async (items: ReturnType<typeof asset>[]) => {
 	const images = await Promise.all(
 		inputs
 			.filter(({ alreadyExists, redownload }) => !alreadyExists || redownload)
-			.map(async ({ file, outputFile }) => {
-				const buffer = Buffer.from(await file.arrayBuffer());
+			.map(async ({ file, outputPath }) => {
+				const blob = await openAsBlob(file);
+				const buffer = Buffer.from(await blob.arrayBuffer());
 				return {
-					outputFile,
-					inlineData: { mimeType: file.type, data: buffer.toBase64() },
+					outputPath,
+					inlineData: { mimeType: blob.type, data: buffer.toString("base64") },
 				};
 			}),
 	);
@@ -84,16 +87,18 @@ export const doStampOcr = async (items: ReturnType<typeof asset>[]) => {
 
 		const lines = (response.text ?? "").split("\n");
 		await Promise.all(
-			images.map(async ({ outputFile }, index) => {
-				const output = (lines[index] ?? "").trim().replace(/\s+/g, " ");
-				await outputFile.write(output);
+			images.map(async ({ outputPath }, index) => {
+				const trimmed = (lines[index] ?? "").trim().replace(/\s+/g, " ");
+				await writeFile(outputPath, trimmed);
 			}),
 		);
 	}
 
 	return Promise.all(
-		inputs.map(({ outputFile }) =>
-			Bun.file(outputFile.name!).text().then(formatOcrResult),
+		inputs.map(({ outputPath }) =>
+			readFile(outputPath)
+				.then((buffer) => buffer.toString())
+				.then(formatOcrResult),
 		),
 	);
 };

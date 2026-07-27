@@ -1,10 +1,9 @@
+import { readFile } from "node:fs/promises";
 import { SITE_NAME } from "astro:env/client";
 
 import { ImageResponse } from "@takumi-rs/image-response";
 
-const iconBuffer = await Bun.file(
-	"./public/apple-touch-icon.png",
-).arrayBuffer();
+const iconBuffer = await readFile("./public/apple-touch-icon.png");
 const nunitoSansBuffer = await fetch(
 	"https://cdn.jsdelivr.net/fontsource/fonts/nunito-sans:vf@latest/latin-wght-normal.woff2",
 ).then((response) => response.arrayBuffer());

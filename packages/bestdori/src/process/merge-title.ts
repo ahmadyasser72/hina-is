@@ -1,40 +1,32 @@
-import { IMAGE_FORMAT, IMAGE_FORMAT_MIME } from "../constants";
+import { writeFile } from "fs/promises";
+
+import { exists } from "..";
+import { IMAGE_FORMAT } from "../constants";
 import { fileResponse, getOutputFile } from "../utilities";
 
 export const mergeTitleImages = async (
 	name: string,
-	baseImage: Bun.BunFile,
-	...layers: Bun.BunFile[]
+	baseImage: string,
+	...layers: string[]
 ) => {
 	if (layers.length === 0) return fileResponse(baseImage);
 
-	const outputFile = await getOutputFile({
+	const outputPath = await getOutputFile({
 		script: "title",
 		version: "20260501",
 		name,
 		extension: IMAGE_FORMAT,
 	});
 
-	const alreadyExists = await outputFile.exists();
-	if (alreadyExists) return fileResponse(outputFile);
+	const alreadyExists = await exists(outputPath);
+	if (alreadyExists) return fileResponse(outputPath);
 
 	const { default: sharp } = await import("sharp");
-	const merged = await sharp(await baseImage.arrayBuffer())
-		.composite(
-			(
-				await Promise.all(
-					layers.map((layer) => layer.arrayBuffer().then(Buffer.from)),
-				)
-			).map((buffer) => ({ input: buffer, left: 0, top: 0 })),
-		)
+	const merged = await sharp(baseImage)
+		.composite(layers.map((path) => ({ input: path, left: 0, top: 0 })))
 		[IMAGE_FORMAT]()
 		.toBuffer();
-	outputFile.write(merged);
+	await writeFile(outputPath, merged);
 
-	return new Response(merged as Buffer<ArrayBuffer>, {
-		headers: {
-			"content-type": IMAGE_FORMAT_MIME,
-			"content-length": merged.byteLength.toString(),
-		},
-	});
+	return fileResponse(outputPath);
 };

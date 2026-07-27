@@ -1,4 +1,5 @@
 import { createHash, type BinaryLike } from "node:crypto";
+import { openAsBlob } from "node:fs";
 import path from "node:path";
 
 import { CACHE_DIR } from ".";
@@ -13,9 +14,7 @@ export const getOutputFile = async ({
 	name,
 	extension,
 }: Record<"script" | "version" | "name" | "extension", string>) =>
-	Bun.file(
-		path.join(CACHE_DIR, [name, `${script}@${version}`, extension].join(".")),
-	);
+	path.join(CACHE_DIR, [name, `${script}@${version}`, extension].join("."));
 
 export const hashBuffer = (...buffers: (BinaryLike | ArrayBuffer)[]) =>
 	buffers
@@ -27,10 +26,12 @@ export const hashBuffer = (...buffers: (BinaryLike | ArrayBuffer)[]) =>
 		.digest("hex")
 		.slice(0, 6);
 
-export const fileResponse = (file: Bun.BunFile) =>
-	new Response(file, {
+export const fileResponse = async (path: string): Promise<Response> => {
+	const blob = await openAsBlob(path);
+	return new Response(blob, {
 		headers: {
-			"content-type": file.type,
-			"content-length": file.size.toString(),
+			"content-type": blob.type,
+			"content-length": blob.size.toString(),
 		},
 	});
+};
