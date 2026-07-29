@@ -2,6 +2,8 @@
 import { IMAGE_FORMAT } from "@hina-is/bestdori/constants";
 import type { Bandori } from "@hina-is/bestdori/data";
 
+import Icon from "./icon.astro";
+
 interface Props {
 	card: Bandori.Card;
 }
@@ -26,8 +28,7 @@ const {
 
 		<div class="join!">
 			<div class="btn join-item border border-white btn-xs btn-accent">
-				<iconify-icon class="size-4" icon="lucide:zap" width="none"
-				></iconify-icon>
+				<Icon name="lucide--zap" />
 				{card.skill.multiplier}
 			</div>
 			<div
@@ -83,9 +84,9 @@ const {
 			/>
 		</figure>
 
-		<iconify-icon
+		<Icon
 			class="htmx-indicator size-20 sm:size-24"
-			icon="svg-spinners:90-ring-with-bg"
-			width="none"></iconify-icon>
+			name="svg-spinners--90-ring-with-bg"
+		/>
 	</button>
 </div>

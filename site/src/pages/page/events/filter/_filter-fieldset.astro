@@ -1,6 +1,7 @@
 ---
 import { upperFirst } from "es-toolkit";
 
+import Icon from "~/components/shared/icon.astro";
 import type { filterEvents } from "../_list";
 
 type Facets = Awaited<ReturnType<typeof filterEvents>>["facets"];
@@ -47,10 +48,9 @@ const values = facets[name];
 									src={icon}
 									alt={`${label} icon`}
 								/>
-								<iconify-icon
+								<Icon
 									class="htmx-indicator size-6 sm:size-8"
-									icon="svg-spinners:90-ring-with-bg"
-									width="none"
+									name="svg-spinners--90-ring-with-bg"
 								/>
 							</>
 						)}

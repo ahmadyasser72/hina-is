@@ -1,0 +1,15 @@
+---
+import Icon, { type IconName } from "../shared/icon.astro";
+
+const LOADER_ICON = "svg-spinners--90-ring-with-bg";
+
+interface Props {
+	name: IconName;
+	class?: string;
+}
+
+const { name, class: className } = Astro.props;
+---
+
+<Icon {name} class:list={["htmx-indicator-replace", className]} />
+<Icon name={LOADER_ICON} class:list={["htmx-indicator", className]} />

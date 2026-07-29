@@ -2,7 +2,8 @@
 import { IMAGE_FORMAT } from "@hina-is/bestdori/constants";
 import { cards } from "@hina-is/bestdori/data";
 
-import IconifyLoader from "~/components/loader/iconify-loader.astro";
+import IconLoader from "~/components/loader/icon-loader.astro";
+import Icon from "~/components/shared/icon.astro";
 
 export const partial = true;
 
@@ -85,7 +86,7 @@ const {
 					data-umami-event-id={card.id}
 					onclick={`playCardAudio(this, '${card.slug}')`}
 				>
-					<IconifyLoader icon="lucide:volume-2" size-class="size-8" />
+					<IconLoader name="lucide--volume-2" size-class="size-8" />
 				</button>
 			</div>
 
@@ -104,8 +105,7 @@ const {
 					</div>
 
 					<button class="badge badge-lg badge-accent">
-						<iconify-icon class="size-5" icon="lucide:zap" width="none"
-						></iconify-icon>
+						<Icon class="size-5" name="lucide--zap" />
 						{card.skill.multiplier}
 					</button>
 					<button class="badge bg-attribute badge-lg text-white">
@@ -153,8 +153,7 @@ const {
 			rel="noopener noreferrer"
 			target="_blank"
 		>
-			<iconify-icon class="size-4" icon="lucide:external-link" width="none"
-			></iconify-icon>
+			<Icon name="lucide--external-link" />
 			View on Bestdori!
 		</a>
 	</div>

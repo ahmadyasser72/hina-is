@@ -2,7 +2,8 @@
 import { IMAGE_FORMAT } from "@hina-is/bestdori/constants";
 import type { Bandori } from "@hina-is/bestdori/data";
 
-import IconifyLoader from "~/components/loader/iconify-loader.astro";
+import IconLoader from "~/components/loader/icon-loader.astro";
+import Icon from "~/components/shared/icon.astro";
 import { dayjs } from "~/lib/date";
 import { formatEventType } from "~/lib/utilities";
 import EventCardBandIcon from "./_event-card-band-icon.astro";
@@ -103,11 +104,7 @@ const progress = (() => {
 
 							<details class="dropdown dropdown-end dropdown-top z-0">
 								<summary class="btn btn-circle size-10 btn-outline">
-									<iconify-icon
-										class="size-4"
-										icon="lucide:chevron-up"
-										width="none"
-									/>
+									<Icon name="lucide--chevron-up" />
 								</summary>
 								<div class="dropdown-content mb-2 flex w-60 flex-wrap justify-center gap-1 rounded-box bg-base-100 p-2 shadow-sm">
 									{characters.slice(4).map((character) => (
@@ -144,8 +141,7 @@ const progress = (() => {
 			rel="noopener noreferrer"
 			target="_blank"
 		>
-			<iconify-icon class="size-4" icon="lucide:external-link" width="none"
-			></iconify-icon>
+			<Icon name="lucide--external-link" />
 			View on Bestdori!
 		</a>
 
@@ -157,7 +153,7 @@ const progress = (() => {
 			data-umami-event-event={event.slug}
 			data-umami-event-id={event.id}
 		>
-			<IconifyLoader icon="lucide:ellipsis" size-class="size-4" />
+			<IconLoader name="lucide--ellipsis" size- />
 		</button>
 	</div>
 </div>

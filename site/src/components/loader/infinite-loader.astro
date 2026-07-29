@@ -1,6 +1,8 @@
 ---
 import type { JSX } from "astro/jsx-runtime";
 
+import Icon from "../shared/icon.astro";
+
 type Props = { id: string; thing: string } & JSX.HTMLAttributes;
 
 const { id, thing, class: className, ...props } = Astro.props;
@@ -11,10 +13,10 @@ const { id, thing, class: className, ...props } = Astro.props;
 	class:list={["htmx-indicator relative h-32 w-full", className]}
 	{...props}
 >
-	<iconify-icon
+	<Icon
 		class="absolute center size-32 rounded-full bg-accent-content/80 text-accent"
-		icon="svg-spinners:90-ring-with-bg"
-		width="none"></iconify-icon>
+		name="svg-spinners--90-ring-with-bg"
+	/>
 
 	<span class="absolute center badge w-max badge-lg font-medium badge-accent"
 		>Loading more {thing}...</span

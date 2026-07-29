@@ -4,9 +4,10 @@ import { events } from "@hina-is/bestdori/data";
 
 import { upperFirst, words } from "es-toolkit";
 
-import IconifyLoader from "~/components/loader/iconify-loader.astro";
+import IconLoader from "~/components/loader/icon-loader.astro";
 import BandoriStamp from "~/components/shared/bandori-stamp.astro";
 import CardIcon from "~/components/shared/card-icon.astro";
+import Icon from "~/components/shared/icon.astro";
 import { dayjs } from "~/lib/date";
 
 export const partial = true;
@@ -36,29 +37,20 @@ const titles = Object.keys(event.titles)
 		<div class="tabs-lift tabs justify-center max-sm:tabs-sm">
 			<label class="tab">
 				<input name={`details_${event.slug}`} type="radio" checked />
-				<iconify-icon
-					class="me-1 size-4 sm:me-2 sm:size-5"
-					icon="lucide:info"
-					width="none"></iconify-icon>
+				<Icon class="me-1 sm:me-2 sm:size-5" name="lucide--info" />
 				Info
 			</label>
 			<div class="z-10 tab-content">
 				<div class="kv-list">
 					<div class="kv-list-item">
-						<iconify-icon
-							class="kv-list-item-icon"
-							icon="lucide:smile"
-							width="none"></iconify-icon>
+						<Icon class="kv-list-item-icon" name="lucide--smile" />
 						<span class="kv-list-item-label"> Stamp </span>
 
 						<BandoriStamp stamp={event.stamp} />
 					</div>
 
 					<div class="kv-list-item">
-						<iconify-icon
-							class="kv-list-item-icon"
-							icon="lucide:crown"
-							width="none"></iconify-icon>
+						<Icon class="kv-list-item-icon" name="lucide--crown" />
 						<span class="kv-list-item-label"> Titles </span>
 
 						<div class="join">
@@ -95,11 +87,7 @@ const titles = Object.keys(event.titles)
 					<>
 						<label class="tab">
 							<input name={`details_${event.slug}`} type="radio" />
-							<iconify-icon
-								class="me-1 size-4 sm:me-2 sm:size-5"
-								icon="lucide:sparkle"
-								width="none"
-							/>
+							<Icon class="me-1 sm:me-2 sm:size-5" name="lucide--sparkle" />
 							Cards
 						</label>
 						<div class="tab-content">
@@ -115,19 +103,13 @@ const titles = Object.keys(event.titles)
 
 			<label class="tab">
 				<input name={`details_${event.slug}`} type="radio" />
-				<iconify-icon
-					class="me-1 size-4 sm:me-2 sm:size-5"
-					icon="lucide:library"
-					width="none"></iconify-icon>
+				<Icon class="me-1 sm:me-2 sm:size-5" name="lucide--library" />
 				Assets
 			</label>
 			<div class="tab-content">
 				<div class="kv-list">
 					<div class="kv-list-item">
-						<iconify-icon
-							class="kv-list-item-icon"
-							icon="lucide:music"
-							width="none"></iconify-icon>
+						<Icon class="kv-list-item-icon" name="lucide--music" />
 						<div class="kv-list-item-label">BGM</div>
 
 						<div class="flex gap-1">
@@ -139,7 +121,7 @@ const titles = Object.keys(event.titles)
 								data-umami-event-id={event.id}
 								onclick={`playEventBGM(this, '${event.slug}')`}
 							>
-								<IconifyLoader icon="lucide:play" />
+								<IconLoader name="lucide--play" />
 							</button>
 
 							<button
@@ -147,8 +129,7 @@ const titles = Object.keys(event.titles)
 								data-tip="Stop"
 								onclick="stopEventBGM()"
 							>
-								<iconify-icon class="size-4" icon="lucide:square" width="none"
-								></iconify-icon>
+								<Icon name="lucide--square" />
 							</button>
 
 							<a
@@ -160,17 +141,13 @@ const titles = Object.keys(event.titles)
 								href={`/assets/events/${event.slug}-bgm.${AUDIO_FORMAT}`}
 								download
 							>
-								<iconify-icon class="size-4" icon="lucide:download" width="none"
-								></iconify-icon>
+								<Icon name="lucide--download" />
 							</a>
 						</div>
 					</div>
 
 					<div class="kv-list-item">
-						<iconify-icon
-							class="kv-list-item-icon"
-							icon="lucide:image"
-							width="none"></iconify-icon>
+						<Icon class="kv-list-item-icon" name="lucide--image" />
 						<span class="kv-list-item-label"> Banner </span>
 
 						<a
@@ -188,10 +165,7 @@ const titles = Object.keys(event.titles)
 					</div>
 
 					<div class="kv-list-item">
-						<iconify-icon
-							class="kv-list-item-icon"
-							icon="lucide:wallpaper"
-							width="none"></iconify-icon>
+						<Icon class="kv-list-item-icon" name="lucide--wallpaper" />
 						<span class="kv-list-item-label"> Background </span>
 
 						<a
@@ -212,10 +186,7 @@ const titles = Object.keys(event.titles)
 
 			<label class="tab">
 				<input name={`details_${event.slug}`} type="radio" />
-				<iconify-icon
-					class="me-1 size-4 sm:me-2 sm:size-5"
-					icon="lucide:external-link"
-					width="none"></iconify-icon>
+				<Icon class="me-1 sm:me-2 sm:size-5" name="lucide--external-link" />
 				Links
 			</label>
 			<div class="tab-content">

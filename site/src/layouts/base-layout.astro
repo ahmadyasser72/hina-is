@@ -12,6 +12,8 @@ import type { PageMetadata } from "~/lib/page";
 
 import "~/styles/global.css";
 
+import Icon from "~/components/shared/icon.astro";
+
 interface Props {
 	background?: JSX.ImgHTMLAttributes;
 	metadata: PageMetadata;
@@ -132,14 +134,12 @@ const image = new URL(`/open-graph/${metadata.route}.webp`, url.origin);
 		>
 			Back to top
 
-			<iconify-icon class="size-4" icon="lucide:chevrons-up" width="none"
-			></iconify-icon>
+			<Icon name="lucide--chevrons-up" />
 		</button>
 	</body>
 </html>
 
 <script>
-	import "iconify-icon";
 	import "~/lib/global";
 	import "~/lib/htmx";
 

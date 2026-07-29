@@ -1,9 +1,10 @@
 ---
 import { isEqual } from "es-toolkit";
 
-import IconifyLoader from "~/components/loader/iconify-loader.astro";
+import IconLoader from "~/components/loader/icon-loader.astro";
 import InfiniteLoader from "~/components/loader/infinite-loader.astro";
 import BandoriStamp from "~/components/shared/bandori-stamp.astro";
+import Icon from "~/components/shared/icon.astro";
 import BaseLayout from "~/layouts/base-layout.astro";
 import { pages } from "~/lib/page";
 import { paginate } from "~/lib/paginate";
@@ -43,7 +44,7 @@ if (Astro.request.headers.get("hx-request") === "true" && page.current === 1) {
 				data-umami-event="filter-stamps"
 				hx-vals={JSON.stringify(params)}
 			>
-				<IconifyLoader icon="lucide:list-filter" />
+				<IconLoader name="lucide--list-filter" />
 			</button>
 
 			<h2 class="badge w-48 badge-xl font-medium badge-accent">Stamps</h2>
@@ -54,8 +55,7 @@ if (Astro.request.headers.get("hx-request") === "true" && page.current === 1) {
 				popovertarget="choose-sort-stamps"
 				style="anchor-name: --anchor-choose-sort-stamps"
 			>
-				<iconify-icon class="size-4" icon="lucide:arrow-up-down" width="none"
-				></iconify-icon>
+				<Icon name="lucide--arrow-up-down" />
 			</button>
 			<div
 				class="dropdown dropdown-end mt-1 w-max overflow-hidden rounded-field bg-base-100/80 shadow-sm"
@@ -79,7 +79,7 @@ if (Astro.request.headers.get("hx-request") === "true" && page.current === 1) {
 								"pointer-events-none btn-active btn-secondary",
 						]}
 					>
-						<IconifyLoader icon="lucide:list" />
+						<IconLoader name="lucide--list" />
 						Default
 					</button>
 					<button
@@ -94,7 +94,7 @@ if (Astro.request.headers.get("hx-request") === "true" && page.current === 1) {
 								"pointer-events-none btn-active btn-secondary",
 						]}
 					>
-						<IconifyLoader icon="lucide:calendar" />
+						<IconLoader name="lucide--calendar" />
 						Event release
 					</button>
 				</div>
@@ -102,8 +102,7 @@ if (Astro.request.headers.get("hx-request") === "true" && page.current === 1) {
 		</div>
 
 		<label class="input w-64">
-			<iconify-icon class="size-4" icon="lucide:search" width="none"
-			></iconify-icon>
+			<Icon name="lucide--search" />
 			<input
 				hx-get
 				hx-trigger="input delay:300ms"

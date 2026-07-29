@@ -1,0 +1,14 @@
+---
+export type IconSets = "lucide" | "svg-spinners" | "line-md";
+export type IconName = `${IconSets}--${string}`;
+
+interface Props {
+	name: IconName;
+	class?: string;
+	style?: string;
+}
+
+const { name, class: className, style } = Astro.props;
+---
+
+<span class:list={["iconify", name, className]} {style}></span>

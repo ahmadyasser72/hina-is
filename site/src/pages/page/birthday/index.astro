@@ -2,6 +2,7 @@
 import { IMAGE_FORMAT } from "@hina-is/bestdori/constants";
 import { cardsByCharacter } from "@hina-is/bestdori/data";
 
+import Icon from "~/components/shared/icon.astro";
 import BaseLayout from "~/layouts/base-layout.astro";
 import { pages } from "~/lib/page";
 import { sortLatestBirthday } from "./_birthday";
@@ -37,8 +38,7 @@ const randomCardType = Astro.locals.prng.choice(["trained", "normal"])!;
 		</div>
 
 		<label class="input w-64">
-			<iconify-icon class="size-4" icon="lucide:search" width="none"
-			></iconify-icon>
+			<Icon name="lucide--search" />
 			<input
 				hx-get
 				hx-trigger="input delay:300ms"

@@ -3,12 +3,13 @@ import * as data from "@hina-is/bestdori/data";
 
 import { sample, shuffle } from "es-toolkit";
 
-import IconifyLoader from "~/components/loader/iconify-loader.astro";
+import IconLoader from "~/components/loader/icon-loader.astro";
 import { CharacterSorter } from "~/components/preact/character-sorter";
 import {
 	CHARACTER_SORTER_STATE_KEY,
 	type ResultData,
 } from "~/components/preact/character-sorter/state";
+import Icon from "~/components/shared/icon.astro";
 import BaseLayout from "~/layouts/base-layout.astro";
 import { pages } from "~/lib/page";
 import { schema } from "./_params";
@@ -56,7 +57,7 @@ if (params.slug && !override) return Astro.redirect("/page/character-sorter");
 				hx-confirm="Start over?"
 				hx-on--before-request={`delete localStorage["${CHARACTER_SORTER_STATE_KEY}"]`}
 			>
-				<IconifyLoader icon="lucide:rotate-ccw" />
+				<IconLoader name="lucide--rotate-ccw" />
 			</button>
 
 			<h2 class="badge w-48 badge-xl font-medium badge-accent">
@@ -69,7 +70,7 @@ if (params.slug && !override) return Astro.redirect("/page/character-sorter");
 				data-tip="Reload sorter"
 				data-umami-event="reload-character-sorter"
 			>
-				<IconifyLoader icon="lucide:refresh-ccw" />
+				<IconLoader name="lucide--refresh-ccw" />
 			</button>
 		</div>
 
@@ -81,10 +82,9 @@ if (params.slug && !override) return Astro.redirect("/page/character-sorter");
 							class="relative aspect-4/3 max-sm:w-full sm:h-80"
 							slot="fallback"
 						>
-							<iconify-icon
+							<Icon
 								class="absolute center size-32 rounded-full bg-accent-content/80 text-accent"
-								icon="svg-spinners:90-ring-with-bg"
-								width="none"
+								name="svg-spinners--90-ring-with-bg"
 							/>
 
 							<span class="absolute center badge w-max badge-lg font-medium badge-accent">
@@ -159,7 +159,7 @@ if (params.slug && !override) return Astro.redirect("/page/character-sorter");
 								class="btn join-item flex-1 btn-neutral"
 								data-umami-event="start-character-sorter"
 							>
-								<IconifyLoader icon="lucide:play" />
+								<IconLoader name="lucide--play" />
 								Start sorting
 							</button>
 
@@ -171,7 +171,7 @@ if (params.slug && !override) return Astro.redirect("/page/character-sorter");
 									data-umami-event="continue-character-sorter"
 									value="true"
 								>
-									<IconifyLoader icon="lucide:redo" />
+									<IconLoader name="lucide--redo" />
 									Continue
 								</button>
 							)}

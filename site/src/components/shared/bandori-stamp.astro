@@ -8,7 +8,8 @@ import type { Bandori } from "@hina-is/bestdori/data";
 
 import type { JSX } from "astro/jsx-runtime";
 
-import IconifyLoader from "~/components/loader/iconify-loader.astro";
+import IconLoader from "~/components/loader/icon-loader.astro";
+import Icon from "./icon.astro";
 
 interface Props extends JSX.HTMLAttributes {
 	stamp: Bandori.Stamp;
@@ -69,8 +70,7 @@ const id = `stamp-${stamp.slug}`;
 						href={`/assets/stamps/${stamp.slug}-image.${IMAGE_FORMAT}`}
 						download
 					>
-						<iconify-icon class="size-4" icon="lucide:file-image" width="none"
-						></iconify-icon>
+						<Icon name="lucide--file-image" />
 					</a>
 				</li>
 
@@ -87,11 +87,7 @@ const id = `stamp-${stamp.slug}`;
 									href={`/assets/stamps/${stamp.slug}-voice.${AUDIO_FORMAT}`}
 									download
 								>
-									<iconify-icon
-										class="size-4"
-										icon="lucide:audio-lines"
-										width="none"
-									/>
+									<Icon name="lucide--audio-lines" />
 								</a>
 							</li>
 							<li>
@@ -104,11 +100,7 @@ const id = `stamp-${stamp.slug}`;
 									href={`/assets/stamps/${stamp.slug}.${STAMP_VIDEO_FORMAT}`}
 									download
 								>
-									<iconify-icon
-										class="size-4"
-										icon="lucide:file-play"
-										width="none"
-									/>
+									<Icon name="lucide--file-play" />
 								</a>
 							</li>
 						</>
@@ -123,8 +115,7 @@ const id = `stamp-${stamp.slug}`;
 						data-umami-event-stamp={stamp.slug}
 						onclick={`navigator.share({ url: '${new URL(`/embed/stamp/${stamp.slug}`, Astro.site)}' })`}
 					>
-						<iconify-icon class="size-4" icon="lucide:link" width="none"
-						></iconify-icon>
+						<Icon name="lucide--link" />
 					</button>
 				</li>
 			</ul>
@@ -139,7 +130,7 @@ const id = `stamp-${stamp.slug}`;
 				data-umami-event-stamp={stamp.slug}
 				onclick={`playStampAudio(this, '${stamp.slug}')`}
 			>
-				<IconifyLoader icon="lucide:volume-2" />
+				<IconLoader name="lucide--volume-2" />
 			</button>
 		)
 	}

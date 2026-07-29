@@ -8,6 +8,7 @@ import { useDeepSignal } from "deepsignal";
 import { sample } from "es-toolkit";
 import { useContext } from "preact/hooks";
 
+import { Icon } from "../icon";
 import { CharacterSorterState } from "./state";
 
 interface CharacterSorterActionsProps {
@@ -177,15 +178,14 @@ export const CharacterSorterActions = ({
 						data-tip="Toggle card type"
 						for="toggle_card_type"
 					>
-						<iconify-icon
+						<Icon
 							class="size-3"
-							icon={
+							name={
 								state.cardType === "trained"
-									? "lucide:sparkles"
-									: "lucide:image"
+									? "lucide--sparkles"
+									: "lucide--image"
 							}
-							width="none"
-						></iconify-icon>
+						></Icon>
 						<span class="capitalize">{state.cardType}</span>
 					</label>
 
@@ -207,11 +207,7 @@ export const CharacterSorterActions = ({
 							popoverTarget="popover-capture"
 							style="anchor-name: --anchor-capture"
 						>
-							<iconify-icon
-								class="size-3"
-								icon="lucide:camera"
-								width="none"
-							></iconify-icon>
+							<Icon class="size-3" name="lucide--camera"></Icon>
 							Capture
 						</button>
 					)}
@@ -230,11 +226,7 @@ export const CharacterSorterActions = ({
 						data-umami-event="character-sorter-capture-save"
 						onClick={output.save}
 					>
-						<iconify-icon
-							class="size-4"
-							icon="lucide:save"
-							width="none"
-						></iconify-icon>
+						<Icon name="lucide--save"></Icon>
 						Save
 					</button>
 
@@ -243,11 +235,7 @@ export const CharacterSorterActions = ({
 						data-umami-event="character-sorter-capture-share"
 						onClick={output.share}
 					>
-						<iconify-icon
-							class="size-4"
-							icon="lucide:share"
-							width="none"
-						></iconify-icon>
+						<Icon name="lucide--share"></Icon>
 						Share
 					</button>
 				</div>

@@ -3,6 +3,7 @@ import { SITE_NAME } from "astro:env/client";
 
 import { dayjs } from "~/lib/date";
 import NavigationMenu from "./navigation-menu.astro";
+import Icon from "./shared/icon.astro";
 
 const BUILD_DATE = dayjs.tz(__BUILD_DATE__);
 ---
@@ -14,8 +15,7 @@ const BUILD_DATE = dayjs.tz(__BUILD_DATE__);
 	<div class="navbar container mx-auto">
 		<div class="md:navbar-start">
 			<label class="btn btn-square btn-ghost md:hidden" for="drawer-menu">
-				<iconify-icon class="size-6" icon="lucide:menu" width="none"
-				></iconify-icon>
+				<Icon class="size-6" name="lucide--menu" />
 			</label>
 
 			<button
@@ -23,8 +23,7 @@ const BUILD_DATE = dayjs.tz(__BUILD_DATE__);
 				popovertarget="header-menu"
 				style="anchor-name: --anchor-header-menu"
 			>
-				<iconify-icon class="size-6" icon="lucide:menu" width="none"
-				></iconify-icon>
+				<Icon class="size-6" name="lucide--menu" />
 			</button>
 		</div>
 
@@ -43,8 +42,7 @@ const BUILD_DATE = dayjs.tz(__BUILD_DATE__);
 				data-umami-event="header-check-info"
 				popovertarget="header-site-dropdown"
 			>
-				<iconify-icon class="size-4" icon="lucide:info" width="none"
-				></iconify-icon>
+				<Icon name="lucide--info" />
 			</button>
 		</div>
 
@@ -60,10 +58,8 @@ const BUILD_DATE = dayjs.tz(__BUILD_DATE__);
 					aria-label="Toggle dark theme"
 				/>
 
-				<iconify-icon class="swap-off size-6" icon="lucide:sun" width="none"
-				></iconify-icon>
-				<iconify-icon class="swap-on size-6" icon="lucide:moon" width="none"
-				></iconify-icon>
+				<Icon class="swap-off size-6" name="lucide--sun" />
+				<Icon class="swap-on size-6" name="lucide--moon" />
 			</label>
 		</div>
 	</div>

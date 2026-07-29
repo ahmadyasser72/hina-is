@@ -1,6 +1,7 @@
 ---
 import { IMAGE_FORMAT } from "@hina-is/bestdori/constants";
 
+import Icon from "~/components/shared/icon.astro";
 import { dayjs, formatDuration } from "~/lib/date";
 import type { sortLatestBirthday } from "./_birthday";
 
@@ -27,7 +28,7 @@ const { entries } = Astro.props;
 
 				<div class="timeline-middle">
 					<div class="flex size-8 items-center justify-center rounded-box border border-base-content/20 bg-character text-character-content">
-						<iconify-icon class="size-6" icon="lucide:cake" width="none" />
+						<Icon class="size-6" name="lucide--cake" />
 					</div>
 				</div>
 				<div

@@ -1,0 +1,7 @@
+@plugin "@iconify/tailwind4" {
+	prefixes: lucide, svg-spinners;
+}
+
+@utility iconify {
+	@apply size-4;
+}

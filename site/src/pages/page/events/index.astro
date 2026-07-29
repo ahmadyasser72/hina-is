@@ -3,8 +3,9 @@ import { IMAGE_FORMAT } from "@hina-is/bestdori/constants";
 
 import { isEqual, upperFirst } from "es-toolkit";
 
-import IconifyLoader from "~/components/loader/iconify-loader.astro";
+import IconLoader from "~/components/loader/icon-loader.astro";
 import InfiniteLoader from "~/components/loader/infinite-loader.astro";
+import Icon from "~/components/shared/icon.astro";
 import BaseLayout from "~/layouts/base-layout.astro";
 import { pages } from "~/lib/page";
 import { paginate } from "~/lib/paginate";
@@ -73,7 +74,7 @@ if (Astro.request.headers.get("hx-request") === "true" && page.current === 1) {
 					data-umami-event="filter-events"
 					hx-vals={JSON.stringify(params)}
 				>
-					<IconifyLoader icon="lucide:list-filter" />
+					<IconLoader name="lucide--list-filter" />
 				</button>
 
 				<h2 class="badge w-48 badge-xl font-medium badge-accent">
@@ -86,8 +87,7 @@ if (Astro.request.headers.get("hx-request") === "true" && page.current === 1) {
 					popovertarget="choose-show-events"
 					style="anchor-name: --anchor-choose-show-events"
 				>
-					<iconify-icon class="size-4" icon="lucide:clock" width="none"
-					></iconify-icon>
+					<Icon name="lucide--clock" />
 				</button>
 				<div
 					class="dropdown dropdown-end mt-1 w-max overflow-hidden rounded-field bg-base-100/80 shadow-sm"
@@ -111,7 +111,7 @@ if (Astro.request.headers.get("hx-request") === "true" && page.current === 1) {
 									"pointer-events-none btn-active btn-secondary",
 							]}
 						>
-							<IconifyLoader icon="lucide:calendar-clock" />
+							<IconLoader name="lucide--calendar-clock" />
 							Future
 						</button>
 						<button
@@ -126,7 +126,7 @@ if (Astro.request.headers.get("hx-request") === "true" && page.current === 1) {
 									"pointer-events-none btn-active btn-secondary",
 							]}
 						>
-							<IconifyLoader icon="lucide:history" />
+							<IconLoader name="lucide--history" />
 							Past
 						</button>
 					</div>

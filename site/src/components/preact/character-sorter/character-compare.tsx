@@ -5,6 +5,7 @@ import { useSignalRef } from "@preact/signals/utils";
 import clsx from "clsx";
 import { useContext } from "preact/hooks";
 
+import { Icon } from "../icon";
 import { CharacterIcon } from "./character-icon";
 import { CharacterSorterState, type Character } from "./state";
 
@@ -130,11 +131,7 @@ export const CharacterCompare = () => {
 					data-character={left.slug}
 					onClick={() => choose("left")}
 				>
-					<iconify-icon
-						class="size-4"
-						icon="lucide:arrow-left"
-						width="none"
-					></iconify-icon>
+					<Icon name="lucide--arrow-left"></Icon>
 				</button>
 
 				<div class="join w-36">
@@ -143,11 +140,7 @@ export const CharacterCompare = () => {
 						onClick={() => choose("tie")}
 					>
 						Tie
-						<iconify-icon
-							class="size-3"
-							icon="lucide:arrow-left-right"
-							width="none"
-						></iconify-icon>
+						<Icon class="size-3" name="lucide--arrow-left-right"></Icon>
 					</button>
 					<button
 						class="btn join-item flex-1 btn-sm btn-error"
@@ -155,11 +148,7 @@ export const CharacterCompare = () => {
 						onClick={undo}
 					>
 						Undo
-						<iconify-icon
-							class="size-3"
-							icon="lucide:undo"
-							width="none"
-						></iconify-icon>
+						<Icon class="size-3" name="lucide--undo"></Icon>
 					</button>
 				</div>
 
@@ -168,11 +157,7 @@ export const CharacterCompare = () => {
 					data-character={right.slug}
 					onClick={() => choose("right")}
 				>
-					<iconify-icon
-						class="size-4"
-						icon="lucide:arrow-right"
-						width="none"
-					></iconify-icon>
+					<Icon name="lucide--arrow-right"></Icon>
 				</button>
 			</div>
 		</>

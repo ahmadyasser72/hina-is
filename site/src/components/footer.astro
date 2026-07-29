@@ -1,5 +1,7 @@
 ---
 import { SITE_NAME } from "astro:env/client";
+
+import Icon from "./shared/icon.astro";
 ---
 
 <footer
@@ -23,8 +25,7 @@ import { SITE_NAME } from "astro:env/client";
 						rel="noopener noreferrer"
 						target="_blank"
 					>
-						<iconify-icon class="mr-1 size-4" icon="lucide:github" width="none"
-						></iconify-icon>
+						<Icon class="mr-1" name="lucide--github" />
 						view source
 					</a>
 				</div>

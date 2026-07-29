@@ -1,5 +1,5 @@
 ---
-import IconifyLoader from "~/components/loader/iconify-loader.astro";
+import IconLoader from "~/components/loader/icon-loader.astro";
 import { filterStamps, getStamps } from "../_list";
 import { schema } from "../_params";
 import FilterFieldset from "./_filter-fieldset.astro";
@@ -60,7 +60,7 @@ const { facets } = await filterStamps(params, stamps);
 				hx-target="#stamps"
 				hx-vals={JSON.stringify(params)}
 			>
-				<IconifyLoader icon="lucide:filter" size-class="size-6" />
+				<IconLoader name="lucide--filter" size-class="size-6" />
 				Apply
 			</button>
 
@@ -71,7 +71,7 @@ const { facets } = await filterStamps(params, stamps);
 				hx-target="closest dialog"
 				hx-vals={JSON.stringify(schema.parse({}))}
 			>
-				<IconifyLoader icon="lucide:rotate-ccw" size-class="size-6" />
+				<IconLoader name="lucide--rotate-ccw" size-class="size-6" />
 				Reset
 			</button>
 		</div>
