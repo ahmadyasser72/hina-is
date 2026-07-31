@@ -51,7 +51,7 @@ export const onRequest = defineMiddleware(
 			return schema.parse(query);
 		};
 
-		const thumbhashMap = await fetchThumbhashMap({ locals, url });
+		const thumbhashMap = await fetchThumbhashMap({ url });
 		locals.useThumbhash = (id) => {
 			const hash = thumbhashMap.get(id);
 			if (hash) return { "data-thumbhash": hash };

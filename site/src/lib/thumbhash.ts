@@ -17,15 +17,15 @@ export const generateThumbhash = async (
 };
 
 export const fetchThumbhashMap = async ({
-	locals,
 	url,
-}: Pick<APIContext, "locals" | "url">): Promise<{
+}: Pick<APIContext, "url">): Promise<{
 	get: (id: string) => string | undefined;
 }> => {
 	if (import.meta.env.DEV)
 		return { get: (_) => "pCeGEoYPRQcki3alV2+v2DcmiXiAlxg=" };
 
-	const thumbhashEntries = await locals.runtime.env.ASSETS.fetch(
+	const { env } = await import("cloudflare:workers");
+	const thumbhashEntries = await env.ASSETS.fetch(
 		new URL("/thumbhash.json", url),
 	).then((response) => response.json<[string, string][]>());
 	return new Map(thumbhashEntries);
