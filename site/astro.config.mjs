@@ -2,6 +2,7 @@
 import { exec } from "node:child_process";
 
 import cloudflare from "@astrojs/cloudflare";
+import { cacheCloudflare } from "@astrojs/cloudflare/cache";
 import preact from "@astrojs/preact";
 import tailwindcss from "@tailwindcss/vite";
 import { defineConfig, envField, fontProviders } from "astro/config";
@@ -15,10 +16,39 @@ const GITHUB_URL = await new Promise((resolve, reject) => {
 // https://astro.build/config
 export default defineConfig({
 	site: "https://hina-is.notsweet.workers.dev/",
-	adapter: cloudflare({ imageService: "passthrough" }),
-	integrations: [preact()],
-	output: "server",
 	build: { concurrency: 4 },
+
+	adapter: cloudflare({
+		imageService: "passthrough",
+		prerenderEnvironment: "node",
+	}),
+	output: "server",
+	trailingSlash: "never",
+	cache: { provider: cacheCloudflare() },
+	session: {
+		driver: {
+			entrypoint: "unstorage/drivers/null",
+		},
+	},
+
+	integrations: [preact()],
+	fonts: [
+		{
+			provider: fontProviders.fontsource(),
+			name: "Cause",
+			cssVariable: "--font-cause",
+			subsets: ["latin"],
+			weights: ["100 900"],
+			fallbacks: [],
+		},
+		{
+			provider: fontProviders.google(),
+			name: "Kosugi Maru",
+			cssVariable: "--font-kosugi-maru",
+			subsets: ["japanese", "latin-ext"],
+			formats: ["ttf"],
+		},
+	],
 
 	env: {
 		schema: {
@@ -37,15 +67,18 @@ export default defineConfig({
 			UPSTASH_REDIS_REST_URL: envField.string({
 				access: "secret",
 				context: "server",
+				optional: true,
 			}),
 			UPSTASH_REDIS_REST_TOKEN: envField.string({
 				access: "secret",
 				context: "server",
+				optional: true,
 			}),
 
 			GEMINI_API_KEY: envField.string({
 				access: "secret",
 				context: "server",
+				optional: true,
 			}),
 		},
 	},
@@ -73,17 +106,5 @@ export default defineConfig({
 
 		server: { allowedHosts: [".lhr.life"] },
 	},
-
-	experimental: {
-		fonts: [
-			{
-				provider: fontProviders.fontsource(),
-				name: "Nunito Sans",
-				cssVariable: "--font-nunito-sans",
-				weights: ["400 600"],
-			},
-		],
-	},
-
 	devToolbar: { enabled: false },
 });

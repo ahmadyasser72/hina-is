@@ -15,7 +15,7 @@ export const RankingResult = () => {
 						class="group indicator w-full indicator-center max-md:col-span-2 max-md:first:col-start-2"
 						key={character.slug}
 					>
-						<div class="indicator-item badge px-2 badge-sm badge-accent group-nth-[-n+5]:badge-lg">
+						<div class="indicator-item badge px-2 badge-sm badge-primary group-nth-[-n+5]:badge-lg">
 							#{rank}
 						</div>
 

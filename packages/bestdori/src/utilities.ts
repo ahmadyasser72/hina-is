@@ -2,6 +2,8 @@ import { createHash, type BinaryLike } from "node:crypto";
 import { openAsBlob } from "node:fs";
 import path from "node:path";
 
+import mime from "mime-types";
+
 import { CACHE_DIR } from ".";
 
 export const unwrap = <T>({ jp, en }: { jp: T; en: T | null }) => (en ?? jp)!;
@@ -30,7 +32,7 @@ export const fileResponse = async (path: string): Promise<Response> => {
 	const blob = await openAsBlob(path);
 	return new Response(blob, {
 		headers: {
-			"content-type": blob.type,
+			"content-type": mime.lookup(path) || "application/octet-stream",
 			"content-length": blob.size.toString(),
 		},
 	});

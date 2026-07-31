@@ -1,13 +1,14 @@
 {
-	"main": "dist/_worker.js/index.js",
+	"$schema": "node_modules/wrangler/config-schema.json",
+
+	"main": "@astrojs/cloudflare/entrypoints/server",
 	"name": "hina-is",
-	"compatibility_date": "2026-01-27",
+	"compatibility_date": "2026-07-13",
 	"compatibility_flags": ["nodejs_compat", "global_fetch_strictly_public"],
-	"assets": {
-		"binding": "ASSETS",
-		"directory": "./dist",
-	},
+	"assets": { "binding": "ASSETS", "directory": "./dist" },
+	"placement": { "mode": "smart" },
 	"observability": {
 		"enabled": true,
+		"traces": { "enabled": true },
 	},
 }

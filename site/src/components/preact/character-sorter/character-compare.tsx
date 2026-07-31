@@ -143,7 +143,7 @@ export const CharacterCompare = () => {
 						<Icon class="size-3" name="lucide--arrow-left-right"></Icon>
 					</button>
 					<button
-						class="btn join-item flex-1 btn-sm btn-error"
+						class="btn join-item flex-1 btn-error btn-sm"
 						disabled={!canUndo}
 						onClick={undo}
 					>

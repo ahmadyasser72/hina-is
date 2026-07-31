@@ -39,7 +39,7 @@ if (Astro.request.headers.get("hx-request") === "true" && page.current === 1) {
 		<div class="inline-flex gap-2">
 			<button
 				hx-get="/page/stamps/filter"
-				class="tooltip btn tooltip-right btn-circle btn-sm btn-success"
+				class="tooltip btn tooltip-bottom tooltip-start btn-circle btn-secondary btn-sm"
 				data-tip="Filter stamps"
 				data-umami-event="filter-stamps"
 				hx-vals={JSON.stringify(params)}
@@ -47,10 +47,10 @@ if (Astro.request.headers.get("hx-request") === "true" && page.current === 1) {
 				<IconLoader name="lucide--list-filter" />
 			</button>
 
-			<h2 class="badge w-48 badge-xl font-medium badge-accent">Stamps</h2>
+			<h2 class="badge w-48 badge-xl font-medium badge-primary">Stamps</h2>
 
 			<button
-				class="tooltip btn tooltip-left btn-circle btn-sm btn-success"
+				class="tooltip btn tooltip-bottom tooltip-end btn-circle btn-secondary btn-sm"
 				data-tip="Sort stamps"
 				popovertarget="choose-sort-stamps"
 				style="anchor-name: --anchor-choose-sort-stamps"

@@ -51,7 +51,7 @@ if (params.slug && !override) return Astro.redirect("/page/character-sorter");
 		>
 			<button
 				hx-get="/page/character-sorter"
-				class="tooltip btn tooltip-right btn-circle btn-sm btn-error"
+				class="tooltip btn tooltip-bottom tooltip-start btn-circle btn-error btn-sm"
 				data-tip="Reset sorter"
 				data-umami-event="reset-character-sorter"
 				hx-confirm="Start over?"
@@ -60,13 +60,13 @@ if (params.slug && !override) return Astro.redirect("/page/character-sorter");
 				<IconLoader name="lucide--rotate-ccw" />
 			</button>
 
-			<h2 class="badge w-48 badge-xl font-medium badge-accent">
+			<h2 class="badge w-48 badge-xl font-medium badge-primary">
 				Character Sorter
 			</h2>
 
 			<button
 				hx-get="/page/character-sorter"
-				class="tooltip btn tooltip-left btn-circle btn-sm btn-warning"
+				class="tooltip btn tooltip-bottom tooltip-end btn-circle btn-sm btn-warning"
 				data-tip="Reload sorter"
 				data-umami-event="reload-character-sorter"
 			>
@@ -87,7 +87,7 @@ if (params.slug && !override) return Astro.redirect("/page/character-sorter");
 								name="svg-spinners--90-ring-with-bg"
 							/>
 
-							<span class="absolute center badge w-max badge-lg font-medium badge-accent">
+							<span class="absolute center badge w-max badge-lg font-medium badge-primary">
 								loading sorter component...
 							</span>
 						</div>
@@ -166,7 +166,7 @@ if (params.slug && !override) return Astro.redirect("/page/character-sorter");
 							{params.continue && (
 								<button
 									hx-get
-									class="btn join-item btn-info"
+									class="btn join-item btn-accent"
 									name="continue"
 									data-umami-event="continue-character-sorter"
 									value="true"

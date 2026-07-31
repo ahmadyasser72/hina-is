@@ -133,7 +133,7 @@ const progress = (() => {
 
 	<div class="flex gap-1">
 		<a
-			class="btn flex-1 btn-sm btn-info"
+			class="btn flex-1 btn-accent btn-sm"
 			data-umami-event="view-event-on-bestdori"
 			data-umami-event-event={event.slug}
 			data-umami-event-id={event.id}
@@ -147,7 +147,7 @@ const progress = (() => {
 
 		<button
 			hx-get={`/partials/event/${event.slug}`}
-			class="tooltip btn tooltip-left btn-square btn-soft btn-sm"
+			class="tooltip btn tooltip-bottom tooltip-end btn-square btn-soft btn-sm"
 			data-tip="Extra details"
 			data-umami-event="view-event-details"
 			data-umami-event-event={event.slug}

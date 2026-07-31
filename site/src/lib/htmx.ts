@@ -164,8 +164,8 @@ htmx.on("htmx:beforeSwap", (e) => {
 
 // logic for persistent theme
 {
-	const LIGHT_THEME = "lemonade";
-	const DARK_THEME = "coffee";
+	const LIGHT_THEME = "latte";
+	const DARK_THEME = "mocha";
 
 	const lastTheme = localStorage.getItem("theme");
 	const systemIsDark = window.matchMedia("(prefers-color-scheme: dark)");

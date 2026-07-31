@@ -60,7 +60,7 @@ const { facets } = await filterStamps(params, stamps);
 				hx-target="#stamps"
 				hx-vals={JSON.stringify(params)}
 			>
-				<IconLoader name="lucide--filter" size-class="size-6" />
+				<IconLoader class="size-6" name="lucide--filter" />
 				Apply
 			</button>
 
@@ -71,7 +71,7 @@ const { facets } = await filterStamps(params, stamps);
 				hx-target="closest dialog"
 				hx-vals={JSON.stringify(schema.parse({}))}
 			>
-				<IconLoader name="lucide--rotate-ccw" size-class="size-6" />
+				<IconLoader class="size-6" name="lucide--rotate-ccw" />
 				Reset
 			</button>
 		</div>

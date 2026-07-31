@@ -1,28 +1,37 @@
 @import "tailwindcss";
 
 @theme inline {
-	--font-sans: var(--font-nunito-sans);
+	--font-sans: var(--font-cause), var(--font-kosugi-maru), sans-serif;
 }
 
 @plugin "daisyui" {
-	themes:
-		lemonade --default,
-		coffee --prefersdark;
-	exclude:
-		rootscrollgutter,
-		properties /* https://github.com/saadeghi/daisyui/issues/3882 */;
+	themes: false;
 }
 
-@custom-variant dark (&:where([data-theme="coffee"], [data-theme="coffee"] *));
+@plugin "./catppuccin.latte.ts";
+@plugin "./catppuccin.mocha.ts";
+
+@custom-variant dark (&:where([data-theme="mocha"], [data-theme="mocha"] *));
 
 @import "./icons.css";
 @import "./custom.css";
 @import "./extends.css";
 @import "./bandori.css";
 
-:not(.htmx-request) > .htmx-indicator:not(.htmx-request),
-.htmx-indicator-replace.htmx-request,
-.htmx-request > .htmx-indicator-replace {
+.htmx-indicator-replace:is(
+	.htmx-request,
+	.htmx-request > *,
+	.htmx-request ~ *,
+	:has(~ .htmx-request)
+),
+.htmx-indicator:not(
+	:is(
+		.htmx-request,
+		.htmx-request > *,
+		.htmx-request ~ *,
+		:has(~ .htmx-request)
+	)
+) {
 	@apply hidden;
 }
 

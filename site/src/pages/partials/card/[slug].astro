@@ -86,7 +86,7 @@ const {
 					data-umami-event-id={card.id}
 					onclick={`playCardAudio(this, '${card.slug}')`}
 				>
-					<IconLoader name="lucide--volume-2" size-class="size-8" />
+					<IconLoader class="size-8" name="lucide--volume-2" />
 				</button>
 			</div>
 
@@ -104,7 +104,7 @@ const {
 						<span class="font-normal">{card.skill.description}</span>
 					</div>
 
-					<button class="badge badge-lg badge-accent">
+					<button class="badge badge-lg badge-primary">
 						<Icon class="size-5" name="lucide--zap" />
 						{card.skill.multiplier}
 					</button>
@@ -145,7 +145,7 @@ const {
 		</div>
 
 		<a
-			class="btn mt-2 w-full btn-sm btn-info"
+			class="btn mt-2 w-full btn-accent btn-sm"
 			data-umami-event="view-card-on-bestdori"
 			data-umami-event-card={card.slug}
 			data-umami-event-id={card.id}

@@ -46,7 +46,7 @@ const { entries } = Astro.props;
 						<p class="font-light">
 							(
 							<span
-								class="tooltip tooltip-left -mx-1.5 cursor-default tooltip-character underline decoration-dotted before:font-sans before:font-normal after:hidden group-odd:md:tooltip-right"
+								class="tooltip tooltip-left mx-1 cursor-default tooltip-character underline decoration-dotted before:font-sans before:font-normal after:hidden group-odd:md:tooltip-right"
 								data-tip={formatDuration(now, character.nextBirthday)}
 								onclick="event.stopPropagation()"
 								set:text={character.nextBirthday.from(now)}
