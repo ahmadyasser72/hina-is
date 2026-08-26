@@ -15,9 +15,9 @@ jobs:
     steps:
       - uses: actions/checkout@v7.0.1
       - uses: ./.github/actions/setup-bun
-      - uses: AnimMouse/setup-ffmpeg@v1.2.3
+      - uses: FedericoCarboni/setup-ffmpeg@v3
         with:
-          version: 7.1
+          ffmpeg-version: "7.0.2"
 
       - name: Restore cached responses
         uses: actions/cache/restore@v6.1.0
