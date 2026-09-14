@@ -46,7 +46,7 @@
         "@preact/signals": "2.9.0",
         "@tailwindcss/vite": "4.3.0",
         "@upstash/redis": "1.38.0",
-        "@zumer/snapdom": "2.12.0",
+        "@zumer/snapdom": "3.0.0",
         "astro": "7.1.6",
         "clsx": "2.1.1",
         "daisyui": "5.7.4",
@@ -204,8 +204,6 @@
     "@cloudflare/workerd-linux-arm64": ["@cloudflare/workerd-linux-arm64@1.20260507.1", "", { "os": "linux", "cpu": "arm64" }, "sha512-eGbbupEtK2nh9V9Dhcx3vv3GTKeXqSVNgAEYVCCN0NGS9tl9HbMoHRX/4JL181FKXROMigWBCQVL//qPhsAzBQ=="],
 
     "@cloudflare/workerd-windows-64": ["@cloudflare/workerd-windows-64@1.20260507.1", "", { "os": "win32", "cpu": "x64" }, "sha512-dmClJ/E0BAcuDetQIZFqbeAXejWrG5pysGRMQ6T83Y0IW/7IAamY2zFEkAJ10I5xwZsdHuYsZtzlOxpEXpJs7A=="],
-
-    "@cloudflare/workers-types": ["@cloudflare/workers-types@4.20260127.0", "", {}, "sha512-4M1HLcWViSdT/pAeDGEB5x5P3sqW7UIi34QrBRnxXbqjAY9if8vBU/lWRWnM+UqKzxWGB2LYjEVOzZrp0jZL+w=="],
 
     "@cspotcode/source-map-support": ["@cspotcode/source-map-support@0.8.1", "", { "dependencies": { "@jridgewell/trace-mapping": "0.3.9" } }, "sha512-IchNf6dN4tHoMFIn/7OE8LWZ19Y6q/67Bmf6vnGREv8RSbBVb9LPJxEcnwrcwX6ixSvaiGoomAUvu4YSxXrVgw=="],
 
@@ -621,7 +619,7 @@
 
     "@xeonlink/prettier-plugin-organize-attributes": ["@xeonlink/prettier-plugin-organize-attributes@1.1.0", "", { "dependencies": { "prettier": "^3.6.2" } }, "sha512-1Vmv+7zkQvPSgiBX0HsrZL4Xf6MYFinS3VE+dXeJCbF2i3BOM+nYQk1iRbcnnSTsJ+IB1IP5X5o3O4zp2ccTgg=="],
 
-    "@zumer/snapdom": ["@zumer/snapdom@2.12.0", "", {}, "sha512-TdLGu+1RkKI3JKfMFvn1gRPD/rl8hrAeN6aFjjd0w7S39nulbd94ChxSlfH7nSCm8kzuQkeWFxIsij4+Mk1RDg=="],
+    "@zumer/snapdom": ["@zumer/snapdom@3.0.0", "", {}, "sha512-O+gqKYz+7545JNgG4Hzdy9/i+7/H38bDpF6tUOCJBqAUTm9npbaE3ZxuevFBcRi6cBLpvMqVYIjtywAZIP6OFQ=="],
 
     "agent-base": ["agent-base@7.1.4", "", {}, "sha512-MnA+YT8fwfJPgBx3m60MNqakm30XOkyIoH1y6huTQvC0PwZG7ki8NacLBcrPbNoo8vEZy7Jpuk7+jMO+CUovTQ=="],
 
